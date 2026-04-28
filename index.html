@@ -500,7 +500,7 @@
       <div class="modal-subtitle">Completa la información del curso y agrega sus clases.</div>
       <div class="form-field"><label>Nombre del curso</label><input id="mCursoName" placeholder="Ej: Fundamentos de Dermatología"></div>
       <div class="form-row"><div class="form-field"><label>Categoría</label><select id="mCursoCat"><option>Dermatología</option><option>Estética</option><option>Cosmetología</option></select></div><div class="form-field"><label>Nivel</label><select id="mCursoLevel"><option>Básico</option><option>Intermedio</option><option>Avanzado</option></select></div></div>
-      <div class="form-field"><label>Instructor</label><input id="mCursoInst" placeholder="Dr. Nombre"></div>
+      <div class="form-row"><div class="form-field"><label>Instructor</label><input id="mCursoInst" placeholder="Dr. Nombre"></div><div class="form-field"><label>Estado</label><select id="mCursoStatus"><option value="published">✅ Publicado</option><option value="draft">📝 Borrador</option></select></div></div>
       <div class="form-field"><label>📋 Temario del curso (Google Drive)</label><input id="mCursoTemario" placeholder="https://drive.google.com/file/d/..." class="drive-input" style="border-left-color:#34a853 !important;"></div>
       <div class="form-field"><label>🖼️ Imagen de portada (Google Drive)</label><input id="mCursoImg" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
 
@@ -892,7 +892,7 @@
     const lessons = collectClases();
     const temario=document.getElementById('mCursoTemario').value.trim();
     const img=document.getElementById('mCursoImg').value.trim();
-    COURSES.push({id:'c-'+Date.now(),name,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:'draft',instructor:document.getElementById('mCursoInst').value,date:new Date().toISOString().split('T')[0],temario,img,lessons});
+    COURSES.push({id:'c-'+Date.now(),name,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:document.getElementById('mCursoStatus').value,instructor:document.getElementById('mCursoInst').value,date:new Date().toISOString().split('T')[0],temario,img,lessons});
     saveCourses();
     renderCursos();renderDashboard();closeModals();
     document.getElementById('mClasesList').innerHTML='';
