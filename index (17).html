@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DERMALYSSE · Panel Admin</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400;1,9..40,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cafe-deep:#553d2a;--cafe-dark:#69503c;--cafe-mid:#907761;--cafe-light:#ab9680;--cafe-pale:#c7b69f;
+      --crema-soft:#e3d7bf;--crema-main:#fff9e1;
+      --azul-dark:#2e5f7a;--azul-main:#5a96b5;--azul-light:#7db4cf;--azul-pale:#d4e8f2;--azul-ghost:#edf5fa;
+      --bg-base:#fffdf2;--bg-surface:#ffffff;--bg-elevated:#fff9e1;--bg-hover:#fdf7e6;
+      --text-primary:#2d1f12;--text-secondary:#69503c;--text-muted:#907761;
+      --border:#e3d7bf;--border-soft:#f2ead5;
+      --success:#6a8a4f;--success-soft:rgba(106,138,79,.12);
+      --danger:#c14545;--danger-soft:rgba(193,69,69,.10);
+      --warn:#d4a44c;--warn-soft:rgba(212,164,76,.12);
+      --info:#5a96b5;--info-soft:rgba(90,125,149,.10);
+      --admin-red:#d94545;
+      --font-display:'DM Sans',-apple-system,sans-serif;--font-body:'DM Sans',-apple-system,sans-serif;
+      --radius-sm:10px;--radius:14px;--radius-lg:22px;
+      --shadow-xs:0 1px 3px rgba(144,119,97,.06);--shadow:0 4px 20px rgba(144,119,97,.10);--shadow-lg:0 20px 50px rgba(144,119,97,.16);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font-body);font-weight:500;background:var(--bg-base);color:var(--text-primary);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+    button{background:none;border:none;cursor:pointer}
+    a{color:inherit;text-decoration:none}
+
+    /* ═══ DARK MODE ═══ */
+    body.dark-mode{--bg-base:#1a1612;--bg-surface:#241f1a;--bg-elevated:#2e2820;--bg-hover:#352e25;--text-primary:#f5efe6;--text-secondary:#b8a898;--text-muted:#8a7a6a;--border:#3a3228;--border-soft:#2e2820;--azul-ghost:rgba(46,95,122,.15);--azul-pale:rgba(46,95,122,.25);--crema-soft:#3a3228;--crema-main:#2e2820}
+
+    /* ═══ SCREENS ═══ */
+    .screen{display:none;min-height:100vh}
+    .screen.active{display:block}
+
+    /* ═══ AUTH ═══ */
+    #authScreen.active{display:grid;place-items:center;min-height:100vh;padding:2rem;background:radial-gradient(circle at 30% 20%,rgba(46,95,122,.06),transparent 55%),linear-gradient(135deg,var(--crema-main),var(--bg-base))}
+    .auth-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:3rem 2.75rem;width:100%;max-width:440px;box-shadow:var(--shadow-lg);text-align:center}
+    .auth-logo{width:56px;height:56px;margin:0 auto 1rem;display:grid;place-items:center;overflow:hidden}
+    .auth-logo img{width:100%;height:100%;object-fit:contain}
+    .admin-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .85rem;background:var(--admin-red);color:white;border-radius:999px;font-size:.7rem;font-weight:700;letter-spacing:.22em;margin-bottom:1.25rem;box-shadow:0 4px 12px rgba(217,69,69,.30)}
+    .auth-title{font-size:1.8rem;font-weight:700;letter-spacing:-0.01em;margin-bottom:.3rem}
+    .auth-subtitle{color:var(--text-secondary);font-size:.9rem;margin-bottom:2rem}
+
+    .form-field{margin-bottom:1rem;text-align:left}
+    .form-field label{display:block;font-size:.7rem;color:var(--text-muted);letter-spacing:.22em;text-transform:uppercase;margin-bottom:.45rem;font-weight:600}
+    .form-field input{width:100%;padding:.85rem 1rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;transition:all .25s}
+    .form-field input::placeholder{color:var(--text-muted);font-weight:400}
+    .form-field input:focus{outline:none;border-color:var(--azul-main);box-shadow:0 0 0 3px rgba(46,95,122,.12);background:var(--bg-elevated)}
+
+    .btn-primary{width:100%;padding:1rem;background:var(--text-primary);color:var(--crema-main);font-weight:600;font-size:.92rem;border-radius:var(--radius-sm);letter-spacing:.04em;transition:all .25s;margin-top:.5rem;box-shadow:0 6px 16px rgba(45,31,18,.18)}
+    .btn-primary:hover{background:#1a1610;transform:translateY(-1px);box-shadow:0 12px 28px rgba(45,31,18,.28)}
+
+    .btn-secondary{padding:.65rem 1.15rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-secondary:hover{border-color:var(--azul-main);color:var(--azul-dark);background:var(--bg-elevated)}
+
+    .btn-add{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.25rem;background:var(--azul-dark);color:white;border-radius:var(--radius-sm);font-size:.88rem;font-weight:600;transition:all .25s;box-shadow:0 4px 14px rgba(46,95,122,.20)}
+    .btn-add:hover{background:#1e4a62;transform:translateY(-1px);box-shadow:0 10px 24px rgba(46,95,122,.30)}
+    .btn-add svg{width:16px;height:16px}
+
+    .auth-hint{margin-top:1.25rem;padding:.85rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-left:3px solid var(--admin-red);border-radius:var(--radius-sm);font-size:.82rem;color:var(--text-secondary);line-height:1.5;text-align:left}
+    .auth-hint strong{color:var(--admin-red);font-weight:700}
+
+    /* ═══ APP SHELL ═══ */
+    #appScreen.active{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+
+    /* Sidebar */
+    .sidebar{position:sticky;top:0;height:100vh;background:var(--bg-surface);border-right:1px solid var(--border-soft);display:flex;flex-direction:column;overflow-y:auto;padding:1.5rem 0}
+    .sidebar::-webkit-scrollbar{width:4px}
+    .sidebar::-webkit-scrollbar-thumb{background:var(--cafe-pale);border-radius:2px}
+
+    .sidebar-header{padding:0 1.5rem 1.25rem;border-bottom:1px solid var(--border-soft);margin-bottom:1.25rem}
+    .sidebar-admin-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .7rem;background:var(--admin-red);color:white;border-radius:999px;font-size:.65rem;font-weight:700;letter-spacing:.22em;margin-bottom:1rem;box-shadow:0 3px 10px rgba(217,69,69,.28)}
+    .sidebar-logo{display:flex;align-items:center;gap:.7rem}
+    .sidebar-logo-dot{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;overflow:hidden;flex-shrink:0}
+    .sidebar-logo-dot img{width:100%;height:100%;object-fit:contain}
+    .sidebar-logo-text{font-weight:600;letter-spacing:.22em;font-size:.86rem;color:var(--text-primary)}
+
+    .sidebar-section{padding:0 .85rem;margin-bottom:1.25rem}
+    .sidebar-label{padding:0 1rem .5rem;font-size:.65rem;color:var(--text-muted);letter-spacing:.28em;text-transform:uppercase;font-weight:600}
+
+    .nav-item{display:flex;align-items:center;gap:.85rem;padding:.7rem 1rem;border-radius:var(--radius-sm);color:var(--text-secondary);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .25s;position:relative;margin-bottom:2px}
+    .nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+    .nav-item.active{background:var(--bg-elevated);color:var(--azul-dark);font-weight:600}
+    .nav-item.active::before{content:'';position:absolute;left:-.85rem;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--azul-dark);border-radius:2px}
+    .nav-item svg{width:17px;height:17px;flex-shrink:0;stroke-width:1.6}
+
+    .sidebar-footer{margin-top:auto;padding:1rem .85rem 0;border-top:1px solid var(--border-soft)}
+    .user-chip{display:flex;align-items:center;gap:.7rem;padding:.55rem .7rem;border-radius:var(--radius-sm)}
+    .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--azul-dark),var(--azul-main));display:grid;place-items:center;font-weight:700;color:white;font-size:.85rem;flex-shrink:0}
+    .user-name{font-size:.85rem;font-weight:600;color:var(--text-primary)}
+    .user-role{font-size:.7rem;color:var(--admin-red);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .logout-btn{width:100%;margin-top:.6rem;padding:.55rem;color:var(--text-muted);font-size:.78rem;font-weight:500;border-radius:var(--radius-sm);transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+    .logout-btn:hover{background:var(--danger-soft);color:var(--danger)}
+
+    /* ═══ MAIN ═══ */
+    .app-main{min-height:100vh;background:var(--bg-base)}
+    .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:1rem;padding:1rem 2rem;background:rgba(255,253,242,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-soft)}
+    .hamburger-btn{display:none;padding:.5rem;border-radius:var(--radius-sm);color:var(--text-secondary)}
+    body.dark-mode .topbar{background:rgba(26,22,18,.92);border-color:var(--border)}
+
+    .view{display:none;padding:2rem;max-width:1400px;animation:fadeSlide .4s ease}
+    .view.active{display:block}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    .view-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+    .view-title{font-size:2.2rem;font-weight:700;letter-spacing:-0.01em;line-height:1.1}
+    .view-subtitle{color:var(--text-secondary);font-size:.92rem}
+
+    /* ═══ KPIs ═══ */
+    .kpis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+    .kpi-card{background:var(--bg-surface);border:1px solid var(--border-soft);border-radius:var(--radius);padding:1.25rem 1.4rem;transition:all .25s;box-shadow:var(--shadow-xs)}
+    .kpi-card:hover{border-color:var(--azul-pale);transform:translateY(-2px);box-shadow:var(--shadow)}
+    .kpi-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem}
+    .kpi-label{font-size:.72rem;color:var(--text-muted);letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+    .kpi-icon{width:34px;height:34px;border-radius:10px;background:var(--azul-ghost);color:var(--azul-dark);display:grid;place-items:center}
+    .kpi-icon svg{width:16px;height:16px;stroke-width:1.8}
+    .kpi-value{font-size:2rem;font-weight:800;letter-spacing:-0.02em;line-height:1}
+    .kpi-foot{display:flex;align-items:center;gap:.4rem;margin-top:.55rem;font-size:.78rem;color:var(--text-muted)}
+    .kpi-delta{display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .45rem;border-radius:999px;font-size:.72rem;font-weight:600}
+    .kpi-delta.up{background:var(--success-soft);color:var(--success)}
+    .kpi-delta.down{background:var(--danger-soft);color:var(--danger)}
+
+    /* Dashboard grid */
+    .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem}
+    .panel{background:var(--bg-surface);border:1px solid var(--border-soft);border-radius:var(--radius);padding:1.5rem 1.75rem;box-shadow:var(--shadow-xs)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+    .panel-title{font-size:1.15rem;font-weight:700;letter-spacing:-0.01em}
+
+    /* Chart */
+    .chart-wrap{position:relative;height:200px;display:flex;align-items:flex-end;gap:.65rem;padding:1rem .5rem 0;border-left:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)}
+    .chart-bar{flex:1;background:linear-gradient(to top,var(--azul-dark),var(--azul-main));border-radius:4px 4px 0 0;position:relative;transition:all .3s;cursor:pointer;min-height:8px}
+    .chart-bar:hover{background:linear-gradient(to top,#1e4a62,var(--azul-dark))}
+    .chart-bar::after{content:attr(data-value);position:absolute;top:-1.6rem;left:50%;transform:translateX(-50%);font-size:.7rem;color:var(--text-muted);font-weight:600}
+    .chart-labels{display:flex;gap:.65rem;padding:.5rem .5rem 0}
+    .chart-labels span{flex:1;text-align:center;font-size:.7rem;color:var(--text-muted);font-weight:500}
+
+    /* Activity */
+    .activity-list{display:flex;flex-direction:column;gap:0}
+    .activity-item{display:flex;gap:.85rem;padding:.85rem 0;border-bottom:1px solid var(--border-soft)}
+    .activity-item:last-child{border-bottom:none}
+    .activity-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+    .activity-dot.blue{background:var(--azul-main)}
+    .activity-dot.green{background:var(--success)}
+    .activity-dot.orange{background:var(--warn)}
+    .activity-text{font-size:.88rem;color:var(--text-primary);font-weight:500;line-height:1.4}
+    .activity-text strong{font-weight:700}
+    .activity-time{font-size:.75rem;color:var(--text-muted);margin-top:.1rem}
+
+    /* ═══ DATA TABLE ═══ */
+    .data-table-wrap{background:var(--bg-surface);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-xs)}
+    .data-table-toolbar{padding:1rem 1.5rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border-soft)}
+    .data-table-search{flex:1;min-width:200px;position:relative}
+    .data-table-search input{width:100%;padding:.6rem 1rem .6rem 2.5rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.88rem;font-weight:500;transition:all .2s}
+    .data-table-search input:focus{outline:none;border-color:var(--azul-main)}
+    .data-table-search svg{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--text-muted);width:15px;height:15px}
+
+    .data-table{width:100%;border-collapse:collapse}
+    .data-table th{padding:.85rem 1.5rem;text-align:left;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);font-weight:700;background:var(--bg-elevated);border-bottom:1px solid var(--border-soft);white-space:nowrap}
+    .data-table td{padding:.9rem 1.5rem;font-size:.9rem;border-bottom:1px solid var(--border-soft);font-weight:500}
+    .data-table tr:last-child td{border-bottom:none}
+    .data-table tr:hover{background:var(--bg-hover)}
+
+    .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;border-radius:999px;font-size:.72rem;font-weight:600}
+    .badge.success{background:var(--success-soft);color:var(--success)}
+    .badge.danger{background:var(--danger-soft);color:var(--danger)}
+    .badge.warn{background:var(--warn-soft);color:var(--warn)}
+    .badge.info{background:var(--info-soft);color:var(--info)}
+    .badge.neutral{background:var(--bg-elevated);color:var(--text-secondary)}
+
+    .action-btns{display:inline-flex;gap:.3rem}
+    .action-btn{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--text-muted);background:var(--bg-elevated);transition:all .2s}
+    .action-btn:hover{background:var(--azul-ghost);color:var(--azul-dark)}
+    .action-btn.danger:hover{background:var(--danger-soft);color:var(--danger)}
+    .action-btn svg{width:14px;height:14px;stroke-width:1.8}
+
+    .drive-input{border-left:3px solid #4285f4 !important;padding-left:1rem !important}
+    .drive-link{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:600;background:rgba(66,133,244,.08);color:#4285f4;cursor:pointer;transition:all .2s;text-decoration:none}
+    .drive-link:hover{background:rgba(66,133,244,.16)}
+    .drive-link svg{width:13px;height:13px}
+    .no-drive{font-size:.72rem;color:var(--text-muted);font-style:italic}
+
+    /* ═══ MODAL ═══ */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(45,31,18,.55);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;z-index:9990;overflow-y:auto}
+    .modal-backdrop.active{display:flex;animation:fadeIn .25s}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal-card{background:var(--bg-surface);border-radius:var(--radius-lg);padding:2rem 2.25rem;width:100%;max-width:560px;box-shadow:var(--shadow-lg);position:relative;margin-top:2rem;animation:modalIn .3s ease}
+    @keyframes modalIn{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .modal-close{position:absolute;top:1.25rem;right:1.25rem;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--text-muted);background:var(--bg-elevated);transition:all .2s}
+    .modal-close:hover{background:var(--danger-soft);color:var(--danger)}
+    .modal-close svg{width:16px;height:16px}
+    .modal-title{font-size:1.5rem;font-weight:700;margin-bottom:.3rem}
+    .modal-subtitle{color:var(--text-secondary);font-size:.88rem;margin-bottom:1.75rem}
+    .modal-footer{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-soft)}
+
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+    .form-field select,.form-field textarea{width:100%;padding:.85rem 1rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;transition:all .25s}
+    .form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--azul-main);box-shadow:0 0 0 3px rgba(46,95,122,.12)}
+
+    /* ═══ SETTINGS ═══ */
+    .settings-group{background:var(--bg-surface);border:1px solid var(--border-soft);border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:1rem;box-shadow:var(--shadow-xs)}
+    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0;border-bottom:1px solid var(--border-soft);gap:1rem}
+    .settings-row:last-child{border-bottom:none}
+    .settings-info h4{font-weight:600;font-size:.95rem;margin-bottom:.1rem}
+    .settings-info p{color:var(--text-muted);font-size:.82rem}
+    .toggle{position:relative;width:42px;height:24px;background:var(--border);border-radius:999px;cursor:pointer;transition:all .25s;flex-shrink:0}
+    .toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:white;border-radius:50%;transition:all .25s;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+    .toggle.active{background:var(--azul-dark)}
+    .toggle.active::after{left:21px}
+
+    /* ═══ TOAST ═══ */
+    .toast{position:fixed;bottom:1.5rem;right:1.5rem;padding:.95rem 1.25rem;background:var(--bg-surface);border:1px solid var(--border);border-left:3px solid var(--success);border-radius:var(--radius);color:var(--text-primary);font-size:.9rem;font-weight:600;box-shadow:var(--shadow-lg);transform:translateY(20px);opacity:0;transition:all .35s;z-index:9999;display:flex;align-items:center;gap:.6rem}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast svg{color:var(--success);width:18px;height:18px}
+
+    /* ═══ DARK MODE FIXES ═══ */
+    body.dark-mode .sidebar{background:var(--bg-surface);border-color:var(--border)}
+    body.dark-mode .kpi-card,body.dark-mode .panel,body.dark-mode .data-table-wrap,body.dark-mode .settings-group,body.dark-mode .auth-card,body.dark-mode .modal-card{background:var(--bg-surface);border-color:var(--border)}
+    body.dark-mode .data-table-search input,body.dark-mode .form-field input,body.dark-mode .form-field select,body.dark-mode .form-field textarea{background:var(--bg-elevated);border-color:var(--border)}
+    body.dark-mode .toast{background:var(--bg-surface);border-color:var(--border)}
+    body.dark-mode .btn-secondary{background:var(--bg-elevated);border-color:var(--border)}
+
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(45,31,18,.45);backdrop-filter:blur(4px);z-index:150}
+    .sidebar-overlay.active{display:block}
+
+    /* ═══ RESPONSIVE ═══ */
+    @media(max-width:1100px){.dash-grid{grid-template-columns:1fr}}
+    @media(max-width:1024px){
+      #appScreen.active{grid-template-columns:1fr}
+      .sidebar{position:fixed;left:-280px;width:280px;z-index:200;transition:left .3s}
+      .sidebar.open{left:0;box-shadow:var(--shadow-lg)}
+      .hamburger-btn{display:grid;place-items:center}
+      .view{padding:1.5rem 1.25rem}
+      .view-title{font-size:1.7rem}
+      .form-row{grid-template-columns:1fr}
+    }
+    @media(max-width:640px){.kpis-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════ AUTH ═══════════════════ -->
+  <div class="screen active" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo"><img src="img/logo.png" alt="Dermalysse"></div>
+      <div class="admin-badge">ADMINISTRADOR</div>
+      <h1 class="auth-title">Panel de Gestión</h1>
+      <p class="auth-subtitle">Administra el Club de Miembros Dermalysse.</p>
+      <div class="form-field"><label>Correo electrónico</label><input type="email" id="loginEmail" placeholder="admin@dermalysse.com"></div>
+      <div class="form-field"><label>Contraseña</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <button type="button" class="btn-primary" onclick="handleLogin()">Entrar al panel</button>
+      <div class="auth-hint"><strong>Demo:</strong> Ingresa cualquier correo y contraseña de 4+ caracteres.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ APP ═══════════════════ -->
+  <div class="screen" id="appScreen">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-admin-badge">ADMINISTRADOR</div>
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-dot"><img src="img/logo.png" alt="Dermalysse"></div>
+          <div class="sidebar-logo-text">DERMALYSSE</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">GENERAL</div>
+        <a class="nav-item active" data-view="dashboard" onclick="goTo('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">CONTENIDO</div>
+        <a class="nav-item" data-view="cursos" onclick="goTo('cursos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/></svg> Cursos</a>
+        <a class="nav-item" data-view="webinars" onclick="goTo('webinars')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg> Webinars</a>
+        <a class="nav-item" data-view="pdfs" onclick="goTo('pdfs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Material PDF</a>
+        <a class="nav-item" data-view="noticias" onclick="goTo('noticias')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg> Noticias</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">GESTIÓN</div>
+        <a class="nav-item" data-view="miembros" onclick="goTo('miembros')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Miembros</a>
+        <a class="nav-item" data-view="config" onclick="goTo('config')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Configuración</a>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar">AD</div>
+          <div>
+            <div class="user-name">Administrador</div>
+            <div class="user-role">Acceso total</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="topbar">
+        <button class="hamburger-btn" onclick="openSidebar()" style="padding:.5rem;border-radius:var(--radius-sm);color:var(--text-secondary);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div style="flex:1;"></div>
+        <button class="btn-secondary" onclick="toggleDarkMode()" style="padding:.5rem .85rem;font-size:.82rem;display:inline-flex;align-items:center;gap:.4rem;">
+          <svg id="darkIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span id="darkLabel">Oscuro</span>
+        </button>
+      </header>
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <section class="view active" id="view-dashboard">
+        <div class="view-header"><div><h1 class="view-title">Dashboard</h1><p class="view-subtitle">Resumen general del Club de Miembros.</p></div></div>
+        <div class="kpis-grid" id="kpisGrid"></div>
+        <div class="dash-grid">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Inscripciones mensuales</div></div>
+            <div class="chart-wrap" id="chartBars"></div>
+            <div class="chart-labels" id="chartLabels"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Actividad reciente</div></div>
+            <div class="activity-list" id="activityList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ CURSOS ═══ -->
+      <section class="view" id="view-cursos">
+        <div class="view-header">
+          <div><h1 class="view-title">Cursos</h1><p class="view-subtitle">Gestiona los cursos grabados del club.</p></div>
+          <button class="btn-add" onclick="openModal('cursoModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo curso</button>
+        </div>
+        <div class="data-table-wrap"><div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar curso..." oninput="renderCursos(this.value)"></div></div><table class="data-table"><thead><tr><th>Curso</th><th>Categoría</th><th>Nivel</th><th>Clases</th><th>Drive</th><th>Temario</th><th>Estado</th><th></th></tr></thead><tbody id="cursosBody"></tbody></table></div>
+      </section>
+
+      <!-- ═══ WEBINARS ═══ -->
+      <section class="view" id="view-webinars">
+        <div class="view-header">
+          <div><h1 class="view-title">Webinars</h1><p class="view-subtitle">Programa y gestiona webinars en vivo.</p></div>
+          <button class="btn-add" onclick="openModal('webinarModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo webinar</button>
+        </div>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Webinar</th><th>Fecha</th><th>Ponente</th><th>CV</th><th>En vivo</th><th>Grabación</th><th>Estado</th><th></th></tr></thead><tbody id="webinarsBody"></tbody></table></div>
+      </section>
+
+      <!-- ═══ PDFS ═══ -->
+      <section class="view" id="view-pdfs">
+        <div class="view-header">
+          <div><h1 class="view-title">Material PDF</h1><p class="view-subtitle">Administra guías y material descargable.</p></div>
+          <button class="btn-add" onclick="openModal('pdfModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo PDF</button>
+        </div>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Material</th><th>Categoría</th><th>Páginas</th><th>Drive</th><th>Portada</th><th>Descargas</th><th></th></tr></thead><tbody id="pdfsBody"></tbody></table></div>
+      </section>
+
+      <!-- ═══ NOTICIAS ═══ -->
+      <section class="view" id="view-noticias">
+        <div class="view-header">
+          <div><h1 class="view-title">Noticias</h1><p class="view-subtitle">Publica noticias y actualizaciones.</p></div>
+          <button class="btn-add" onclick="openModal('noticiaModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nueva noticia</button>
+        </div>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Noticia</th><th>Categoría</th><th>Autor</th><th>Imagen</th><th>Estado</th><th></th></tr></thead><tbody id="noticiasBody"></tbody></table></div>
+      </section>
+
+      <!-- ═══ MIEMBROS ═══ -->
+      <section class="view" id="view-miembros">
+        <div class="view-header">
+          <div><h1 class="view-title">Miembros</h1><p class="view-subtitle">Administra los miembros del club.</p></div>
+        </div>
+        <div class="data-table-wrap"><div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar miembro..." oninput="renderMiembros(this.value)"></div></div><table class="data-table"><thead><tr><th>Miembro</th><th>Plan</th><th>Estado</th><th>Desde</th><th>Cursos</th><th></th></tr></thead><tbody id="miembrosBody"></tbody></table></div>
+      </section>
+
+      <!-- ═══ CONFIG ═══ -->
+      <section class="view" id="view-config">
+        <div class="view-header"><div><h1 class="view-title">Configuración</h1><p class="view-subtitle">Ajustes del panel de administración.</p></div></div>
+        <div class="settings-group">
+          <h3 style="font-weight:700;margin-bottom:1rem;">Notificaciones</h3>
+          <div class="settings-row"><div class="settings-info"><h4>Nuevo miembro registrado</h4><p>Recibir alerta por cada nuevo registro</p></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-row"><div class="settings-info"><h4>Soporte recibido</h4><p>Alerta cuando un miembro contacte soporte</p></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-row"><div class="settings-info"><h4>Reporte semanal</h4><p>Resumen automático cada lunes</p></div><div class="toggle" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="settings-group">
+          <h3 style="font-weight:700;margin-bottom:1rem;">Plataforma</h3>
+          <div class="settings-row"><div class="settings-info"><h4>Modo mantenimiento</h4><p>Desactiva acceso al club temporalmente</p></div><div class="toggle" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-row"><div class="settings-info"><h4>Registro abierto</h4><p>Permitir nuevos registros de miembros</p></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+      </section>
+
+    </main>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-backdrop" id="cursoModal" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModals()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div class="modal-title">Nuevo curso</div>
+      <div class="modal-subtitle">Completa la información del curso.</div>
+      <div class="form-field"><label>Nombre del curso</label><input id="mCursoName" placeholder="Ej: Fundamentos de Dermatología"></div>
+      <div class="form-row"><div class="form-field"><label>Categoría</label><select id="mCursoCat"><option>Dermatología</option><option>Estética</option><option>Cosmetología</option></select></div><div class="form-field"><label>Nivel</label><select id="mCursoLevel"><option>Básico</option><option>Intermedio</option><option>Avanzado</option></select></div></div>
+      <div class="form-row"><div class="form-field"><label>Instructor</label><input id="mCursoInst" placeholder="Dr. Nombre"></div><div class="form-field"><label>Clases</label><input id="mCursoLessons" type="number" placeholder="10"></div></div>
+      <div class="form-field"><label>📁 Carpeta de Google Drive (videos del curso)</label><input id="mCursoDrive" placeholder="https://drive.google.com/drive/folders/..." class="drive-input"></div>
+      <div class="form-field"><label>📋 Temario del curso (Google Drive)</label><input id="mCursoTemario" placeholder="https://drive.google.com/file/d/..." class="drive-input" style="border-left-color:#34a853 !important;"></div>
+      <div class="form-field"><label>🖼️ Imagen de portada (Google Drive)</label><input id="mCursoImg" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
+      <div class="modal-footer"><button class="btn-secondary" onclick="closeModals()">Cancelar</button><button class="btn-add" onclick="addCurso()">Crear curso</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="webinarModal" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModals()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div class="modal-title">Nuevo webinar</div>
+      <div class="modal-subtitle">Programa un webinar en vivo.</div>
+      <div class="form-field"><label>Título</label><input id="mWebTitle" placeholder="Ej: Peelings químicos avanzados"></div>
+      <div class="form-row"><div class="form-field"><label>Fecha y hora</label><input id="mWebDate" type="datetime-local"></div><div class="form-field"><label>Duración</label><input id="mWebDur" placeholder="60 min"></div></div>
+      <div class="form-field"><label>Ponente</label><input id="mWebSpeaker" placeholder="Dr. Nombre"></div>
+      <div class="form-field"><label>📄 CV del ponente (Google Drive)</label><input id="mWebCV" placeholder="https://drive.google.com/file/d/..." class="drive-input" style="border-left-color:#34a853 !important;"></div>
+      <div class="form-field"><label>🔗 Link para unirse al webinar en vivo (Zoom, Meet, Teams, etc.)</label><input id="mWebLive" placeholder="https://zoom.us/j/..." class="drive-input" style="border-left-color:#2e5f7a !important;"></div>
+      <div class="form-field"><label>📁 Grabación en Google Drive (subir después del webinar)</label><input id="mWebDrive" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
+      <div class="form-field"><label>🖼️ Imagen de portada (Google Drive)</label><input id="mWebImg" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
+      <div class="modal-footer"><button class="btn-secondary" onclick="closeModals()">Cancelar</button><button class="btn-add" onclick="addWebinar()">Programar</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="pdfModal" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModals()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div class="modal-title">Nuevo PDF</div>
+      <div class="modal-subtitle">Sube material descargable.</div>
+      <div class="form-field"><label>Nombre</label><input id="mPdfName" placeholder="Ej: Guía de protocolos"></div>
+      <div class="form-row"><div class="form-field"><label>Categoría</label><select id="mPdfCat"><option>Guía</option><option>Manual</option><option>Ficha técnica</option><option>Protocolo</option><option>Workbook</option></select></div><div class="form-field"><label>Páginas</label><input id="mPdfPages" type="number" placeholder="32"></div></div>
+      <div class="form-field"><label>📄 Archivo PDF en Google Drive</label><input id="mPdfDrive" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
+      <div class="form-field"><label>🖼️ Imagen de portada (Google Drive)</label><input id="mPdfImg" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
+      <div class="modal-footer"><button class="btn-secondary" onclick="closeModals()">Cancelar</button><button class="btn-add" onclick="addPdf()">Publicar</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="noticiaModal" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModals()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div class="modal-title">Nueva noticia</div>
+      <div class="modal-subtitle">Publica una actualización.</div>
+      <div class="form-field"><label>Título</label><input id="mNewsTitle" placeholder="Ej: Lanzamos certificación premium"></div>
+      <div class="form-row"><div class="form-field"><label>Categoría</label><select id="mNewsCat"><option>Novedad</option><option>Tendencia</option><option>Curso</option><option>Artículo</option></select></div><div class="form-field"><label>Autor</label><input id="mNewsAuthor" placeholder="Equipo Dermalysse"></div></div>
+      <div class="form-field"><label>Contenido</label><textarea id="mNewsContent" rows="3" placeholder="Descripción de la noticia..."></textarea></div>
+      <div class="form-field"><label>🖼️ Imagen de la noticia (Google Drive)</label><input id="mNewsDrive" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
+      <div class="modal-footer"><button class="btn-secondary" onclick="closeModals()">Cancelar</button><button class="btn-add" onclick="addNoticia()">Publicar</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span id="toastText">Guardado</span></div>
+
+<script>
+  // ═══ SAFE STORAGE ═══
+  const mem={};
+  function sGet(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}}
+  function sSet(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}
+
+  // ═══ MOCK DATA ═══
+  let COURSES=[
+    {id:'c-01',name:'Fundamentos de Dermatología Estética',cat:'Dermatología',level:'Intermedio',lessons:10,students:42,status:'published',instructor:'Dr. Miguel Castro',date:'2026-03-14',drive:'https://drive.google.com/drive/folders/ejemplo1',temario:'https://drive.google.com/file/d/temario1',img:''},
+    {id:'c-02',name:'Hidrafacial Avanzado',cat:'Estética',level:'Avanzado',lessons:8,students:28,status:'published',instructor:'Dra. Ana Valdés',date:'2026-04-01',drive:'https://drive.google.com/drive/folders/ejemplo2',temario:'',img:''},
+    {id:'c-03',name:'Cosmética Natural',cat:'Cosmetología',level:'Básico',lessons:6,students:15,status:'draft',instructor:'Dra. Laura Ríos',date:'2026-04-20',drive:'',temario:'',img:''}
+  ];
+
+  let WEBINARS=[
+    {id:'w-01',title:'Peelings químicos: del ácido glicólico al TCA',date:'2026-11-22T19:00',duration:'60 min',speaker:'Dr. Miguel Castro',registered:87,status:'scheduled',cv:'https://drive.google.com/file/d/cv-castro',live:'https://zoom.us/j/ejemplo123',drive:'',img:''},
+    {id:'w-02',title:'Rutinas anti-envejecimiento',date:'2026-11-29T19:00',duration:'75 min',speaker:'Dra. Patricia Ruiz',registered:54,status:'scheduled',cv:'',live:'',drive:'',img:''}
+  ];
+
+  let PDFS=[
+    {id:'p-01',name:'Guía · Protocolos de limpieza facial',cat:'Guía',pages:32,downloads:124,date:'2026-03-05',drive:'https://drive.google.com/file/d/ejemplo-pdf1',img:''},
+    {id:'p-02',name:'Manual · Tipos de piel y diagnóstico',cat:'Manual',pages:18,downloads:89,date:'2026-03-20',drive:'https://drive.google.com/file/d/ejemplo-pdf2',img:'https://drive.google.com/file/d/portada-manual'},
+    {id:'p-03',name:'Fichas técnicas · Activos 2026',cat:'Ficha técnica',pages:45,downloads:67,date:'2026-04-10',drive:'',img:''}
+  ];
+
+  let NEWS=[
+    {id:'n-01',title:'Lanzamos la certificación premium',cat:'Novedad',author:'Equipo Dermalysse',views:356,status:'published',date:'2026-04-12',drive:''},
+    {id:'n-02',title:'Ácido polyglutámico vs hialurónico',cat:'Tendencia',author:'Dra. Ana Valdés',views:198,status:'published',date:'2026-04-08',drive:''}
+  ];
+
+  let MEMBERS=[
+    {id:'m-01',name:'Alex Morales',email:'alex@correo.com',plan:'Premium',status:'active',joined:'2025-11-02',courses:3},
+    {id:'m-02',name:'Daniela Ríos',email:'daniela@correo.com',plan:'Premium',status:'active',joined:'2026-01-18',courses:5},
+    {id:'m-03',name:'Carlos Méndez',email:'carlos@correo.com',plan:'Básico',status:'paused',joined:'2025-09-22',courses:1},
+    {id:'m-04',name:'Laura Valdés',email:'laura@correo.com',plan:'Premium',status:'active',joined:'2026-02-14',courses:7},
+    {id:'m-05',name:'Roberto Silva',email:'roberto@correo.com',plan:'Básico',status:'active',joined:'2026-03-01',courses:0}
+  ];
+
+  const ACTIVITY=[
+    {text:'<strong>Alex Morales</strong> completó el curso "Fundamentos de Dermatología"',time:'Hace 2 horas',color:'blue'},
+    {text:'<strong>Daniela Ríos</strong> se inscribió al webinar "Peelings químicos"',time:'Hace 5 horas',color:'green'},
+    {text:'Nuevo miembro: <strong>Roberto Silva</strong>',time:'Hace 1 día',color:'green'},
+    {text:'PDF "Fichas técnicas 2026" descargado <strong>67 veces</strong>',time:'Hace 2 días',color:'orange'},
+    {text:'<strong>Carlos Méndez</strong> pausó su suscripción',time:'Hace 3 días',color:'orange'}
+  ];
+
+  const CHART_DATA=[
+    {label:'Oct',value:12},{label:'Nov',value:18},{label:'Dic',value:24},{label:'Ene',value:31},
+    {label:'Feb',value:28},{label:'Mar',value:35},{label:'Abr',value:42}
+  ];
+
+  // ═══ AUTH ═══
+  function handleLogin(){
+    const email=document.getElementById('loginEmail').value.trim();
+    const pw=document.getElementById('loginPassword').value;
+    if(!email||pw.length<4){
+      if(!email)document.getElementById('loginEmail').style.borderColor='#e11d48';
+      if(pw.length<4)document.getElementById('loginPassword').style.borderColor='#e11d48';
+      return;
+    }
+    sSet('dermalysse_admin_session',JSON.stringify({email,loggedAt:Date.now()}));
+    enterApp();
+  }
+
+  function enterApp(){
+    document.getElementById('authScreen').classList.remove('active');
+    document.getElementById('appScreen').classList.add('active');
+    renderDashboard();
+    renderCursos();
+    renderWebinars();
+    renderPdfs();
+    renderNoticias();
+    renderMiembros();
+    loadDarkMode();
+  }
+
+  function logout(){
+    try{localStorage.removeItem('dermalysse_admin_session')}catch(e){}
+    location.reload();
+  }
+
+  // Auto-login
+  (function(){try{const s=JSON.parse(sGet('dermalysse_admin_session'));if(s&&s.email)enterApp()}catch(e){}})();
+
+  // ═══ NAV ═══
+  function goTo(view){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+view));
+    window.scrollTo({top:0,behavior:'instant'});
+    closeSidebar();
+  }
+  function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active')}
+  function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active')}
+
+  // ═══ DASHBOARD ═══
+  function renderDashboard(){
+    const totalMembers=MEMBERS.length;
+    const activeMembers=MEMBERS.filter(m=>m.status==='active').length;
+    const totalCourses=COURSES.filter(c=>c.status==='published').length;
+    const totalWebinars=WEBINARS.length;
+
+    document.getElementById('kpisGrid').innerHTML=[
+      {label:'Miembros activos',value:activeMembers,delta:'+12%',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
+      {label:'Cursos publicados',value:totalCourses,delta:'+2',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/></svg>'},
+      {label:'Webinars programados',value:totalWebinars,delta:'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'},
+      {label:'Ingresos del mes',value:'$18,450',delta:'+8%',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'}
+    ].map(k=>`
+      <div class="kpi-card">
+        <div class="kpi-head"><div class="kpi-label">${k.label}</div><div class="kpi-icon">${k.icon}</div></div>
+        <div class="kpi-value">${k.value}</div>
+        ${k.delta?`<div class="kpi-foot"><span class="kpi-delta ${k.up?'up':'down'}">${k.delta}</span> vs mes anterior</div>`:''}
+      </div>
+    `).join('');
+
+    // Chart
+    const maxVal=Math.max(...CHART_DATA.map(d=>d.value));
+    document.getElementById('chartBars').innerHTML=CHART_DATA.map(d=>`<div class="chart-bar" style="height:${(d.value/maxVal)*100}%;" data-value="${d.value}"></div>`).join('');
+    document.getElementById('chartLabels').innerHTML=CHART_DATA.map(d=>`<span>${d.label}</span>`).join('');
+
+    // Activity
+    document.getElementById('activityList').innerHTML=ACTIVITY.map(a=>`
+      <div class="activity-item"><div class="activity-dot ${a.color}"></div><div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div></div>
+    `).join('');
+  }
+
+  // ═══ CRUD HELPERS ═══
+  const editSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  const deleteSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+
+  function actionBtns(editFn,deleteFn){
+    return `<div class="action-btns"><button class="action-btn" onclick="${editFn}">${editSvg}</button><button class="action-btn danger" onclick="${deleteFn}">${deleteSvg}</button></div>`;
+  }
+
+  function statusBadge(s){
+    const map={published:['Publicado','success'],draft:['Borrador','neutral'],scheduled:['Programado','info'],active:['Activo','success'],paused:['Pausado','warn'],cancelled:['Cancelado','danger']};
+    const[label,cls]=map[s]||['—','neutral'];
+    return `<span class="badge ${cls}">${label}</span>`;
+  }
+
+  const driveSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+  function driveLink(url){
+    if(!url) return '<span class="no-drive">Sin enlace</span>';
+    return `<a class="drive-link" href="${url}" target="_blank" onclick="event.stopPropagation()">${driveSvg} Abrir</a>`;
+  }
+  function liveLink(url){
+    if(!url) return '<span class="no-drive">Sin link</span>';
+    return `<a class="drive-link" href="${url}" target="_blank" onclick="event.stopPropagation()" style="background:rgba(46,95,122,.10);color:var(--azul-dark);">🔗 Unirse</a>`;
+  }
+  function docLink(url, label){
+    if(!url) return '<span class="no-drive">Sin enlace</span>';
+    return `<a class="drive-link" href="${url}" target="_blank" onclick="event.stopPropagation()" style="background:rgba(52,168,83,.08);color:#34a853;">${driveSvg} ${label||'Ver'}</a>`;
+  }
+
+  // ═══ CURSOS ═══
+  function renderCursos(search){
+    const list=search?COURSES.filter(c=>c.name.toLowerCase().includes(search.toLowerCase())):COURSES;
+    document.getElementById('cursosBody').innerHTML=list.map(c=>`
+      <tr><td style="font-weight:600;">${c.name}</td><td>${c.cat}</td><td>${c.level}</td><td>${c.lessons}</td><td>${driveLink(c.drive)}</td><td>${docLink(c.temario,'Temario')}</td><td>${statusBadge(c.status)}</td><td>${actionBtns("showToast('Editar: "+c.name+"')","deleteCurso('"+c.id+"')")}</td></tr>
+    `).join('')||'<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin cursos. Crea el primero.</td></tr>';
+  }
+  function addCurso(){
+    const name=document.getElementById('mCursoName').value.trim();
+    if(!name){showToast('Ingresa nombre del curso');return}
+    const drive=document.getElementById('mCursoDrive').value.trim();
+    const temario=document.getElementById('mCursoTemario').value.trim();
+    const img=document.getElementById('mCursoImg').value.trim();
+    COURSES.push({id:'c-'+Date.now(),name,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,lessons:parseInt(document.getElementById('mCursoLessons').value)||0,students:0,status:'draft',instructor:document.getElementById('mCursoInst').value,date:new Date().toISOString().split('T')[0],drive,temario,img});
+    renderCursos();renderDashboard();closeModals();showToast('Curso creado: '+name);
+  }
+  function deleteCurso(id){COURSES=COURSES.filter(c=>c.id!==id);renderCursos();renderDashboard();showToast('Curso eliminado')}
+
+  // ═══ WEBINARS ═══
+  function renderWebinars(){
+    document.getElementById('webinarsBody').innerHTML=WEBINARS.map(w=>`
+      <tr><td style="font-weight:600;">${w.title}</td><td>${new Date(w.date).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})} ${new Date(w.date).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}</td><td>${w.speaker}</td><td>${docLink(w.cv,'CV')}</td><td>${liveLink(w.live)}</td><td>${driveLink(w.drive)}</td><td>${statusBadge(w.status)}</td><td>${actionBtns("showToast('Editar webinar')","deleteWebinar('"+w.id+"')")}</td></tr>
+    `).join('')||'<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin webinars programados.</td></tr>';
+  }
+  function addWebinar(){
+    const title=document.getElementById('mWebTitle').value.trim();
+    if(!title){showToast('Ingresa título');return}
+    const cv=document.getElementById('mWebCV').value.trim();
+    const live=document.getElementById('mWebLive').value.trim();
+    const drive=document.getElementById('mWebDrive').value.trim();
+    const img=document.getElementById('mWebImg').value.trim();
+    WEBINARS.push({id:'w-'+Date.now(),title,date:document.getElementById('mWebDate').value,duration:document.getElementById('mWebDur').value||'60 min',speaker:document.getElementById('mWebSpeaker').value,registered:0,status:'scheduled',cv,live,drive,img});
+    renderWebinars();renderDashboard();closeModals();showToast('Webinar programado: '+title);
+  }
+  function deleteWebinar(id){WEBINARS=WEBINARS.filter(w=>w.id!==id);renderWebinars();renderDashboard();showToast('Webinar eliminado')}
+
+  // ═══ PDFS ═══
+  function renderPdfs(){
+    document.getElementById('pdfsBody').innerHTML=PDFS.map(p=>`
+      <tr><td style="font-weight:600;">${p.name}</td><td>${p.cat}</td><td>${p.pages}</td><td>${driveLink(p.drive)}</td><td>${docLink(p.img,'Portada')}</td><td>${p.downloads}</td><td>${actionBtns("showToast('Editar PDF')","deletePdf('"+p.id+"')")}</td></tr>
+    `).join('')||'<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin material. Sube el primero.</td></tr>';
+  }
+  function addPdf(){
+    const name=document.getElementById('mPdfName').value.trim();
+    if(!name){showToast('Ingresa nombre');return}
+    const drive=document.getElementById('mPdfDrive').value.trim();
+    const img=document.getElementById('mPdfImg').value.trim();
+    PDFS.push({id:'p-'+Date.now(),name,cat:document.getElementById('mPdfCat').value,pages:parseInt(document.getElementById('mPdfPages').value)||0,downloads:0,date:new Date().toISOString().split('T')[0],drive,img});
+    renderPdfs();closeModals();showToast('PDF publicado: '+name);
+  }
+  function deletePdf(id){PDFS=PDFS.filter(p=>p.id!==id);renderPdfs();showToast('PDF eliminado')}
+
+  // ═══ NOTICIAS ═══
+  function renderNoticias(){
+    document.getElementById('noticiasBody').innerHTML=NEWS.map(n=>`
+      <tr><td style="font-weight:600;">${n.title}</td><td>${n.cat}</td><td>${n.author}</td><td>${docLink(n.drive,'Portada')}</td><td>${statusBadge(n.status)}</td><td>${actionBtns("showToast('Editar noticia')","deleteNoticia('"+n.id+"')")}</td></tr>
+    `).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin noticias publicadas.</td></tr>';
+  }
+  function addNoticia(){
+    const title=document.getElementById('mNewsTitle').value.trim();
+    if(!title){showToast('Ingresa título');return}
+    const drive=document.getElementById('mNewsDrive').value.trim();
+    NEWS.push({id:'n-'+Date.now(),title,cat:document.getElementById('mNewsCat').value,author:document.getElementById('mNewsAuthor').value||'Admin',views:0,status:'published',date:new Date().toISOString().split('T')[0],drive});
+    renderNoticias();closeModals();showToast('Noticia publicada: '+title);
+  }
+  function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);renderNoticias();showToast('Noticia eliminada')}
+
+  // ═══ MIEMBROS ═══
+  function renderMiembros(search){
+    const list=search?MEMBERS.filter(m=>m.name.toLowerCase().includes(search.toLowerCase())||m.email.toLowerCase().includes(search.toLowerCase())):MEMBERS;
+    document.getElementById('miembrosBody').innerHTML=list.map(m=>`
+      <tr><td><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></td><td><span class="badge ${m.plan==='Premium'?'info':'neutral'}">${m.plan}</span></td><td>${statusBadge(m.status)}</td><td>${new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'})}</td><td>${m.courses}</td><td>${actionBtns("showToast('Ver perfil de "+m.name+"')","deleteMember('"+m.id+"')")}</td></tr>
+    `).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin miembros registrados.</td></tr>';
+  }
+  function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);renderMiembros();renderDashboard();showToast('Miembro eliminado')}
+
+  // ═══ MODALS ═══
+  function openModal(id){document.getElementById(id).classList.add('active');document.body.style.overflow='hidden'}
+  function closeModals(){document.querySelectorAll('.modal-backdrop').forEach(m=>m.classList.remove('active'));document.body.style.overflow=''}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
+
+  // ═══ DARK MODE ═══
+  function toggleDarkMode(){
+    document.body.classList.toggle('dark-mode');
+    const isDark=document.body.classList.contains('dark-mode');
+    sSet('dermalysse_admin_dark',isDark?'1':'0');
+    document.getElementById('darkLabel').textContent=isDark?'Claro':'Oscuro';
+    document.getElementById('darkIcon').innerHTML=isDark?'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    showToast(isDark?'Modo oscuro':'Modo claro');
+  }
+  function loadDarkMode(){
+    if(sGet('dermalysse_admin_dark')==='1'){
+      document.body.classList.add('dark-mode');
+      document.getElementById('darkLabel').textContent='Claro';
+      document.getElementById('darkIcon').innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    }
+  }
+
+  // ═══ TOAST ═══
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    document.getElementById('toastText').textContent=msg;
+    t.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt=setTimeout(()=>t.classList.remove('show'),2400);
+  }
+</script>
+</body>
+</html>
