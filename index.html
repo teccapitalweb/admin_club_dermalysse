@@ -591,8 +591,22 @@
   function sGet(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}}
   function sSet(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}
 
-  // ═══ MOCK DATA ═══
-  let COURSES=[
+  // ═══ SYNC KEYS (compartidos entre Admin y Club) ═══
+  const SYNC_KEYS = {
+    courses: 'dermalysse_sync_courses',
+    webinars: 'dermalysse_sync_webinars',
+    pdfs: 'dermalysse_sync_pdfs',
+    news: 'dermalysse_sync_news',
+    notifs: 'dermalysse_sync_notifs',
+    members: 'dermalysse_sync_members',
+    config: 'dermalysse_sync_config'
+  };
+
+  function syncSave(key, data) { sSet(key, JSON.stringify(data)); }
+  function syncLoad(key) { try { const d = sGet(key); return d ? JSON.parse(d) : null; } catch(e) { return null; } }
+
+  // ═══ MOCK DATA (defaults si no hay datos en localStorage) ═══
+  const DEFAULT_COURSES=[
     {id:'c-01',name:'Fundamentos de Dermatología Estética',cat:'Dermatología',level:'Intermedio',status:'published',instructor:'Dr. Miguel Castro',date:'2026-03-14',temario:'https://drive.google.com/file/d/temario1',img:'https://drive.google.com/file/d/portada1',lessons:[
       {name:'Introducción a la dermatología estética',desc:'Historia, evolución y alcance actual de la especialidad.',dur:'45 min',drive:'https://drive.google.com/file/d/clase1'},
       {name:'Anatomía de la piel',desc:'Capas de la piel, funciones y estructuras anexas.',dur:'52 min',drive:'https://drive.google.com/file/d/clase2'},
@@ -609,29 +623,41 @@
     {id:'c-03',name:'Cosmética Natural',cat:'Cosmetología',level:'Básico',status:'draft',instructor:'Dra. Laura Ríos',date:'2026-04-20',temario:'',img:'',lessons:[]}
   ];
 
-  let WEBINARS=[
+  let COURSES = syncLoad(SYNC_KEYS.courses) || DEFAULT_COURSES;
+
+  function saveCourses() { syncSave(SYNC_KEYS.courses, COURSES); }
+
+  const DEFAULT_WEBINARS=[
     {id:'w-01',title:'Peelings químicos: del ácido glicólico al TCA',date:'2026-11-22T19:00',duration:'60 min',speaker:'Dr. Miguel Castro',registered:87,status:'scheduled',cv:'https://drive.google.com/file/d/cv-castro',live:'https://zoom.us/j/ejemplo123',drive:'',img:''},
     {id:'w-02',title:'Rutinas anti-envejecimiento',date:'2026-11-29T19:00',duration:'75 min',speaker:'Dra. Patricia Ruiz',registered:54,status:'scheduled',cv:'',live:'',drive:'',img:''}
   ];
+  let WEBINARS = syncLoad(SYNC_KEYS.webinars) || DEFAULT_WEBINARS;
+  function saveWebinars() { syncSave(SYNC_KEYS.webinars, WEBINARS); }
 
-  let PDFS=[
+  const DEFAULT_PDFS=[
     {id:'p-01',name:'Guía · Protocolos de limpieza facial',cat:'Guía',pages:32,downloads:124,date:'2026-03-05',drive:'https://drive.google.com/file/d/ejemplo-pdf1',img:''},
     {id:'p-02',name:'Manual · Tipos de piel y diagnóstico',cat:'Manual',pages:18,downloads:89,date:'2026-03-20',drive:'https://drive.google.com/file/d/ejemplo-pdf2',img:'https://drive.google.com/file/d/portada-manual'},
     {id:'p-03',name:'Fichas técnicas · Activos 2026',cat:'Ficha técnica',pages:45,downloads:67,date:'2026-04-10',drive:'',img:''}
   ];
+  let PDFS = syncLoad(SYNC_KEYS.pdfs) || DEFAULT_PDFS;
+  function savePdfs() { syncSave(SYNC_KEYS.pdfs, PDFS); }
 
-  let NEWS=[
+  const DEFAULT_NEWS=[
     {id:'n-01',title:'Lanzamos la certificación premium',cat:'Novedad',author:'Equipo Dermalysse',views:356,status:'published',date:'2026-04-12',drive:''},
     {id:'n-02',title:'Ácido polyglutámico vs hialurónico',cat:'Tendencia',author:'Dra. Ana Valdés',views:198,status:'published',date:'2026-04-08',drive:''}
   ];
+  let NEWS = syncLoad(SYNC_KEYS.news) || DEFAULT_NEWS;
+  function saveNews() { syncSave(SYNC_KEYS.news, NEWS); }
 
-  let MEMBERS=[
+  const DEFAULT_MEMBERS=[
     {id:'m-01',name:'Alex Morales',email:'alex@correo.com',plan:'Premium',status:'active',joined:'2025-11-02',courses:3},
     {id:'m-02',name:'Daniela Ríos',email:'daniela@correo.com',plan:'Premium',status:'active',joined:'2026-01-18',courses:5},
     {id:'m-03',name:'Carlos Méndez',email:'carlos@correo.com',plan:'Básico',status:'paused',joined:'2025-09-22',courses:1},
     {id:'m-04',name:'Laura Valdés',email:'laura@correo.com',plan:'Premium',status:'active',joined:'2026-02-14',courses:7},
     {id:'m-05',name:'Roberto Silva',email:'roberto@correo.com',plan:'Básico',status:'active',joined:'2026-03-01',courses:0}
   ];
+  let MEMBERS = syncLoad(SYNC_KEYS.members) || DEFAULT_MEMBERS;
+  function saveMembers() { syncSave(SYNC_KEYS.members, MEMBERS); }
 
   const ACTIVITY=[
     {text:'<strong>Alex Morales</strong> completó el curso "Fundamentos de Dermatología"',time:'Hace 2 horas',color:'blue'},
@@ -867,12 +893,13 @@
     const temario=document.getElementById('mCursoTemario').value.trim();
     const img=document.getElementById('mCursoImg').value.trim();
     COURSES.push({id:'c-'+Date.now(),name,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:'draft',instructor:document.getElementById('mCursoInst').value,date:new Date().toISOString().split('T')[0],temario,img,lessons});
+    saveCourses();
     renderCursos();renderDashboard();closeModals();
     document.getElementById('mClasesList').innerHTML='';
     _claseCounter=0;updateClaseCount();
     showToast('Curso creado con '+lessons.length+' clases: '+name);
   }
-  function deleteCurso(id){COURSES=COURSES.filter(c=>c.id!==id);renderCursos();renderDashboard();showToast('Curso eliminado')}
+  function deleteCurso(id){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCursos();renderDashboard();showToast('Curso eliminado')}
 
   // ═══ WEBINARS ═══
   function renderWebinars(){
@@ -888,9 +915,9 @@
     const drive=document.getElementById('mWebDrive').value.trim();
     const img=document.getElementById('mWebImg').value.trim();
     WEBINARS.push({id:'w-'+Date.now(),title,date:document.getElementById('mWebDate').value,duration:document.getElementById('mWebDur').value||'60 min',speaker:document.getElementById('mWebSpeaker').value,registered:0,status:'scheduled',cv,live,drive,img});
-    renderWebinars();renderDashboard();closeModals();showToast('Webinar programado: '+title);
+    saveWebinars();renderWebinars();renderDashboard();closeModals();showToast('Webinar programado: '+title);
   }
-  function deleteWebinar(id){WEBINARS=WEBINARS.filter(w=>w.id!==id);renderWebinars();renderDashboard();showToast('Webinar eliminado')}
+  function deleteWebinar(id){WEBINARS=WEBINARS.filter(w=>w.id!==id);saveWebinars();renderWebinars();renderDashboard();showToast('Webinar eliminado')}
 
   // ═══ PDFS ═══
   function renderPdfs(){
@@ -904,9 +931,9 @@
     const drive=document.getElementById('mPdfDrive').value.trim();
     const img=document.getElementById('mPdfImg').value.trim();
     PDFS.push({id:'p-'+Date.now(),name,cat:document.getElementById('mPdfCat').value,pages:parseInt(document.getElementById('mPdfPages').value)||0,downloads:0,date:new Date().toISOString().split('T')[0],drive,img});
-    renderPdfs();closeModals();showToast('PDF publicado: '+name);
+    savePdfs();renderPdfs();closeModals();showToast('PDF publicado: '+name);
   }
-  function deletePdf(id){PDFS=PDFS.filter(p=>p.id!==id);renderPdfs();showToast('PDF eliminado')}
+  function deletePdf(id){PDFS=PDFS.filter(p=>p.id!==id);savePdfs();renderPdfs();showToast('PDF eliminado')}
 
   // ═══ NOTICIAS ═══
   function renderNoticias(){
@@ -919,9 +946,9 @@
     if(!title){showToast('Ingresa título');return}
     const drive=document.getElementById('mNewsDrive').value.trim();
     NEWS.push({id:'n-'+Date.now(),title,cat:document.getElementById('mNewsCat').value,author:document.getElementById('mNewsAuthor').value||'Admin',views:0,status:'published',date:new Date().toISOString().split('T')[0],drive});
-    renderNoticias();closeModals();showToast('Noticia publicada: '+title);
+    saveNews();renderNoticias();closeModals();showToast('Noticia publicada: '+title);
   }
-  function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);renderNoticias();showToast('Noticia eliminada')}
+  function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);saveNews();renderNoticias();showToast('Noticia eliminada')}
 
   // ═══ MIEMBROS ═══
   function renderMiembros(search){
@@ -930,7 +957,7 @@
       <tr><td><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></td><td><span class="badge ${m.plan==='Premium'?'info':'neutral'}">${m.plan}</span></td><td>${statusBadge(m.status)}</td><td>${new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'})}</td><td>${m.courses}</td><td>${actionBtns("showToast('Ver perfil de "+m.name+"')","deleteMember('"+m.id+"')")}</td></tr>
     `).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin miembros registrados.</td></tr>';
   }
-  function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);renderMiembros();renderDashboard();showToast('Miembro eliminado')}
+  function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);saveMembers();renderMiembros();renderDashboard();showToast('Miembro eliminado')}
 
   // ═══ MODALS (optimized for speed) ═══
   const _modals=document.querySelectorAll('.modal-backdrop');
@@ -952,11 +979,13 @@
     pdf: {label:'Nuevo PDF', title:'📄 Nuevo material disponible', color:'warn'},
     promo: {label:'Promoción', title:'🏷️ Oferta especial', color:'danger'}
   };
-  let NOTIF_HISTORY = [
+  const DEFAULT_NOTIF_HISTORY = [
     {type:'curso',title:'Nuevo curso: Hidrafacial Avanzado',msg:'Ya está disponible el curso completo con 4 clases.',recipients:4,date:'2026-04-25'},
     {type:'vivo',title:'Webinar en 30 min: Peelings químicos',msg:'Únete al webinar con Dr. Miguel Castro. Link en la sección Webinars.',recipients:4,date:'2026-04-22'},
     {type:'promo',title:'20% de descuento en consultas',msg:'Usa tu cupón CLUB20DERMA en tu próxima consulta presencial.',recipients:4,date:'2026-04-18'}
   ];
+  let NOTIF_HISTORY = syncLoad(SYNC_KEYS.notifs) || DEFAULT_NOTIF_HISTORY;
+  function saveNotifs() { syncSave(SYNC_KEYS.notifs, NOTIF_HISTORY); }
 
   function openNotifModal(type){
     const config = NOTIF_TYPES[type];
@@ -977,6 +1006,7 @@
     if(!msg){showToast('Escribe el mensaje');return}
     const recipients = MEMBERS.filter(m=>m.status==='active').length;
     NOTIF_HISTORY.unshift({type,title,msg,recipients,date:new Date().toISOString().split('T')[0]});
+    saveNotifs();
     renderNotifHistory();
     closeModals();
     showToast('Notificación enviada a '+recipients+' miembros');
