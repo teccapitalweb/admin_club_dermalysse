@@ -848,7 +848,7 @@
       const claseBadge = numClases > 0
         ? `<span class="badge info" style="cursor:pointer;" onclick="viewClases('${c.id}')">${numClases} clases${durText}</span>`
         : '<span class="no-drive">Sin clases</span>';
-      return `<tr><td style="font-weight:600;">${c.name}<div style="font-size:.75rem;color:var(--text-muted);margin-top:.15rem;">${c.instructor}</div></td><td>${c.cat}</td><td>${c.level}</td><td>${claseBadge}</td><td>${docLink(c.temario,'Temario')}</td><td>${docLink(c.img,'Portada')}</td><td>${statusBadge(c.status)}</td><td>${actionBtns("showToast('Editar: "+c.name+"')","deleteCurso('"+c.id+"')")}</td></tr>`;
+      return `<tr><td style="font-weight:600;">${c.name}<div style="font-size:.75rem;color:var(--text-muted);margin-top:.15rem;">${c.instructor}</div></td><td>${c.cat}</td><td>${c.level}</td><td>${claseBadge}</td><td>${docLink(c.temario,'Temario')}</td><td>${docLink(c.img,'Portada')}</td><td>${statusBadge(c.status)}</td><td>${actionBtns("editCurso('"+c.id+"')","deleteCurso('"+c.id+"')")}</td></tr>`;
     }).join('')||'<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin cursos. Crea el primero.</td></tr>';
   }
 
@@ -894,61 +894,87 @@
     const lessons = collectClases();
     const temario=document.getElementById('mCursoTemario').value.trim();
     const img=document.getElementById('mCursoImg').value.trim();
-    COURSES.push({id:'c-'+Date.now(),name,desc,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:document.getElementById('mCursoStatus').value,instructor:document.getElementById('mCursoInst').value,date:new Date().toISOString().split('T')[0],temario,img,lessons});
-    saveCourses();
-    renderCursos();renderDashboard();closeModals();
-    document.getElementById('mClasesList').innerHTML='';
-    _claseCounter=0;updateClaseCount();
-    showToast('Curso creado con '+lessons.length+' clases: '+name);
+    const data={name,desc,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:document.getElementById('mCursoStatus').value,instructor:document.getElementById('mCursoInst').value,temario,img,lessons};
+    if(_editing.curso){
+      var idx=COURSES.findIndex(c=>c.id===_editing.curso);
+      if(idx>-1){Object.assign(COURSES[idx],data);}
+      showToast('Curso actualizado: '+name);
+    } else {
+      data.id='c-'+Date.now();data.date=new Date().toISOString().split('T')[0];
+      COURSES.push(data);
+      showToast('Curso creado con '+lessons.length+' clases: '+name);
+    }
+    saveCourses();renderCursos();renderDashboard();closeModals();
+    document.getElementById('mClasesList').innerHTML='';_claseCounter=0;updateClaseCount();
   }
   function deleteCurso(id){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCursos();renderDashboard();showToast('Curso eliminado')}
 
   // ═══ WEBINARS ═══
   function renderWebinars(){
     document.getElementById('webinarsBody').innerHTML=WEBINARS.map(w=>`
-      <tr><td style="font-weight:600;">${w.title}</td><td>${new Date(w.date).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})} ${new Date(w.date).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}</td><td>${w.speaker}</td><td>${docLink(w.cv,'CV')}</td><td>${liveLink(w.live)}</td><td>${driveLink(w.drive)}</td><td>${statusBadge(w.status)}</td><td>${actionBtns("showToast('Editar webinar')","deleteWebinar('"+w.id+"')")}</td></tr>
+      <tr><td style="font-weight:600;">${w.title}</td><td>${new Date(w.date).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})} ${new Date(w.date).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}</td><td>${w.speaker}</td><td>${docLink(w.cv,'CV')}</td><td>${liveLink(w.live)}</td><td>${driveLink(w.drive)}</td><td>${statusBadge(w.status)}</td><td>${actionBtns("editWebinar('"+w.id+"')","deleteWebinar('"+w.id+"')")}</td></tr>
     `).join('')||'<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin webinars programados.</td></tr>';
   }
   function addWebinar(){
     const title=document.getElementById('mWebTitle').value.trim();
     if(!title){showToast('Ingresa título');return}
-    const cv=document.getElementById('mWebCV').value.trim();
-    const live=document.getElementById('mWebLive').value.trim();
-    const drive=document.getElementById('mWebDrive').value.trim();
-    const img=document.getElementById('mWebImg').value.trim();
-    WEBINARS.push({id:'w-'+Date.now(),title,date:document.getElementById('mWebDate').value,duration:document.getElementById('mWebDur').value||'60 min',speaker:document.getElementById('mWebSpeaker').value,registered:0,status:'scheduled',cv,live,drive,img});
-    saveWebinars();renderWebinars();renderDashboard();closeModals();showToast('Webinar programado: '+title);
+    const data={title,date:document.getElementById('mWebDate').value,duration:document.getElementById('mWebDur').value||'60 min',speaker:document.getElementById('mWebSpeaker').value,cv:document.getElementById('mWebCV').value.trim(),live:document.getElementById('mWebLive').value.trim(),drive:document.getElementById('mWebDrive').value.trim(),img:document.getElementById('mWebImg').value.trim()};
+    if(_editing.webinar){
+      var idx=WEBINARS.findIndex(w=>w.id===_editing.webinar);
+      if(idx>-1){Object.assign(WEBINARS[idx],data);}
+      showToast('Webinar actualizado: '+title);
+    } else {
+      data.id='w-'+Date.now();data.registered=0;data.status='scheduled';
+      WEBINARS.push(data);
+      showToast('Webinar programado: '+title);
+    }
+    saveWebinars();renderWebinars();renderDashboard();closeModals();
   }
   function deleteWebinar(id){WEBINARS=WEBINARS.filter(w=>w.id!==id);saveWebinars();renderWebinars();renderDashboard();showToast('Webinar eliminado')}
 
   // ═══ PDFS ═══
   function renderPdfs(){
     document.getElementById('pdfsBody').innerHTML=PDFS.map(p=>`
-      <tr><td style="font-weight:600;">${p.name}</td><td>${p.cat}</td><td>${p.pages}</td><td>${driveLink(p.drive)}</td><td>${docLink(p.img,'Portada')}</td><td>${p.downloads}</td><td>${actionBtns("showToast('Editar PDF')","deletePdf('"+p.id+"')")}</td></tr>
+      <tr><td style="font-weight:600;">${p.name}</td><td>${p.cat}</td><td>${p.pages}</td><td>${driveLink(p.drive)}</td><td>${docLink(p.img,'Portada')}</td><td>${p.downloads}</td><td>${actionBtns("editPdf('"+p.id+"')","deletePdf('"+p.id+"')")}</td></tr>
     `).join('')||'<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin material. Sube el primero.</td></tr>';
   }
   function addPdf(){
     const name=document.getElementById('mPdfName').value.trim();
     if(!name){showToast('Ingresa nombre');return}
-    const drive=document.getElementById('mPdfDrive').value.trim();
-    const img=document.getElementById('mPdfImg').value.trim();
-    PDFS.push({id:'p-'+Date.now(),name,cat:document.getElementById('mPdfCat').value,pages:parseInt(document.getElementById('mPdfPages').value)||0,downloads:0,date:new Date().toISOString().split('T')[0],drive,img});
-    savePdfs();renderPdfs();closeModals();showToast('PDF publicado: '+name);
+    const data={name,cat:document.getElementById('mPdfCat').value,pages:parseInt(document.getElementById('mPdfPages').value)||0,drive:document.getElementById('mPdfDrive').value.trim(),img:document.getElementById('mPdfImg').value.trim()};
+    if(_editing.pdf){
+      var idx=PDFS.findIndex(p=>p.id===_editing.pdf);
+      if(idx>-1){Object.assign(PDFS[idx],data);}
+      showToast('PDF actualizado: '+name);
+    } else {
+      data.id='p-'+Date.now();data.downloads=0;data.date=new Date().toISOString().split('T')[0];
+      PDFS.push(data);
+      showToast('PDF publicado: '+name);
+    }
+    savePdfs();renderPdfs();closeModals();
   }
   function deletePdf(id){PDFS=PDFS.filter(p=>p.id!==id);savePdfs();renderPdfs();showToast('PDF eliminado')}
 
   // ═══ NOTICIAS ═══
   function renderNoticias(){
     document.getElementById('noticiasBody').innerHTML=NEWS.map(n=>`
-      <tr><td style="font-weight:600;">${n.title}</td><td>${n.cat}</td><td>${n.author}</td><td>${docLink(n.drive,'Portada')}</td><td>${statusBadge(n.status)}</td><td>${actionBtns("showToast('Editar noticia')","deleteNoticia('"+n.id+"')")}</td></tr>
+      <tr><td style="font-weight:600;">${n.title}</td><td>${n.cat}</td><td>${n.author}</td><td>${docLink(n.drive,'Portada')}</td><td>${statusBadge(n.status)}</td><td>${actionBtns("editNoticia('"+n.id+"')","deleteNoticia('"+n.id+"')")}</td></tr>
     `).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin noticias publicadas.</td></tr>';
   }
   function addNoticia(){
     const title=document.getElementById('mNewsTitle').value.trim();
     if(!title){showToast('Ingresa título');return}
-    const drive=document.getElementById('mNewsDrive').value.trim();
-    NEWS.push({id:'n-'+Date.now(),title,cat:document.getElementById('mNewsCat').value,author:document.getElementById('mNewsAuthor').value||'Admin',views:0,status:'published',date:new Date().toISOString().split('T')[0],drive});
-    saveNews();renderNoticias();closeModals();showToast('Noticia publicada: '+title);
+    const data={title,cat:document.getElementById('mNewsCat').value,author:document.getElementById('mNewsAuthor').value||'Admin',content:document.getElementById('mNewsContent').value.trim(),drive:document.getElementById('mNewsDrive').value.trim()};
+    if(_editing.noticia){
+      var idx=NEWS.findIndex(n=>n.id===_editing.noticia);
+      if(idx>-1){Object.assign(NEWS[idx],data);}
+      showToast('Noticia actualizada: '+title);
+    } else {
+      data.id='n-'+Date.now();data.views=0;data.status='published';data.date=new Date().toISOString().split('T')[0];
+      NEWS.push(data);
+      showToast('Noticia publicada: '+title);
+    }
+    saveNews();renderNoticias();closeModals();
   }
   function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);saveNews();renderNoticias();showToast('Noticia eliminada')}
 
@@ -971,8 +997,79 @@
   function closeModals(){
     _modals.forEach(m=>m.classList.remove('active'));
     document.body.style.overflow='';
+    resetEditMode();
   }
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
+
+  // ═══ EDIT MODE ═══
+  var _editing = {curso:null,webinar:null,pdf:null,noticia:null};
+
+  function editCurso(id){
+    var c=COURSES.find(x=>x.id===id);if(!c)return;
+    _editing.curso=id;
+    document.getElementById('mCursoName').value=c.name||'';
+    document.getElementById('mCursoDesc').value=c.desc||'';
+    document.getElementById('mCursoCat').value=c.cat||'Dermatología';
+    document.getElementById('mCursoLevel').value=c.level||'Básico';
+    document.getElementById('mCursoInst').value=c.instructor||'';
+    document.getElementById('mCursoStatus').value=c.status||'draft';
+    document.getElementById('mCursoTemario').value=c.temario||'';
+    document.getElementById('mCursoImg').value=c.img||'';
+    var clList=document.getElementById('mClasesList');clList.innerHTML='';_claseCounter=0;
+    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var idx=_claseCounter;document.getElementById('claseTitle_'+idx).value=l.title||'';document.getElementById('claseVideo_'+idx).value=l.video||'';})}
+    updateClaseCount();
+    document.querySelector('#cursoModal .modal-title').textContent='Editar curso';
+    document.querySelector('#cursoModal .btn-add').textContent='Guardar cambios';
+    openModal('cursoModal');
+  }
+  function editWebinar(id){
+    var w=WEBINARS.find(x=>x.id===id);if(!w)return;
+    _editing.webinar=id;
+    document.getElementById('mWebTitle').value=w.title||'';
+    document.getElementById('mWebDate').value=w.date||'';
+    document.getElementById('mWebDur').value=w.duration||'';
+    document.getElementById('mWebSpeaker').value=w.speaker||'';
+    document.getElementById('mWebCV').value=w.cv||'';
+    document.getElementById('mWebLive').value=w.live||'';
+    document.getElementById('mWebDrive').value=w.drive||'';
+    document.getElementById('mWebImg').value=w.img||'';
+    document.querySelector('#webinarModal .modal-title').textContent='Editar webinar';
+    document.querySelector('#webinarModal .btn-add').textContent='Guardar cambios';
+    openModal('webinarModal');
+  }
+  function editPdf(id){
+    var p=PDFS.find(x=>x.id===id);if(!p)return;
+    _editing.pdf=id;
+    document.getElementById('mPdfName').value=p.name||'';
+    document.getElementById('mPdfCat').value=p.cat||'Guía';
+    document.getElementById('mPdfPages').value=p.pages||'';
+    document.getElementById('mPdfDrive').value=p.drive||'';
+    document.getElementById('mPdfImg').value=p.img||'';
+    document.querySelector('#pdfModal .modal-title').textContent='Editar PDF';
+    document.querySelector('#pdfModal .btn-add').textContent='Guardar cambios';
+    openModal('pdfModal');
+  }
+  function editNoticia(id){
+    var n=NEWS.find(x=>x.id===id);if(!n)return;
+    _editing.noticia=id;
+    document.getElementById('mNewsTitle').value=n.title||'';
+    document.getElementById('mNewsCat').value=n.cat||'Novedad';
+    document.getElementById('mNewsAuthor').value=n.author||'';
+    document.getElementById('mNewsContent').value=n.content||'';
+    document.getElementById('mNewsDrive').value=n.drive||'';
+    document.querySelector('#noticiaModal .modal-title').textContent='Editar noticia';
+    document.querySelector('#noticiaModal .btn-add').textContent='Guardar cambios';
+    openModal('noticiaModal');
+  }
+  function resetEditMode(){
+    _editing={curso:null,webinar:null,pdf:null,noticia:null};
+    document.querySelectorAll('.modal-title').forEach(function(t){
+      if(t.textContent.startsWith('Editar')) t.textContent=t.textContent.replace('Editar','Nuevo');
+    });
+    document.querySelectorAll('.btn-add').forEach(function(b){
+      if(b.textContent==='Guardar cambios') b.textContent='Crear';
+    });
+  }
 
   // ═══ NOTIFICACIONES ═══
   const NOTIF_TYPES = {
