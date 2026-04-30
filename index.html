@@ -333,6 +333,7 @@
         <div class="sidebar-label">GESTIÓN</div>
         <a class="nav-item" data-view="miembros" onclick="goTo('miembros')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Miembros</a>
         <a class="nav-item" data-view="notificaciones" onclick="goTo('notificaciones')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Notificaciones</a>
+        <a class="nav-item" data-view="atlas" onclick="goTo('atlas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Atlas Visual</a>
         <a class="nav-item" data-view="config" onclick="goTo('config')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Configuración</a>
       </div>
 
@@ -490,7 +491,7 @@
 
   
     <!-- ═══ ATLAS ═══ -->
-    <section class="section" id="sec-atlas" style="display:none;">
+    <section class="view" id="view-atlas">
       <div class="section-header">
         <div><h1>Atlas Visual</h1><p class="section-subtitle">Gestiona las condiciones dermatológicas del atlas.</p></div>
         <button class="btn-primary" onclick="openAtlasForm()">+ Nueva condición</button>
@@ -712,6 +713,91 @@
 
 
   // ═══ FIRESTORE HELPERS ═══
+  // ═══ ATLAS DATA ═══
+  const DEFAULT_ATLAS=[
+    {id:'atl-01',name:'Acné vulgar',cat:'Inflamatorio',desc:'Lesiones comedónicas y/o inflamatorias causadas por obstrucción del folículo pilosebáceo.',zones:['Rostro','Espalda','Pecho'],tags:['Comedones','Pápulas','Pústulas'],images:['','','']},
+    {id:'atl-02',name:'Melasma',cat:'Pigmentario',desc:'Hiperpigmentación simétrica adquirida, frecuente en mujeres.',zones:['Pómulos','Frente'],tags:['Manchas','Hormonal','UV'],images:['','','']},
+    {id:'atl-03',name:'Rosácea',cat:'Vascular',desc:'Enrojecimiento facial persistente, telangiectasias y pápulo-pústulas.',zones:['Mejillas','Nariz'],tags:['Rojez','Telangiectasias','Flushing'],images:['','','']},
+    {id:'atl-04',name:'Dermatitis seborreica',cat:'Inflamatorio',desc:'Dermatosis eritematoescamosa en zonas seborreicas.',zones:['Cuero cabelludo','Cejas'],tags:['Descamación','Eritema','Seborrea'],images:['','','']},
+    {id:'atl-05',name:'Psoriasis en placas',cat:'Autoinmune',desc:'Placas eritematosas con escama plateada.',zones:['Codos','Rodillas'],tags:['Placas','Escama','Autoinmune'],images:['','','']},
+    {id:'atl-06',name:'Queratosis actínica',cat:'Premaligno',desc:'Lesiones escamosas por daño UV acumulado.',zones:['Rostro','Manos'],tags:['UV','Premaligno','Escamoso'],images:['','','']},
+    {id:'atl-07',name:'Vitíligo',cat:'Pigmentario',desc:'Despigmentación por destrucción autoinmune de melanocitos.',zones:['Manos','Rostro'],tags:['Despigmentación','Autoinmune'],images:['','','']},
+    {id:'atl-08',name:'Dermatitis atópica',cat:'Inflamatorio',desc:'Dermatitis pruriginosa crónica asociada a atopia.',zones:['Flexuras','Manos'],tags:['Prurito','Eccema','Xerosis'],images:['','','']},
+    {id:'atl-09',name:'Alopecia areata',cat:'Autoinmune',desc:'Pérdida de cabello no cicatricial en parches redondos.',zones:['Cuero cabelludo','Barba'],tags:['Alopecia','Autoinmune'],images:['','','']},
+    {id:'atl-10',name:'Queratosis pilaris',cat:'Estructural',desc:'Tapones córneos foliculares. Aspecto de piel de gallina.',zones:['Brazos','Muslos'],tags:['Folicular','Benigna'],images:['','','']},
+    {id:'atl-11',name:'HPI',cat:'Pigmentario',desc:'Oscurecimiento de la piel tras inflamación.',zones:['Variable'],tags:['PIH','Melanina'],images:['','','']},
+    {id:'atl-12',name:'Urticaria',cat:'Alérgico',desc:'Habones pruriginosos evanescentes.',zones:['Cualquier zona'],tags:['Habones','Prurito'],images:['','','']},
+    {id:'atl-13',name:'Herpes simple',cat:'Infeccioso',desc:'Vesículas agrupadas sobre base eritematosa.',zones:['Labios'],tags:['Vesículas','Viral'],images:['','','']},
+    {id:'atl-14',name:'Molusco contagioso',cat:'Infeccioso',desc:'Pápulas perladas umbilicadas por poxvirus.',zones:['Tronco'],tags:['Pápulas','Viral'],images:['','','']},
+    {id:'atl-15',name:'Verrugas vulgares',cat:'Infeccioso',desc:'Papilomas por VPH con superficie verrucosa.',zones:['Manos','Pies'],tags:['VPH','Verrucoso'],images:['','','']},
+    {id:'atl-16',name:'Dermatitis de contacto',cat:'Alérgico',desc:'Reacción inflamatoria por contacto.',zones:['Manos','Rostro'],tags:['Alérgica','Eccema'],images:['','','']},
+    {id:'atl-17',name:'Liquen plano',cat:'Autoinmune',desc:'Pápulas poligonales, violáceas, pruriginosas.',zones:['Muñecas'],tags:['Pápulas','Violáceas'],images:['','','']},
+    {id:'atl-18',name:'Tiña corporis',cat:'Infeccioso',desc:'Infección fúngica superficial por dermatofitos.',zones:['Tronco'],tags:['Fúngica','Anular'],images:['','','']},
+    {id:'atl-19',name:'Carcinoma basocelular',cat:'Maligno',desc:'Neoplasia cutánea más frecuente.',zones:['Rostro'],tags:['Neoplasia','UV'],images:['','','']},
+    {id:'atl-20',name:'Melanoma',cat:'Maligno',desc:'Neoplasia melanocítica maligna. Regla ABCDE.',zones:['Cualquier zona'],tags:['ABCDE','Urgente'],images:['','','']}
+  ];
+  let ATLAS_DATA = syncLoad('dermalysse_sync_atlas') || DEFAULT_ATLAS;
+  function saveAtlas(){ syncSave('dermalysse_sync_atlas', ATLAS_DATA); }
+
+  function renderAtlasTable(){
+    const tb=document.getElementById('atlasTableBody');
+    if(!tb)return;
+    tb.innerHTML=ATLAS_DATA.map((a,i)=>{
+      const pc=(a.images||[]).filter(u=>u).length;
+      return '<tr><td><strong>'+a.name+'</strong></td><td>'+a.cat+'</td><td>'+pc+'/3 fotos</td><td>'+(a.tags||[]).slice(0,3).join(', ')+'</td><td><button class="btn-sm" onclick="editAtlasItem('+i+')">Editar</button> <button class="btn-sm btn-danger" onclick="deleteAtlasItem('+i+')">Eliminar</button></td></tr>';
+    }).join('');
+  }
+
+  function openAtlasForm(idx){
+    const isEdit=idx!==undefined;
+    const item=isEdit?ATLAS_DATA[idx]:{id:'atl-'+Date.now(),name:'',cat:'Inflamatorio',desc:'',zones:[],tags:[],images:['','','']};
+    const cats=['Inflamatorio','Pigmentario','Vascular','Autoinmune','Premaligno','Maligno','Infeccioso','Alérgico','Estructural'];
+    const sec=document.getElementById('view-atlas');
+    sec.innerHTML='<div style="max-width:600px;margin:0 auto;padding:1.5rem 0;"><h2>'+(isEdit?'Editar':'Nueva')+' condición</h2>'+
+      '<div class="form-field"><label>Nombre</label><input id="atlasName" value="'+(item.name||'')+'"></div>'+
+      '<div class="form-field"><label>Categoría</label><select id="atlasCat">'+cats.map(c=>'<option'+(c===item.cat?' selected':'')+'>'+c+'</option>').join('')+'</select></div>'+
+      '<div class="form-field"><label>Descripción</label><textarea id="atlasDesc" rows="3">'+(item.desc||'')+'</textarea></div>'+
+      '<div class="form-field"><label>Tags (separados por coma)</label><input id="atlasTags" value="'+(item.tags||[]).join(', ')+'"></div>'+
+      '<div class="form-field"><label>Zonas (separadas por coma)</label><input id="atlasZones" value="'+(item.zones||[]).join(', ')+'"></div>'+
+      '<div class="form-field"><label>Foto 1 (enlace Google Drive)</label><input id="atlasImg1" value="'+((item.images||[])[0]||'')+'" placeholder="https://drive.google.com/file/d/..."></div>'+
+      '<div class="form-field"><label>Foto 2</label><input id="atlasImg2" value="'+((item.images||[])[1]||'')+'" placeholder="https://drive.google.com/file/d/..."></div>'+
+      '<div class="form-field"><label>Foto 3</label><input id="atlasImg3" value="'+((item.images||[])[2]||'')+'" placeholder="https://drive.google.com/file/d/..."></div>'+
+      '<div style="display:flex;gap:.75rem;margin-top:1.5rem;"><button class="btn-primary" onclick="saveAtlasItem('+(isEdit?idx:'undefined')+')">Guardar</button><button class="btn-secondary" onclick="restoreAtlasView()">Cancelar</button></div></div>';
+  }
+
+  function restoreAtlasView(){
+    const sec=document.getElementById('view-atlas');
+    sec.innerHTML='<div class="view-header"><div><h1 class="view-title">Atlas Visual</h1><p class="view-subtitle">Gestiona las condiciones dermatológicas del atlas.</p></div><button class="btn-primary" onclick="openAtlasForm()">+ Nueva condición</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Condición</th><th>Categoría</th><th>Fotos</th><th>Tags</th><th></th></tr></thead><tbody id="atlasTableBody"></tbody></table></div>';
+    renderAtlasTable();
+  }
+
+  function saveAtlasItem(idx){
+    const item={
+      id:idx!==undefined?ATLAS_DATA[idx].id:'atl-'+Date.now(),
+      name:document.getElementById('atlasName').value.trim(),
+      cat:document.getElementById('atlasCat').value,
+      desc:document.getElementById('atlasDesc').value.trim(),
+      tags:document.getElementById('atlasTags').value.split(',').map(t=>t.trim()).filter(t=>t),
+      zones:document.getElementById('atlasZones').value.split(',').map(t=>t.trim()).filter(t=>t),
+      images:[document.getElementById('atlasImg1').value.trim(),document.getElementById('atlasImg2').value.trim(),document.getElementById('atlasImg3').value.trim()]
+    };
+    if(!item.name){showToast('Nombre requerido');return;}
+    if(idx!==undefined){ATLAS_DATA[idx]=item;}else{ATLAS_DATA.push(item);}
+    saveAtlas();
+    restoreAtlasView();
+    showToast(idx!==undefined?'Condición actualizada':'Condición agregada');
+  }
+
+  function editAtlasItem(idx){openAtlasForm(idx);}
+
+  function deleteAtlasItem(idx){
+    if(!confirm('¿Eliminar '+ATLAS_DATA[idx].name+'?'))return;
+    ATLAS_DATA.splice(idx,1);
+    saveAtlas();
+    renderAtlasTable();
+    showToast('Condición eliminada');
+  }
+
   async function _loadFromFirestore() {
     try {
       const cols={courses:['dermalysse_sync_courses',DEFAULT_COURSES],webinars:['dermalysse_sync_webinars',DEFAULT_WEBINARS],pdfs:['dermalysse_sync_pdfs',DEFAULT_PDFS],news:['dermalysse_sync_news',DEFAULT_NEWS],members:['dermalysse_sync_members',DEFAULT_MEMBERS],notifications:['dermalysse_sync_notifs',DEFAULT_NOTIF_HISTORY]};
@@ -729,6 +815,7 @@
       NEWS=syncLoad(SYNC_KEYS.news)||DEFAULT_NEWS;
       MEMBERS=syncLoad(SYNC_KEYS.members)||DEFAULT_MEMBERS;
       NOTIF_HISTORY=syncLoad(SYNC_KEYS.notifs)||DEFAULT_NOTIF_HISTORY;
+      try{const atlasSnap=await db.collection('atlas').get();if(!atlasSnap.empty)ATLAS_DATA=atlasSnap.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
       console.log('✅ Admin: datos cargados desde Firestore');
     } catch(e){console.error('Firestore load error:',e);}
   }
@@ -744,6 +831,7 @@
         syncSave(SYNC_KEYS.news,DEFAULT_NEWS);
         syncSave(SYNC_KEYS.members,DEFAULT_MEMBERS);
         syncSave(SYNC_KEYS.notifs,DEFAULT_NOTIF_HISTORY);
+        syncSave('dermalysse_sync_atlas',DEFAULT_ATLAS);
       }
     } catch(e){console.error('Seed error:',e);}
   }
@@ -823,6 +911,7 @@
   function goTo(view){
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
     document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+view));
+    if(view==='atlas') renderAtlasTable();
     window.scrollTo({top:0,behavior:'instant'});
     closeSidebar();
   }
