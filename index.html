@@ -496,8 +496,8 @@
         <div><h1>Atlas Visual</h1><p class="section-subtitle">Gestiona las condiciones dermatológicas del atlas.</p></div>
         <button class="btn-primary" onclick="openAtlasForm()">+ Nueva condición</button>
       </div>
-      <div class="table-wrap">
-        <table class="table"><thead><tr><th>Condición</th><th>Categoría</th><th>Fotos</th><th>Tags</th><th></th></tr></thead>
+      <div class="data-table-wrap">
+        <table class="data-table"><thead><tr><th>Condición</th><th>Categoría</th><th>Fotos</th><th>Tags</th><th></th></tr></thead>
         <tbody id="atlasTableBody"></tbody></table>
       </div>
     </section>
@@ -744,8 +744,9 @@
     if(!tb)return;
     tb.innerHTML=ATLAS_DATA.map((a,i)=>{
       const pc=(a.images||[]).filter(u=>u).length;
-      return '<tr><td><strong>'+a.name+'</strong></td><td>'+a.cat+'</td><td>'+pc+'/3 fotos</td><td>'+(a.tags||[]).slice(0,3).join(', ')+'</td><td><button class="btn-sm" onclick="editAtlasItem('+i+')">Editar</button> <button class="btn-sm btn-danger" onclick="deleteAtlasItem('+i+')">Eliminar</button></td></tr>';
-    }).join('');
+      const photoBadge=pc>0?'<span class="badge info">'+pc+'/3</span>':'<span class="no-drive">0/3</span>';
+      return '<tr><td style="font-weight:600;">'+a.name+'</td><td>'+a.cat+'</td><td>'+photoBadge+'</td><td style="font-size:.82rem;color:var(--text-muted);">'+(a.tags||[]).slice(0,3).join(', ')+'</td><td>'+actionBtns("editAtlasItem("+i+")","deleteAtlasItem("+i+")")+'</td></tr>';
+    }).join('')||'<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin condiciones.</td></tr>';
   }
 
   function openAtlasForm(idx){
@@ -767,7 +768,7 @@
 
   function restoreAtlasView(){
     const sec=document.getElementById('view-atlas');
-    sec.innerHTML='<div class="view-header"><div><h1 class="view-title">Atlas Visual</h1><p class="view-subtitle">Gestiona las condiciones dermatológicas del atlas.</p></div><button class="btn-primary" onclick="openAtlasForm()">+ Nueva condición</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Condición</th><th>Categoría</th><th>Fotos</th><th>Tags</th><th></th></tr></thead><tbody id="atlasTableBody"></tbody></table></div>';
+    sec.innerHTML='<div class="section-header"><div><h1>Atlas Visual</h1><p class="section-subtitle">Gestiona las condiciones dermatológicas del atlas.</p></div><button class="btn-primary" onclick="openAtlasForm()">+ Nueva condición</button></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Condición</th><th>Categoría</th><th>Fotos</th><th>Tags</th><th></th></tr></thead><tbody id="atlasTableBody"></tbody></table></div>';
     renderAtlasTable();
   }
 
