@@ -488,7 +488,19 @@
         </div>
       </section>
 
-      <!-- ═══ CONFIG ═══ -->
+  
+    <!-- ═══ ATLAS ═══ -->
+    <section class="section" id="sec-atlas" style="display:none;">
+      <div class="section-header">
+        <div><h1>Atlas Visual</h1><p class="section-subtitle">Gestiona las condiciones dermatológicas del atlas.</p></div>
+        <button class="btn-primary" onclick="openAtlasForm()">+ Nueva condición</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table"><thead><tr><th>Condición</th><th>Categoría</th><th>Fotos</th><th>Tags</th><th></th></tr></thead>
+        <tbody id="atlasTableBody"></tbody></table>
+      </div>
+    </section>
+    <!-- ═══ CONFIG ═══ -->
       <section class="view" id="view-config">
         <div class="view-header"><div><h1 class="view-title">Configuración</h1><p class="view-subtitle">Ajustes del panel de administración.</p></div></div>
         <div class="settings-group">
@@ -621,7 +633,7 @@
   function syncSave(key, data) {
     sSet(key, JSON.stringify(data));
     // También guardar en Firestore
-    const fsMap={'dermalysse_sync_courses':'courses','dermalysse_sync_webinars':'webinars','dermalysse_sync_pdfs':'pdfs','dermalysse_sync_news':'news','dermalysse_sync_notifs':'notifications','dermalysse_sync_members':'members','dermalysse_sync_config':'config'};
+    const fsMap={'dermalysse_sync_courses':'courses','dermalysse_sync_webinars':'webinars','dermalysse_sync_pdfs':'pdfs','dermalysse_sync_news':'news','dermalysse_sync_notifs':'notifications','dermalysse_sync_members':'members','dermalysse_sync_config':'config','dermalysse_sync_atlas':'atlas'};
     const col=fsMap[key];
     if(col&&Array.isArray(data)){
       const batch=db.batch();
