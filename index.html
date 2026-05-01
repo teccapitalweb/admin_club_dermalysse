@@ -529,7 +529,8 @@
       <div class="form-field"><label>Nombre del curso</label><input id="mCursoName" placeholder="Ej: Fundamentos de Dermatología"></div>
       <div class="form-field"><label>Descripción</label><textarea id="mCursoDesc" rows="2" placeholder="Breve descripción del contenido del curso..."></textarea></div>
       <div class="form-row"><div class="form-field"><label>Categoría</label><select id="mCursoCat"><option>Dermatología</option><option>Estética</option><option>Cosmetología</option></select></div><div class="form-field"><label>Nivel</label><select id="mCursoLevel"><option>Básico</option><option>Intermedio</option><option>Avanzado</option></select></div></div>
-      <div class="form-row"><div class="form-field"><label>Instructor</label><input id="mCursoInst" placeholder="Dr. Nombre"></div><div class="form-field"><label>Estado</label><select id="mCursoStatus"><option value="published">✅ Publicado</option><option value="draft">📝 Borrador</option></select></div></div>
+      <div class="form-row"><div class="form-field"><label>Instructor</label><input id="mCursoInst" placeholder="Dr. Nombre"></div><div class="form-field"><label>Estado</label><select id="mCursoStatus"><option value="published">Publicado</option><option value="draft">Borrador</option></select></div></div>
+      <div class="form-row"><div class="form-field"><label>Liberación</label><select id="mCursoRelease" onchange="toggleReleaseFields()"><option value="immediate">Inmediato</option><option value="drip">Goteo (cada 15 días)</option><option value="scheduled">Fecha fija</option></select></div><div class="form-field" id="dripOrderField" style="display:none;"><label>Orden (1, 2, 3...)</label><input id="mCursoOrder" type="number" min="1" placeholder="1"></div><div class="form-field" id="scheduledDateField" style="display:none;"><label>Fecha de apertura</label><input id="mCursoUnlockDate" type="date"></div></div>
       <div class="form-field"><label>📋 Temario del curso (Google Drive)</label><input id="mCursoTemario" placeholder="https://drive.google.com/file/d/..." class="drive-input" style="border-left-color:#34a853 !important;"></div>
       <div class="form-field"><label>🖼️ Imagen de portada (Google Drive)</label><input id="mCursoImg" placeholder="https://drive.google.com/file/d/..." class="drive-input"></div>
 
@@ -1089,6 +1090,12 @@
     document.body.appendChild(modal);
   }
 
+  function toggleReleaseFields(){
+    const v=document.getElementById('mCursoRelease').value;
+    document.getElementById('dripOrderField').style.display=v==='drip'?'':'none';
+    document.getElementById('scheduledDateField').style.display=v==='scheduled'?'':'none';
+  }
+
   function addCurso(){
     const name=document.getElementById('mCursoName').value.trim();
     if(!name){showToast('Ingresa nombre del curso');return}
@@ -1096,7 +1103,10 @@
     const lessons = collectClases();
     const temario=document.getElementById('mCursoTemario').value.trim();
     const img=document.getElementById('mCursoImg').value.trim();
-    const data={name,desc,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:document.getElementById('mCursoStatus').value,instructor:document.getElementById('mCursoInst').value,temario,img,lessons};
+    const releaseType=document.getElementById('mCursoRelease').value;
+    const order=parseInt(document.getElementById('mCursoOrder').value)||0;
+    const unlockDate=document.getElementById('mCursoUnlockDate').value||'';
+    const data={name,desc,cat:document.getElementById('mCursoCat').value,level:document.getElementById('mCursoLevel').value,status:document.getElementById('mCursoStatus').value,instructor:document.getElementById('mCursoInst').value,temario,img,lessons,releaseType,order,unlockDate};
     if(_editing.curso){
       var idx=COURSES.findIndex(c=>c.id===_editing.curso);
       if(idx>-1){Object.assign(COURSES[idx],data);}
@@ -1217,6 +1227,10 @@
     document.getElementById('mCursoStatus').value=c.status||'draft';
     document.getElementById('mCursoTemario').value=c.temario||'';
     document.getElementById('mCursoImg').value=c.img||'';
+    document.getElementById('mCursoRelease').value=c.releaseType||'immediate';
+    document.getElementById('mCursoOrder').value=c.order||'';
+    document.getElementById('mCursoUnlockDate').value=c.unlockDate||'';
+    toggleReleaseFields();
     var clList=document.getElementById('mClasesList');clList.innerHTML='';_claseCounter=0;
     if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var idx=_claseCounter;document.getElementById('claseTitle_'+idx).value=l.title||'';document.getElementById('claseVideo_'+idx).value=l.video||'';})}
     updateClaseCount();
