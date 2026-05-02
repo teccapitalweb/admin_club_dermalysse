@@ -1051,8 +1051,7 @@
     document.getElementById('kpisGrid').innerHTML=[
       {label:'Miembros activos',value:activeMembers,delta:lastMonthMembers>0?'+'+lastMonthMembers+' este mes':'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
       {label:'Cursos · Clases',value:totalCourses+' · '+totalLessons,delta:'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/></svg>'},
-      {label:'Webinars programados',value:totalWebinars,delta:'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'},
-      {label:'Ingresos del mes',value:'$'+monthlyIncome.toLocaleString('es-MX')+' MXN',delta:(mensualCount+anualCount)+' suscritos',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'}
+      {label:'Webinars programados',value:totalWebinars,delta:'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'}
     ].map(k=>`
       <div class="kpi-card">
         <div class="kpi-head"><div class="kpi-label">${k.label}</div><div class="kpi-icon">${k.icon}</div></div>
