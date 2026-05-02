@@ -815,8 +815,29 @@
       WEBINARS=syncLoad(SYNC_KEYS.webinars)||DEFAULT_WEBINARS;
       PDFS=syncLoad(SYNC_KEYS.pdfs)||DEFAULT_PDFS;
       NEWS=syncLoad(SYNC_KEYS.news)||DEFAULT_NEWS;
-      MEMBERS=syncLoad(SYNC_KEYS.members)||DEFAULT_MEMBERS;
       NOTIF_HISTORY=syncLoad(SYNC_KEYS.notifs)||DEFAULT_NOTIF_HISTORY;
+
+      // Cargar miembros con info de suscripción desde users
+      try {
+        const membersSnap=await db.collection('members').get();
+        if(!membersSnap.empty){
+          const membersData=membersSnap.docs.map(d=>({id:d.id,...d.data()}));
+          // Enriquecer con info de suscripción desde users
+          const usersSnap=await db.collection('users').get();
+          const usersMap={};
+          usersSnap.docs.forEach(d=>{usersMap[d.id]=d.data()});
+          MEMBERS=membersData.map(m=>{
+            const u=usersMap[m.uid||m.id]||{};
+            const sub=u.subscription||{};
+            return{
+              ...m,
+              plan:sub.plan?sub.plan.charAt(0).toUpperCase()+sub.plan.slice(1):(m.plan||'Free'),
+              status:sub.status==='active'?'active':sub.status==='canceled'?'paused':(m.status||'active'),
+              courses:Object.keys(u.progress||{}).filter(k=>{const lessons=u.progress[k];return Array.isArray(lessons)&&lessons.length>0}).length||m.courses||0
+            };
+          });
+        } else { MEMBERS=DEFAULT_MEMBERS; }
+      } catch(e){ MEMBERS=syncLoad(SYNC_KEYS.members)||DEFAULT_MEMBERS; }
       try{const atlasSnap=await db.collection('atlas').get();if(!atlasSnap.empty)ATLAS_DATA=atlasSnap.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
       console.log('✅ Admin: datos cargados desde Firestore');
     } catch(e){console.error('Firestore load error:',e);}
@@ -924,6 +945,7 @@
   function renderDashboard(){
     const totalMembers=MEMBERS.length;
     const activeMembers=MEMBERS.filter(m=>m.status==='active').length;
+    const subscribedMembers=MEMBERS.filter(m=>m.plan==='Mensual'||m.plan==='Anual').length;
     const totalCourses=COURSES.filter(c=>c.status==='published').length;
     const totalLessons=COURSES.reduce((s,c)=>s+(c.lessons?c.lessons.length:0),0);
     const totalWebinars=WEBINARS.length;
@@ -1193,9 +1215,11 @@
   // ═══ MIEMBROS ═══
   function renderMiembros(search){
     const list=search?MEMBERS.filter(m=>m.name.toLowerCase().includes(search.toLowerCase())||m.email.toLowerCase().includes(search.toLowerCase())):MEMBERS;
-    document.getElementById('miembrosBody').innerHTML=list.map(m=>`
-      <tr><td><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></td><td><span class="badge ${m.plan==='Premium'?'info':'neutral'}">${m.plan}</span></td><td>${statusBadge(m.status)}</td><td>${new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'})}</td><td>${m.courses}</td><td>${actionBtns("showToast('Ver perfil de "+m.name+"')","deleteMember('"+m.id+"')")}</td></tr>
-    `).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin miembros registrados.</td></tr>';
+    document.getElementById('miembrosBody').innerHTML=list.map(m=>{
+      const planLabel=m.plan||'Free';
+      const planClass=planLabel==='Mensual'||planLabel==='Anual'?'info':planLabel==='Free'?'neutral':'neutral';
+      return `<tr><td><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></td><td><span class="badge ${planClass}">${planLabel}</span></td><td>${statusBadge(m.status)}</td><td>${m.joined?new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'}):'—'}</td><td>${m.courses||0}</td><td>${actionBtns("showToast('Ver perfil de "+m.name+"')","deleteMember('"+m.id+"')")}</td></tr>`;
+    }).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin miembros registrados.</td></tr>';
   }
   function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);saveMembers();renderMiembros();renderDashboard();showToast('Miembro eliminado')}
 
