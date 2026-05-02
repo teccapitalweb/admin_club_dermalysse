@@ -699,18 +699,81 @@
   let MEMBERS = syncLoad(SYNC_KEYS.members) || DEFAULT_MEMBERS;
   function saveMembers() { syncSave(SYNC_KEYS.members, MEMBERS); }
 
-  const ACTIVITY=[
-    {text:'<strong>Alex Morales</strong> completó el curso "Fundamentos de Dermatología"',time:'Hace 2 horas',color:'blue'},
-    {text:'<strong>Daniela Ríos</strong> se inscribió al webinar "Peelings químicos"',time:'Hace 5 horas',color:'green'},
-    {text:'Nuevo miembro: <strong>Roberto Silva</strong>',time:'Hace 1 día',color:'green'},
-    {text:'PDF "Fichas técnicas 2026" descargado <strong>67 veces</strong>',time:'Hace 2 días',color:'orange'},
-    {text:'<strong>Carlos Méndez</strong> pausó su suscripción',time:'Hace 3 días',color:'orange'}
-  ];
+  // Actividad y gráfica se generan dinámicamente en renderDashboard
+  let ACTIVITY = [];
+  let CHART_DATA = [];
 
-  const CHART_DATA=[
-    {label:'Oct',value:12},{label:'Nov',value:18},{label:'Dic',value:24},{label:'Ene',value:31},
-    {label:'Feb',value:28},{label:'Mar',value:35},{label:'Abr',value:42}
-  ];
+  function generateActivity() {
+    ACTIVITY = [];
+    // Generar actividad desde miembros (ordenados por fecha de registro)
+    const sortedMembers = [...MEMBERS].filter(m=>m.joined).sort((a,b)=>new Date(b.joined)-new Date(a.joined)).slice(0,10);
+    sortedMembers.forEach(m => {
+      const days = Math.floor((Date.now() - new Date(m.joined).getTime()) / 86400000);
+      const time = days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : 'Hace ' + days + ' días';
+      const isPaid = m.plan === 'Mensual' || m.plan === 'Anual';
+      if (isPaid) {
+        ACTIVITY.push({ text: '<strong>' + m.name + '</strong> se suscribió al plan ' + m.plan, time, color: 'blue', ts: new Date(m.joined).getTime() });
+      } else {
+        ACTIVITY.push({ text: 'Nuevo miembro: <strong>' + m.name + '</strong>', time, color: 'green', ts: new Date(m.joined).getTime() });
+      }
+      if (m.status === 'paused') {
+        ACTIVITY.push({ text: '<strong>' + m.name + '</strong> canceló su suscripción', time, color: 'orange', ts: new Date(m.joined).getTime() - 1 });
+      }
+    });
+    // Ordenar por fecha descendente y limitar
+    ACTIVITY.sort((a,b) => (b.ts||0) - (a.ts||0));
+    ACTIVITY = ACTIVITY.slice(0, 8);
+    if (!ACTIVITY.length) {
+      ACTIVITY = [{ text: 'Sin actividad reciente', time: '', color: 'blue' }];
+    }
+  }
+
+  // Cargar actividad desde Firestore (del webhook)
+  async function loadFirestoreActivity() {
+    try {
+      const snap = await db.collection('activity').orderBy('date','desc').limit(10).get();
+      if (!snap.empty) {
+        const fsActivity = snap.docs.map(d => {
+          const data = d.data();
+          const days = Math.floor((Date.now() - new Date(data.date).getTime()) / 86400000);
+          return {
+            text: data.text,
+            color: data.color || 'blue',
+            time: days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : 'Hace ' + days + ' días',
+            ts: new Date(data.date).getTime()
+          };
+        });
+        // Merge con actividad local y ordenar
+        ACTIVITY = [...fsActivity, ...ACTIVITY].sort((a,b) => (b.ts||0) - (a.ts||0));
+        // Eliminar duplicados por texto similar
+        const seen = new Set();
+        ACTIVITY = ACTIVITY.filter(a => {
+          const key = a.text.replace(/<[^>]+>/g,'').substring(0,40);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).slice(0, 8);
+      }
+    } catch(e) {}
+  }
+
+  function generateChartData() {
+    // Agrupar miembros por mes de registro (últimos 7 meses)
+    const months = [];
+    const now = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ label: d.toLocaleString('es-MX', { month: 'short' }).replace('.',''), year: d.getFullYear(), month: d.getMonth() });
+    }
+    CHART_DATA = months.map(m => {
+      const count = MEMBERS.filter(mb => {
+        if (!mb.joined) return false;
+        const d = new Date(mb.joined);
+        return d.getMonth() === m.month && d.getFullYear() === m.year;
+      }).length;
+      return { label: m.label.charAt(0).toUpperCase() + m.label.slice(1), value: count };
+    });
+  }
 
 
   // ═══ FIRESTORE HELPERS ═══
@@ -972,26 +1035,43 @@
   function renderDashboard(){
     const totalMembers=MEMBERS.length;
     const activeMembers=MEMBERS.filter(m=>m.status==='active').length;
-    const subscribedMembers=MEMBERS.filter(m=>m.plan==='Mensual'||m.plan==='Anual').length;
+    const mensualCount=MEMBERS.filter(m=>m.plan==='Mensual'&&m.status==='active').length;
+    const anualCount=MEMBERS.filter(m=>m.plan==='Anual'&&m.status==='active').length;
+    const monthlyIncome = (mensualCount * 200) + Math.round(anualCount * 1799 / 12);
     const totalCourses=COURSES.filter(c=>c.status==='published').length;
     const totalLessons=COURSES.reduce((s,c)=>s+(c.lessons?c.lessons.length:0),0);
     const totalWebinars=WEBINARS.length;
 
+    // Calcular deltas (comparar con mes anterior)
+    const now = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear = now.getFullYear();
+    const lastMonthMembers = MEMBERS.filter(m => { if(!m.joined)return false; const d=new Date(m.joined); return d.getMonth()===thisMonth && d.getFullYear()===thisYear; }).length;
+
     document.getElementById('kpisGrid').innerHTML=[
-      {label:'Miembros activos',value:activeMembers,delta:'+12%',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
-      {label:'Cursos · Clases',value:totalCourses+' · '+totalLessons,delta:'+2',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/></svg>'},
+      {label:'Miembros activos',value:activeMembers,delta:lastMonthMembers>0?'+'+lastMonthMembers+' este mes':'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
+      {label:'Cursos · Clases',value:totalCourses+' · '+totalLessons,delta:'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/></svg>'},
       {label:'Webinars programados',value:totalWebinars,delta:'',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'},
-      {label:'Ingresos del mes',value:'$18,450',delta:'+8%',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'}
+      {label:'Ingresos del mes',value:'$'+monthlyIncome.toLocaleString('es-MX')+' MXN',delta:(mensualCount+anualCount)+' suscritos',up:true,icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'}
     ].map(k=>`
       <div class="kpi-card">
         <div class="kpi-head"><div class="kpi-label">${k.label}</div><div class="kpi-icon">${k.icon}</div></div>
         <div class="kpi-value">${k.value}</div>
-        ${k.delta?`<div class="kpi-foot"><span class="kpi-delta ${k.up?'up':'down'}">${k.delta}</span> vs mes anterior</div>`:''}
+        ${k.delta?`<div class="kpi-foot"><span class="kpi-delta ${k.up?'up':'down'}">${k.delta}</span></div>`:''}
       </div>
     `).join('');
 
+    // Generar datos dinámicos
+    generateActivity();
+    generateChartData();
+    loadFirestoreActivity().then(() => {
+      document.getElementById('activityList').innerHTML=ACTIVITY.map(a=>`
+        <div class="activity-item"><div class="activity-dot ${a.color}"></div><div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div></div>
+      `).join('');
+    });
+
     // Chart
-    const maxVal=Math.max(...CHART_DATA.map(d=>d.value));
+    const maxVal=Math.max(...CHART_DATA.map(d=>d.value),1);
     document.getElementById('chartBars').innerHTML=CHART_DATA.map(d=>`<div class="chart-bar" style="height:${(d.value/maxVal)*100}%;" data-value="${d.value}"></div>`).join('');
     document.getElementById('chartLabels').innerHTML=CHART_DATA.map(d=>`<span>${d.label}</span>`).join('');
 
