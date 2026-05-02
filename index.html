@@ -506,13 +506,13 @@
         <div class="view-header"><div><h1 class="view-title">Configuración</h1><p class="view-subtitle">Ajustes del panel de administración.</p></div></div>
         <div class="settings-group">
           <h3 style="font-weight:700;margin-bottom:1rem;">Notificaciones</h3>
-          <div class="settings-row"><div class="settings-info"><h4>Nuevo miembro registrado</h4><p>Recibir alerta por cada nuevo registro</p></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-row"><div class="settings-info"><h4>Nuevo miembro registrado</h4><p>Recibir alerta por cada nuevo registro</p></div><div class="toggle active" id="cfgNotifNewMember" onclick="toggleAdminConfig('notifNewMember',this)"></div></div>
 
         </div>
         <div class="settings-group">
           <h3 style="font-weight:700;margin-bottom:1rem;">Plataforma</h3>
-          <div class="settings-row"><div class="settings-info"><h4>Modo mantenimiento</h4><p>Desactiva acceso al club temporalmente</p></div><div class="toggle" onclick="this.classList.toggle('active')"></div></div>
-          <div class="settings-row"><div class="settings-info"><h4>Registro abierto</h4><p>Permitir nuevos registros de miembros</p></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+          <div class="settings-row"><div class="settings-info"><h4>Modo mantenimiento</h4><p>Desactiva acceso al club temporalmente</p></div><div class="toggle" id="cfgMaintenance" onclick="toggleAdminConfig('maintenance',this)"></div></div>
+          <div class="settings-row"><div class="settings-info"><h4>Registro abierto</h4><p>Permitir nuevos registros de miembros</p></div><div class="toggle active" id="cfgOpenRegistration" onclick="toggleAdminConfig('openRegistration',this)"></div></div>
         </div>
       </section>
 
@@ -800,6 +800,32 @@
     showToast('Condición eliminada');
   }
 
+  // ═══ ADMIN CONFIG (toggles funcionales) ═══
+  async function toggleAdminConfig(key, el) {
+    el.classList.toggle('active');
+    const val = el.classList.contains('active');
+    showToast('Ajuste actualizado');
+    try {
+      await db.collection('config').doc('platform').set({ [key]: val }, { merge: true });
+      console.log('Config:', key, '=', val);
+    } catch(e) { console.error('Config save error:', e); }
+  }
+
+  async function loadAdminConfig() {
+    try {
+      const doc = await db.collection('config').doc('platform').get();
+      if (!doc.exists) return;
+      const cfg = doc.data();
+      const map = { notifNewMember:'cfgNotifNewMember', maintenance:'cfgMaintenance', openRegistration:'cfgOpenRegistration' };
+      for (const [key, id] of Object.entries(map)) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (cfg[key] === true) el.classList.add('active');
+        else if (cfg[key] === false) el.classList.remove('active');
+      }
+    } catch(e) {}
+  }
+
   async function _loadFromFirestore() {
     try {
       const cols={courses:['dermalysse_sync_courses',DEFAULT_COURSES],webinars:['dermalysse_sync_webinars',DEFAULT_WEBINARS],pdfs:['dermalysse_sync_pdfs',DEFAULT_PDFS],news:['dermalysse_sync_news',DEFAULT_NEWS],members:['dermalysse_sync_members',DEFAULT_MEMBERS],notifications:['dermalysse_sync_notifs',DEFAULT_NOTIF_HISTORY]};
@@ -907,6 +933,7 @@
     renderMiembros();
     renderNotifHistory();
     loadDarkMode();
+    loadAdminConfig();
   }
 
   async function logout(){
