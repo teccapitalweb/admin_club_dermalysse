@@ -688,13 +688,7 @@
   let NEWS = syncLoad(SYNC_KEYS.news) || DEFAULT_NEWS;
   function saveNews() { syncSave(SYNC_KEYS.news, NEWS); }
 
-  const DEFAULT_MEMBERS=[
-    {id:'m-01',name:'Alex Morales',email:'alex@correo.com',plan:'Premium',status:'active',joined:'2025-11-02',courses:3},
-    {id:'m-02',name:'Daniela Ríos',email:'daniela@correo.com',plan:'Premium',status:'active',joined:'2026-01-18',courses:5},
-    {id:'m-03',name:'Carlos Méndez',email:'carlos@correo.com',plan:'Básico',status:'paused',joined:'2025-09-22',courses:1},
-    {id:'m-04',name:'Laura Valdés',email:'laura@correo.com',plan:'Premium',status:'active',joined:'2026-02-14',courses:7},
-    {id:'m-05',name:'Roberto Silva',email:'roberto@correo.com',plan:'Básico',status:'active',joined:'2026-03-01',courses:0}
-  ];
+  const DEFAULT_MEMBERS=[];
   let MEMBERS = syncLoad(SYNC_KEYS.members) || DEFAULT_MEMBERS;
   function saveMembers() { syncSave(SYNC_KEYS.members, MEMBERS); }
 
