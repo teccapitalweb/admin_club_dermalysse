@@ -1418,9 +1418,9 @@
     promo: {label:'Promoción', title:'🏷️ Oferta especial', color:'danger'}
   };
   const DEFAULT_NOTIF_HISTORY = [
-    {type:'curso',title:'Nuevo curso: Hidrafacial Avanzado',msg:'Ya está disponible el curso completo con 4 clases.',recipients:4,date:'2026-04-25'},
-    {type:'vivo',title:'Webinar en 30 min: Peelings químicos',msg:'Únete al webinar con Dr. Miguel Castro. Link en la sección Webinars.',recipients:4,date:'2026-04-22'},
-    {type:'promo',title:'20% de descuento en consultas',msg:'Usa tu cupón CLUB20DERMA en tu próxima consulta presencial.',recipients:4,date:'2026-04-18'}
+    {id:'notif-default-1',type:'curso',title:'Nuevo curso: Hidrafacial Avanzado',msg:'Ya está disponible el curso completo con 4 clases.',recipients:4,date:'2026-04-25'},
+    {id:'notif-default-2',type:'vivo',title:'Webinar en 30 min: Peelings químicos',msg:'Únete al webinar con Dr. Miguel Castro. Link en la sección Webinars.',recipients:4,date:'2026-04-22'},
+    {id:'notif-default-3',type:'promo',title:'20% de descuento en consultas',msg:'Usa tu cupón CLUB20DERMA en tu próxima consulta presencial.',recipients:4,date:'2026-04-18'}
   ];
   let NOTIF_HISTORY = syncLoad(SYNC_KEYS.notifs) || DEFAULT_NOTIF_HISTORY;
   function saveNotifs() { syncSave(SYNC_KEYS.notifs, NOTIF_HISTORY); }
@@ -1443,7 +1443,7 @@
     if(!title){showToast('Ingresa un título');return}
     if(!msg){showToast('Escribe el mensaje');return}
     const recipients = MEMBERS.filter(m=>m.status==='active').length;
-    NOTIF_HISTORY.unshift({type,title,msg,recipients,date:new Date().toISOString().split('T')[0]});
+    NOTIF_HISTORY.unshift({id:'notif-'+Date.now(),type,title,msg,recipients,date:new Date().toISOString().split('T')[0]});
     saveNotifs();
     renderNotifHistory();
     closeModals();
