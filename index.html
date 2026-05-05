@@ -1240,7 +1240,7 @@
     saveCourses();renderCursos();renderDashboard();closeModals();
     document.getElementById('mClasesList').innerHTML='';_claseCounter=0;updateClaseCount();
   }
-  function deleteCurso(id){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCursos();renderDashboard();showToast('Curso eliminado')}
+  function deleteCurso(id){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCursos();renderDashboard();db.collection('courses').doc(id).delete().catch(e=>console.error(e));showToast('Curso eliminado')}
 
   // ═══ WEBINARS ═══
   function renderWebinars(){
@@ -1263,7 +1263,7 @@
     }
     saveWebinars();renderWebinars();renderDashboard();closeModals();
   }
-  function deleteWebinar(id){WEBINARS=WEBINARS.filter(w=>w.id!==id);saveWebinars();renderWebinars();renderDashboard();showToast('Webinar eliminado')}
+  function deleteWebinar(id){WEBINARS=WEBINARS.filter(w=>w.id!==id);saveWebinars();renderWebinars();renderDashboard();db.collection('webinars').doc(id).delete().catch(e=>console.error(e));showToast('Webinar eliminado')}
 
   // ═══ PDFS ═══
   function renderPdfs(){
@@ -1286,7 +1286,7 @@
     }
     savePdfs();renderPdfs();closeModals();
   }
-  function deletePdf(id){PDFS=PDFS.filter(p=>p.id!==id);savePdfs();renderPdfs();showToast('PDF eliminado')}
+  function deletePdf(id){PDFS=PDFS.filter(p=>p.id!==id);savePdfs();renderPdfs();db.collection('pdfs').doc(id).delete().catch(e=>console.error(e));showToast('PDF eliminado')}
 
   // ═══ NOTICIAS ═══
   function renderNoticias(){
@@ -1309,7 +1309,7 @@
     }
     saveNews();renderNoticias();closeModals();
   }
-  function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);saveNews();renderNoticias();showToast('Noticia eliminada')}
+  function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);saveNews();renderNoticias();db.collection('news').doc(id).delete().catch(e=>console.error(e));showToast('Noticia eliminada')}
 
   // ═══ MIEMBROS ═══
   function renderMiembros(search){
@@ -1320,7 +1320,7 @@
       return `<tr><td><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></td><td><span class="badge ${planClass}">${planLabel}</span></td><td>${statusBadge(m.status)}</td><td>${m.joined?new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'}):'—'}</td><td>${m.courses||0}</td><td>${actionBtns("showToast('Ver perfil de "+m.name+"')","deleteMember('"+m.id+"')")}</td></tr>`;
     }).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin miembros registrados.</td></tr>';
   }
-  function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);saveMembers();renderMiembros();renderDashboard();showToast('Miembro eliminado')}
+  function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);saveMembers();renderMiembros();renderDashboard();db.collection('members').doc(id).delete().catch(e=>console.error(e));showToast('Miembro eliminado')}
 
   // ═══ MODALS (optimized for speed) ═══
   const _modals=document.querySelectorAll('.modal-backdrop');
@@ -1355,7 +1355,7 @@
     document.getElementById('mCursoUnlockDate').value=c.unlockDate||'';
     toggleReleaseFields();
     var clList=document.getElementById('mClasesList');clList.innerHTML='';_claseCounter=0;
-    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var idx=_claseCounter;document.getElementById('claseTitle_'+idx).value=l.title||'';document.getElementById('claseVideo_'+idx).value=l.video||'';})}
+    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var row=document.getElementById('clase-'+_claseCounter);if(row){var nf=row.querySelector('[data-field="name"]');var df=row.querySelector('[data-field="desc"]');var du=row.querySelector('[data-field="dur"]');var dr=row.querySelector('[data-field="drive"]');if(nf)nf.value=l.name||'';if(df)df.value=l.desc||'';if(du)du.value=l.dur||'';if(dr)dr.value=l.drive||'';}})}
     updateClaseCount();
     document.querySelector('#cursoModal .modal-title').textContent='Editar curso';
     document.querySelector('#cursoModal .btn-add').textContent='Guardar cambios';
