@@ -225,6 +225,9 @@
     .modal-title{font-size:1.5rem;font-weight:700;margin-bottom:.3rem}
     .modal-subtitle{color:var(--text-secondary);font-size:.88rem;margin-bottom:1.75rem}
     .modal-footer{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-soft)}
+    .socio-stat{display:flex;flex-direction:column;gap:.2rem;background:var(--bg-elevated);border-radius:var(--radius-sm);padding:.7rem .85rem}
+    .socio-stat-label{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em}
+    .socio-stat span:last-child{font-weight:600;font-size:.9rem;color:var(--text-primary)}
 
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
     .form-field select,.form-field textarea{width:100%;padding:.85rem 1rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;transition:all .15s}
@@ -520,6 +523,32 @@
   </div>
 
   <!-- MODALS -->
+  <!-- MODIFICADO: modal de ficha de socio + regalar días -->
+  <div class="modal-backdrop" id="socioModal" onclick="if(event.target===this)closeModals()">
+    <div class="modal-card" style="max-width:480px;">
+      <button class="modal-close" onclick="closeModals()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div style="display:flex;align-items:center;gap:.85rem;margin-bottom:1.5rem;">
+        <div class="user-avatar" id="socioAvatar" style="width:52px;height:52px;font-size:1.1rem;">?</div>
+        <div><div class="modal-title" id="socioName" style="font-size:1.25rem;margin-bottom:.15rem;">Socio</div><div style="font-size:.82rem;color:var(--text-muted);" id="socioEmail">—</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem;">
+        <div class="socio-stat"><span class="socio-stat-label">Plan</span><span id="socioPlan">—</span></div>
+        <div class="socio-stat"><span class="socio-stat-label">Estado</span><span id="socioEstado">—</span></div>
+        <div class="socio-stat"><span class="socio-stat-label">Inscripción (Stripe)</span><span id="socioInscripcion">—</span></div>
+        <div class="socio-stat"><span class="socio-stat-label">Próximo cobro</span><span id="socioCobro">—</span></div>
+        <div class="socio-stat" style="grid-column:1/-1;"><span class="socio-stat-label">Acceso de cortesía vigente hasta</span><span id="socioVigencia">Sin regalo activo</span></div>
+      </div>
+      <div style="border-top:1px solid var(--border-soft);padding-top:1.25rem;">
+        <div style="font-weight:600;font-size:.92rem;margin-bottom:.15rem;">Regalar días de acceso</div>
+        <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.85rem;">Extiende el acceso sin tocar su suscripción de Stripe.</div>
+        <div style="display:flex;gap:.6rem;">
+          <button class="btn-add" style="flex:1;justify-content:center;" onclick="regalarDias(7)">+7 días</button>
+          <button class="btn-add" style="flex:1;justify-content:center;" onclick="regalarDias(15)">+15 días</button>
+          <button class="btn-add" style="flex:1;justify-content:center;" onclick="regalarDias(30)">+30 días</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="modal-backdrop" id="cursoModal" onclick="if(event.target===this)closeModals()">
     <div class="modal-card" style="max-width:640px;">
       <button class="modal-close" onclick="closeModals()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -913,9 +942,14 @@
             const sub=u.subscription||{};
             return{
               ...m,
+              uid:m.uid||m.id,
               plan:sub.plan?sub.plan.charAt(0).toUpperCase()+sub.plan.slice(1):(m.plan||'Free'),
               status:sub.status==='active'?'active':sub.status==='canceled'?'paused':(m.status||'active'),
-              courses:Object.keys(u.progress||{}).filter(k=>{const lessons=u.progress[k];return Array.isArray(lessons)&&lessons.length>0}).length||m.courses||0
+              courses:Object.keys(u.progress||{}).filter(k=>{const lessons=u.progress[k];return Array.isArray(lessons)&&lessons.length>0}).length||m.courses||0,
+              subscribedAt:sub.subscribedAt||sub.updatedAt||null,
+              currentPeriodEnd:sub.currentPeriodEnd||null,
+              vigenciaHasta:u.vigenciaHasta||null,
+              regaloDesde:u.regaloDesde||null
             };
           });
         } else { MEMBERS=DEFAULT_MEMBERS; }
@@ -1312,15 +1346,73 @@
   function deleteNoticia(id){NEWS=NEWS.filter(n=>n.id!==id);saveNews();renderNoticias();db.collection('news').doc(id).delete().catch(e=>console.error(e));showToast('Noticia eliminada')}
 
   // ═══ MIEMBROS ═══
+  function _initials(name){
+    if(!name) return '?';
+    const p=name.trim().split(/\s+/);
+    return ((p[0]?.[0]||'')+(p[1]?.[0]||'')).toUpperCase()||name[0].toUpperCase();
+  }
   function renderMiembros(search){
     const list=search?MEMBERS.filter(m=>m.name.toLowerCase().includes(search.toLowerCase())||m.email.toLowerCase().includes(search.toLowerCase())):MEMBERS;
     document.getElementById('miembrosBody').innerHTML=list.map(m=>{
       const planLabel=m.plan||'Free';
       const planClass=planLabel==='Mensual'||planLabel==='Anual'?'info':planLabel==='Free'?'neutral':'neutral';
-      return `<tr><td><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></td><td><span class="badge ${planClass}">${planLabel}</span></td><td>${statusBadge(m.status)}</td><td>${m.joined?new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'}):'—'}</td><td>${m.courses||0}</td><td>${actionBtns("showToast('Ver perfil de "+m.name+"')","deleteMember('"+m.id+"')")}</td></tr>`;
+      const nameCell=`<div style="display:flex;align-items:center;gap:.7rem;"><div class="user-avatar">${_initials(m.name)}</div><div><div style="font-weight:600;">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted);">${m.email}</div></div></div>`;
+      return `<tr><td>${nameCell}</td><td><span class="badge ${planClass}">${planLabel}</span></td><td>${statusBadge(m.status)}</td><td>${m.joined?new Date(m.joined).toLocaleDateString('es-MX',{month:'short',year:'numeric'}):'—'}</td><td>${m.courses||0}</td><td>${actionBtns("openSocioModal('"+m.id+"')","deleteMember('"+m.id+"')")}</td></tr>`;
     }).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin miembros registrados.</td></tr>';
   }
   function deleteMember(id){MEMBERS=MEMBERS.filter(m=>m.id!==id);saveMembers();renderMiembros();renderDashboard();db.collection('members').doc(id).delete().catch(e=>console.error(e));showToast('Miembro eliminado')}
+
+  // MODIFICADO: ficha de socio + regalar días de cortesía
+  var _socioActual=null;
+  function _fmtFecha(v){ if(!v) return '—'; const d=new Date(v); if(isNaN(d)) return '—'; return d.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'}); }
+  function openSocioModal(id){
+    const m=MEMBERS.find(x=>x.id===id);
+    if(!m){showToast('Socio no encontrado');return;}
+    _socioActual=m;
+    document.getElementById('socioAvatar').textContent=_initials(m.name);
+    document.getElementById('socioName').textContent=m.name;
+    document.getElementById('socioEmail').textContent=m.email||'—';
+    document.getElementById('socioPlan').innerHTML='<span class="badge '+((m.plan==='Mensual'||m.plan==='Anual')?'info':'neutral')+'">'+(m.plan||'Free')+'</span>';
+    document.getElementById('socioEstado').innerHTML=statusBadge(m.status);
+    document.getElementById('socioInscripcion').textContent=_fmtFecha(m.subscribedAt||m.joined);
+    document.getElementById('socioCobro').textContent=_fmtFecha(m.currentPeriodEnd);
+    const vigEl=document.getElementById('socioVigencia');
+    if(m.vigenciaHasta && new Date(m.vigenciaHasta)>new Date()){
+      vigEl.textContent=_fmtFecha(m.vigenciaHasta);
+      vigEl.style.color='var(--success)';
+    } else {
+      vigEl.textContent='Sin regalo activo';
+      vigEl.style.color='var(--text-muted)';
+    }
+    openModal('socioModal');
+  }
+  async function regalarDias(dias){
+    const m=_socioActual;
+    if(!m){showToast('Selecciona un socio');return;}
+    const uid=m.uid||m.id;
+    try{
+      const ref=db.collection('users').doc(uid);
+      const snap=await ref.get();
+      const data=snap.exists?snap.data():{};
+      const now=new Date();
+      // Vigencia: si ya tiene regalo a futuro, extender desde ahí; si no, desde hoy
+      let baseVig=now;
+      const vigVigente=data.vigenciaHasta && new Date(data.vigenciaHasta)>now;
+      if(vigVigente) baseVig=new Date(data.vigenciaHasta);
+      const nuevaVig=new Date(baseVig.getTime()+dias*86400000);
+      // regaloDesde: conservar si el regalo sigue vigente (no reinicia goteo); si no, arranca hoy
+      let regaloDesde=data.regaloDesde;
+      if(!regaloDesde||!vigVigente) regaloDesde=now.toISOString();
+      // set con merge: NO borra subscription ni ningún otro campo
+      await ref.set({vigenciaHasta:nuevaVig.toISOString(),regaloDesde:regaloDesde},{merge:true});
+      // Reflejar en memoria sin recargar
+      m.vigenciaHasta=nuevaVig.toISOString(); m.regaloDesde=regaloDesde;
+      const idx=MEMBERS.findIndex(x=>x.id===m.id); if(idx>=0){MEMBERS[idx].vigenciaHasta=m.vigenciaHasta;MEMBERS[idx].regaloDesde=m.regaloDesde;}
+      openSocioModal(m.id);
+      renderMiembros();
+      showToast('Regalados '+dias+' días a '+m.name);
+    }catch(e){console.error(e);showToast('Error al regalar: '+(e.message||e.code));}
+  }
 
   // ═══ MODALS (optimized for speed) ═══
   const _modals=document.querySelectorAll('.modal-backdrop');
