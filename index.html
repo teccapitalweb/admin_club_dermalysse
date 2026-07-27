@@ -509,15 +509,15 @@
         <div class="view-header"><div><h1 class="view-title">Configuración</h1><p class="view-subtitle">Ajustes del panel de administración.</p></div></div>
         <div class="settings-group">
           <h3 style="font-weight:700;margin-bottom:1rem;">💰 Precios de la Membresía</h3>
-          <p style="font-size:.88rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6">Los precios dinámicos se reflejan en vivo en la plataforma y en los checkout de Stripe. Cambiar estos valores aplica automáticamente a los nuevos pagos.</p>
+          <p style="font-size:.88rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6">Los precios dinámicos se reflejan en vivo en la plataforma y en los checkout de Stripe. Cambiar estos valores aplica automáticamente a los nuevos pagos. Solo afecta a <strong>nuevas suscripciones</strong> — a quien ya está suscrito no se le cambia el cobro. Mínimo $10 MXN (límite de Stripe).</p>
           <div class="form-row">
             <div class="form-field">
               <label>Precio mensual (MXN)</label>
-              <input type="number" id="cfg-precio-mes" min="1" value="200" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
+              <input type="number" id="cfg-precio-mes" min="10" value="200" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
             </div>
             <div class="form-field">
               <label>Precio anual (MXN)</label>
-              <input type="number" id="cfg-precio-ano" min="1" value="1799" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
+              <input type="number" id="cfg-precio-ano" min="10" value="1799" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
             </div>
           </div>
           <button class="btn-add" style="margin-top:.75rem;" onclick="guardarConfiguracionPrecios()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Guardar configuración</button>
@@ -1608,10 +1608,16 @@
       const precioMes = parseInt(document.getElementById('cfg-precio-mes').value) || 200;
       const precioAno = parseInt(document.getElementById('cfg-precio-ano').value) || 1799;
 
+      // Stripe no acepta cargos menores a $10 MXN
+      if (precioMes < 10 || precioAno < 10) {
+        showToast('El precio mínimo es $10 MXN (límite de Stripe)');
+        return;
+      }
+
       await db.collection('config').doc('club').set({
         precioMes,
         precioAno,
-        actualizadoPor: 'admin',
+        actualizadoPor: (auth.currentUser && auth.currentUser.email) || 'admin',
         actualizadoEn: new Date().toISOString()
       }, { merge: true });
 
