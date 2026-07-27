@@ -508,6 +508,21 @@
       <section class="view" id="view-config">
         <div class="view-header"><div><h1 class="view-title">Configuración</h1><p class="view-subtitle">Ajustes del panel de administración.</p></div></div>
         <div class="settings-group">
+          <h3 style="font-weight:700;margin-bottom:1rem;">💰 Precios de la Membresía</h3>
+          <p style="font-size:.88rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6">Los precios dinámicos se reflejan en vivo en la plataforma y en los checkout de Stripe. Cambiar estos valores aplica automáticamente a los nuevos pagos.</p>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Precio mensual (MXN)</label>
+              <input type="number" id="cfg-precio-mes" min="1" value="200" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
+            </div>
+            <div class="form-field">
+              <label>Precio anual (MXN)</label>
+              <input type="number" id="cfg-precio-ano" min="1" value="1799" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
+            </div>
+          </div>
+          <button class="btn-add" style="margin-top:.75rem;" onclick="guardarConfiguracionPrecios()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Guardar configuración</button>
+        </div>
+        <div class="settings-group">
           <h3 style="font-weight:700;margin-bottom:1rem;">Notificaciones</h3>
           <div class="settings-row"><div class="settings-info"><h4>Nuevo miembro registrado</h4><p>Recibir alerta por cada nuevo registro</p></div><div class="toggle active" id="cfgNotifNewMember" onclick="toggleAdminConfig('notifNewMember',this)"></div></div>
 
@@ -1064,7 +1079,9 @@
     const activeMembers=MEMBERS.filter(m=>m.status==='active').length;
     const mensualCount=MEMBERS.filter(m=>m.plan==='Mensual'&&m.status==='active').length;
     const anualCount=MEMBERS.filter(m=>m.plan==='Anual'&&m.status==='active').length;
-    const monthlyIncome = (mensualCount * 200) + Math.round(anualCount * 1799 / 12);
+    const _pMes = Number(window.__precioMes) || 200;
+    const _pAno = Number(window.__precioAno) || 1799;
+    const monthlyIncome = (mensualCount * _pMes) + Math.round(anualCount * _pAno / 12);
     const totalCourses=COURSES.filter(c=>c.status==='published').length;
     const totalLessons=COURSES.reduce((s,c)=>s+(c.lessons?c.lessons.length:0),0);
     const totalWebinars=WEBINARS.length;
@@ -1584,6 +1601,65 @@
     clearTimeout(window._tt);
     window._tt=setTimeout(()=>t.classList.remove('show'),1800);
   }
+
+  // ═══ CONFIGURACIÓN DINÁMICA DE PRECIOS ═══
+  window.guardarConfiguracionPrecios = async function(){
+    try {
+      const precioMes = parseInt(document.getElementById('cfg-precio-mes').value) || 200;
+      const precioAno = parseInt(document.getElementById('cfg-precio-ano').value) || 1799;
+
+      await db.collection('config').doc('club').set({
+        precioMes,
+        precioAno,
+        actualizadoPor: 'admin',
+        actualizadoEn: new Date().toISOString()
+      }, { merge: true });
+
+      // Actualizar globales y dashboard al instante
+      window.__precioMes = precioMes;
+      window.__precioAno = precioAno;
+      try { if (typeof renderDashboard === 'function') renderDashboard(); } catch(e) {}
+
+      showToast('Configuración guardada · Los precios se aplicarán a nuevos checkouts');
+      console.log('✅ Precios guardados:', { precioMes, precioAno });
+    } catch (e) {
+      showToast('Error al guardar: ' + e.message);
+      console.error('Config error:', e);
+    }
+  };
+
+  // Cargar precios al abrir la vista de config
+  async function cargarConfiguracionPrecios(){
+    try {
+      const snap = await db.collection('config').doc('club').get();
+      const c = snap.exists ? snap.data() : {};
+      // Globales usados por el dashboard (KPI de ingreso mensual)
+      window.__precioMes = Number(c.precioMes) > 0 ? Number(c.precioMes) : 200;
+      window.__precioAno = Number(c.precioAno) > 0 ? Number(c.precioAno) : 1799;
+      const inMes = document.getElementById('cfg-precio-mes');
+      const inAno = document.getElementById('cfg-precio-ano');
+      if (inMes) inMes.value = window.__precioMes;
+      if (inAno) inAno.value = window.__precioAno;
+      // Re-renderizar dashboard con los precios reales
+      try { if (typeof renderDashboard === 'function') renderDashboard(); } catch(e) {}
+    } catch (e) {
+      console.warn('[Admin] config load:', e.message);
+    }
+  }
+
+  // Hook: cargar precios cuando se navega a config
+  const originalGoTo = window.goTo || function(){};
+  window.goTo = async function(section){
+    originalGoTo.call(this, section);
+    if(section === 'config') {
+      setTimeout(() => cargarConfiguracionPrecios(), 100);
+    }
+  };
+
+  // Cargar precios al inicializar
+  window.addEventListener('load', () => {
+    setTimeout(() => cargarConfiguracionPrecios(), 500);
+  });
 </script>
 </body>
 </html>
