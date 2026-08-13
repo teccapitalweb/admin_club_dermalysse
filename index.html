@@ -388,7 +388,10 @@
       <section class="view" id="view-cursos">
         <div class="view-header">
           <div><h1 class="view-title">Cursos</h1><p class="view-subtitle">Gestiona los cursos grabados del club.</p></div>
-          <button class="btn-add" onclick="openModal('cursoModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo curso</button>
+          <div style="display:flex;gap:.65rem;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="btn-secondary" id="syncBunnyBtn" onclick="sincronizarBunnyDermalysse()">Sincronizar videos Bunny</button>
+            <button class="btn-add" onclick="openModal('cursoModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo curso</button>
+          </div>
         </div>
         <div class="data-table-wrap"><div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar curso..." oninput="renderCursos(this.value)"></div></div><table class="data-table"><thead><tr><th>Curso</th><th>Categoría</th><th>Nivel</th><th>Clases</th><th>Temario</th><th>Portada</th><th>Estado</th><th></th></tr></thead><tbody id="cursosBody"></tbody></table></div>
       </section>
@@ -658,6 +661,7 @@
     </div>
   </div>
 
+<script src="dermalysse-bunny-catalog.js"></script>
 <script>
   // ═══ SAFE STORAGE ═══
   const mem={};
@@ -709,6 +713,68 @@
   let COURSES = syncLoad(SYNC_KEYS.courses) || DEFAULT_COURSES;
 
   function saveCourses() { syncSave(SYNC_KEYS.courses, COURSES); }
+
+  function normalizarTituloBunny(value){
+    return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  function similitudTituloBunny(a,b){
+    const stop=new Set(['de','del','la','las','los','el','en','para','por','y','con']);
+    const tokens=v=>new Set(normalizarTituloBunny(v).split(' ').filter(x=>x&&!stop.has(x)));
+    const aa=tokens(a),bb=tokens(b);if(!aa.size||!bb.size)return 0;
+    let same=0;aa.forEach(x=>{if(bb.has(x))same++});return same/Math.max(aa.size,bb.size);
+  }
+  function slugTituloBunny(value){
+    return normalizarTituloBunny(value).replace(/\s+/g,'-').slice(0,90)||('curso-'+Date.now());
+  }
+  function duracionBunny(seconds){
+    const min=Math.max(1,Math.round((Number(seconds)||0)/60));
+    return min>=60?Math.floor(min/60)+' h '+(min%60?min%60+' min':''):min+' min';
+  }
+
+  window.sincronizarBunnyDermalysse=async function(){
+    const catalog=window.DERMALYSSE_BUNNY_CATALOG;
+    const btn=document.getElementById('syncBunnyBtn');
+    if(!Array.isArray(catalog)||!catalog.length){showToast('Primero genera el catálogo de Bunny');return;}
+    const total=catalog.reduce((sum,c)=>sum+(c.sesiones||[]).length,0);
+    if(!confirm('Se vincularán '+total+' videos de Bunny con '+catalog.length+' cursos.\n\nSe conservarán portadas, temarios, descripciones, orden y progreso.\n\n¿Continuar?'))return;
+    if(btn){btn.disabled=true;btn.textContent='Sincronizando…';}
+    try{
+      const snap=await db.collection('courses').get();
+      const existing=snap.docs.map(d=>({id:d.id,...d.data()}));
+      const used=new Set();
+      const maxOrder=existing.reduce((m,c)=>Math.max(m,Number(c.order)||0),0);
+      let nextOrder=maxOrder+1,updated=0,created=0;
+      const batch=db.batch();
+
+      catalog.forEach(item=>{
+        let previous=existing.find(c=>!used.has(c.id)&&c.bunnyCollectionId===item.collectionId);
+        if(!previous)previous=existing.find(c=>!used.has(c.id)&&normalizarTituloBunny(c.name)===normalizarTituloBunny(item.titulo));
+        if(!previous){
+          previous=existing.filter(c=>!used.has(c.id)).map(c=>({course:c,score:similitudTituloBunny(c.name,item.titulo)}))
+            .filter(x=>x.score>=.7).sort((a,b)=>b.score-a.score)[0]?.course||null;
+        }
+        const id=previous?.id||('bunny-'+slugTituloBunny(item.titulo));
+        if(previous)used.add(previous.id);
+        const oldLessons=Array.isArray(previous?.lessons)?previous.lessons:[];
+        const lessons=(item.sesiones||[]).map((s,i)=>{
+          const old=oldLessons[i]||{};
+          return {...old,name:old.name||s.titulo||('Clase '+(i+1)),desc:old.desc||'',dur:old.dur||duracionBunny(s.duracionSegundos),provider:'bunny',videoId:s.videoId,drive:''};
+        });
+        const data={lessons,bunnyCollectionId:item.collectionId,videoProvider:'bunny',migratedFromDrive:true,updatedAt:new Date().toISOString()};
+        if(!previous){
+          Object.assign(data,{id,name:item.titulo,desc:'',cat:'Dermatología',level:'Intermedio',status:'published',instructor:'Equipo Dermalysse',date:new Date().toISOString().split('T')[0],temario:'',img:'',releaseType:'drip',order:nextOrder++,unlockDate:''});
+          created++;
+        }else updated++;
+        batch.set(db.collection('courses').doc(id),data,{merge:true});
+      });
+      await batch.commit();
+      await _loadFromFirestore();
+      renderCursos();renderDashboard();
+      showToast('Bunny sincronizado: '+total+' videos · '+updated+' actualizados · '+created+' creados');
+    }catch(error){console.error('[Bunny sync]',error);showToast('Error al sincronizar: '+(error.message||error));}
+    finally{if(btn){btn.disabled=false;btn.textContent='Sincronizar videos Bunny';}}
+  };
 
   const DEFAULT_WEBINARS=[
     {id:'w-01',title:'Peelings químicos: del ácido glicólico al TCA',date:'2026-11-22T19:00',duration:'60 min',speaker:'Dr. Miguel Castro',registered:87,status:'scheduled',cv:'https://drive.google.com/file/d/cv-castro',live:'https://zoom.us/j/ejemplo123',drive:'',img:''},
@@ -1170,7 +1236,8 @@
         <input type="text" class="full" placeholder="Nombre de la clase" data-field="name">
         <input type="text" placeholder="Descripción breve" data-field="desc">
         <input type="text" placeholder="Duración (ej: 45 min)" data-field="dur">
-        <input type="text" class="drive-input" placeholder="Link de Drive del video" data-field="drive">
+        <input type="text" class="full" placeholder="Bunny Video ID (UUID)" data-field="videoId" style="font-family:monospace;border-left:3px solid #f97316 !important;">
+        <input type="text" class="drive-input" placeholder="Link de Drive antiguo (opcional)" data-field="drive">
       </div>
     `;
     list.appendChild(div);
@@ -1205,8 +1272,9 @@
       const name = item.querySelector('[data-field="name"]').value.trim();
       const desc = item.querySelector('[data-field="desc"]').value.trim();
       const dur = item.querySelector('[data-field="dur"]').value.trim();
+      const videoId = item.querySelector('[data-field="videoId"]').value.trim().toLowerCase();
       const drive = item.querySelector('[data-field="drive"]').value.trim();
-      if(name) clases.push({name, desc, dur, drive});
+      if(name) clases.push({name, desc, dur, provider:videoId?'bunny':(drive?'drive':''), videoId, drive:videoId?'':drive});
     });
     return clases;
   }
@@ -1238,7 +1306,7 @@
           ${l.desc?`<div style="font-size:.82rem;color:var(--text-secondary);margin-top:.1rem;">${l.desc}</div>`:''}
           <div style="display:flex;gap:.75rem;margin-top:.35rem;flex-wrap:wrap;">
             ${l.dur?`<span style="font-size:.75rem;color:var(--text-muted);">⏱ ${l.dur}</span>`:''}
-            ${l.drive?`<a class="drive-link" href="${l.drive}" target="_blank">${driveSvg} Video</a>`:`<span class="no-drive">Sin video</span>`}
+            ${l.videoId?`<span class="drive-link" style="color:#ea580c;background:rgba(249,115,22,.08);">Bunny · ${l.videoId.slice(0,8)}…</span>`:(l.drive?`<a class="drive-link" href="${l.drive}" target="_blank">${driveSvg} Video</a>`:`<span class="no-drive">Sin video</span>`)}
           </div>
         </div>
       </div>
@@ -1464,7 +1532,7 @@
     document.getElementById('mCursoUnlockDate').value=c.unlockDate||'';
     toggleReleaseFields();
     var clList=document.getElementById('mClasesList');clList.innerHTML='';_claseCounter=0;
-    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var row=document.getElementById('clase-'+_claseCounter);if(row){var nf=row.querySelector('[data-field="name"]');var df=row.querySelector('[data-field="desc"]');var du=row.querySelector('[data-field="dur"]');var dr=row.querySelector('[data-field="drive"]');if(nf)nf.value=l.name||'';if(df)df.value=l.desc||'';if(du)du.value=l.dur||'';if(dr)dr.value=l.drive||'';}})}
+    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var row=document.getElementById('clase-'+_claseCounter);if(row){var nf=row.querySelector('[data-field="name"]');var df=row.querySelector('[data-field="desc"]');var du=row.querySelector('[data-field="dur"]');var vi=row.querySelector('[data-field="videoId"]');var dr=row.querySelector('[data-field="drive"]');if(nf)nf.value=l.name||'';if(df)df.value=l.desc||'';if(du)du.value=l.dur||'';if(vi)vi.value=l.videoId||'';if(dr)dr.value=l.drive||'';}})}
     updateClaseCount();
     document.querySelector('#cursoModal .modal-title').textContent='Editar curso';
     document.querySelector('#cursoModal .btn-add').textContent='Guardar cambios';
