@@ -53,6 +53,10 @@ service cloud.firestore {
       allow write: if admin();
     }
 
+    match /activity/{docId} {
+      allow read, write: if admin();
+    }
+
     match /{collectionName}/{docId} {
       allow read: if signedIn()
         && collectionName in ['courses', 'webinars', 'pdfs', 'news', 'notifications', 'atlas'];
