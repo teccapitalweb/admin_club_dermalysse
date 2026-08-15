@@ -662,6 +662,7 @@
   </div>
 
 <script src="dermalysse-bunny-catalog.js"></script>
+<script src="data/dermalysse-courses.js"></script>
 <script>
   // ═══ SAFE STORAGE ═══
   const mem={};
@@ -692,25 +693,23 @@
   }
   function syncLoad(key) { try { const d = sGet(key); return d ? JSON.parse(d) : null; } catch(e) { return null; } }
 
-  // ═══ MOCK DATA (defaults si no hay datos en localStorage) ═══
-  const DEFAULT_COURSES=[
-    {id:'c-01',name:'Fundamentos de Dermatología Estética',cat:'Dermatología',level:'Intermedio',status:'published',instructor:'Dr. Miguel Castro',date:'2026-03-14',temario:'https://drive.google.com/file/d/temario1',img:'https://drive.google.com/file/d/portada1',lessons:[
-      {name:'Introducción a la dermatología estética',desc:'Historia, evolución y alcance actual de la especialidad.',dur:'45 min',drive:'https://drive.google.com/file/d/clase1'},
-      {name:'Anatomía de la piel',desc:'Capas de la piel, funciones y estructuras anexas.',dur:'52 min',drive:'https://drive.google.com/file/d/clase2'},
-      {name:'Tipos de piel y diagnóstico',desc:'Clasificación Fitzpatrick, Baumann y evaluación clínica.',dur:'38 min',drive:'https://drive.google.com/file/d/clase3'},
-      {name:'Fotoprotección',desc:'Radiación UV, SPF, filtros minerales vs químicos.',dur:'41 min',drive:''},
-      {name:'Evaluación facial integral',desc:'Técnicas de análisis, lámpara de Wood, dermatoscopio.',dur:'55 min',drive:''}
-    ]},
-    {id:'c-02',name:'Hidrafacial Avanzado',cat:'Estética',level:'Avanzado',status:'published',instructor:'Dra. Ana Valdés',date:'2026-04-01',temario:'',img:'',lessons:[
-      {name:'Principios del Hidrafacial',desc:'Mecanismo de acción: limpieza, exfoliación, extracción, hidratación.',dur:'35 min',drive:'https://drive.google.com/file/d/hf1'},
-      {name:'Protocolos por tipo de piel',desc:'Adaptación para piel grasa, seca, mixta y sensible.',dur:'48 min',drive:'https://drive.google.com/file/d/hf2'},
-      {name:'Activos y boosters',desc:'Selección de sérums según necesidad del paciente.',dur:'42 min',drive:''},
-      {name:'Práctica en cabina',desc:'Demostración paso a paso del procedimiento completo.',dur:'60 min',drive:''}
-    ]},
-    {id:'c-03',name:'Cosmética Natural',cat:'Cosmetología',level:'Básico',status:'draft',instructor:'Dra. Laura Ríos',date:'2026-04-20',temario:'',img:'',lessons:[]}
-  ];
+  // ═══ CATÁLOGO REAL (metadatos públicos; nunca contiene credenciales Bunny) ═══
+  const DEFAULT_COURSES=Array.isArray(window.DERMALYSSE_COURSES)?window.DERMALYSSE_COURSES:[];
+  function isLegacyDemoCatalog(courses){
+    if(!Array.isArray(courses)||!courses.length)return false;
+    const ids=courses.map(c=>c&&c.id).filter(Boolean);
+    return ids.length<=3&&ids.every(id=>['c-01','c-02','c-03'].includes(id));
+  }
+  function selectCourseCatalog(courses){
+    if(!Array.isArray(courses)||!courses.length||isLegacyDemoCatalog(courses))return DEFAULT_COURSES;
+    const realIds=new Set(DEFAULT_COURSES.map(c=>c.id));
+    if(courses.some(c=>realIds.has(c&&c.id))){
+      return courses.filter(c=>!['c-01','c-02','c-03'].includes(c&&c.id));
+    }
+    return courses;
+  }
 
-  let COURSES = syncLoad(SYNC_KEYS.courses) || DEFAULT_COURSES;
+  let COURSES = selectCourseCatalog(syncLoad(SYNC_KEYS.courses));
 
   function saveCourses() { syncSave(SYNC_KEYS.courses, COURSES); }
 
@@ -748,22 +747,26 @@
       const batch=db.batch();
 
       catalog.forEach(item=>{
+        const curated=DEFAULT_COURSES.find(c=>c.bunnyCollectionId===item.collectionId)
+          ||DEFAULT_COURSES.find(c=>normalizarTituloBunny(c.name)===normalizarTituloBunny(item.titulo));
         let previous=existing.find(c=>!used.has(c.id)&&c.bunnyCollectionId===item.collectionId);
         if(!previous)previous=existing.find(c=>!used.has(c.id)&&normalizarTituloBunny(c.name)===normalizarTituloBunny(item.titulo));
         if(!previous){
           previous=existing.filter(c=>!used.has(c.id)).map(c=>({course:c,score:similitudTituloBunny(c.name,item.titulo)}))
             .filter(x=>x.score>=.7).sort((a,b)=>b.score-a.score)[0]?.course||null;
         }
-        const id=previous?.id||('bunny-'+slugTituloBunny(item.titulo));
+        const id=previous?.id||curated?.id||('bunny-'+slugTituloBunny(item.titulo));
         if(previous)used.add(previous.id);
         const oldLessons=Array.isArray(previous?.lessons)?previous.lessons:[];
-        const lessons=(item.sesiones||[]).map((s,i)=>{
-          const old=oldLessons[i]||{};
-          return {...old,name:old.name||s.titulo||('Clase '+(i+1)),desc:old.desc||'',dur:old.dur||duracionBunny(s.duracionSegundos),provider:'bunny',videoId:s.videoId,drive:''};
+        const sourceLessons=Array.isArray(curated?.lessons)&&curated.lessons.length?curated.lessons:(item.sesiones||[]);
+        const lessons=sourceLessons.map((s,i)=>{
+          const old=oldLessons.find(l=>l.id&&s.id&&l.id===s.id)||oldLessons.find(l=>l.videoId&&l.videoId===s.videoId)||oldLessons[i]||{};
+          return {...old,...s,name:s.name||s.titulo||old.name||('Clase '+(i+1)),desc:s.desc||old.desc||'',dur:s.dur||old.dur||duracionBunny(s.duracionSegundos),order:Number(s.order)||i+1,provider:'bunny',videoId:s.videoId,drive:'',isPreview:i===0};
         });
-        const data={lessons,bunnyCollectionId:item.collectionId,videoProvider:'bunny',migratedFromDrive:true,updatedAt:new Date().toISOString()};
+        const data={...(curated||{}),id,lessons,bunnyCollectionId:item.collectionId,videoProvider:'bunny',migratedFromDrive:true,status:'published',updatedAt:new Date().toISOString()};
+        if(previous?.temario&&!data.temario)data.temario=previous.temario;
         if(!previous){
-          Object.assign(data,{id,name:item.titulo,desc:'',cat:'Dermatología',level:'Intermedio',status:'published',instructor:'Equipo Dermalysse',date:new Date().toISOString().split('T')[0],temario:'',img:'',releaseType:'drip',order:nextOrder++,unlockDate:''});
+          Object.assign(data,{name:data.name||item.titulo,desc:data.desc||'',cat:data.cat||'Dermatología',level:data.level||'Intermedio',instructor:data.instructor||'Equipo Dermalysse',date:data.date||new Date().toISOString().split('T')[0],temario:data.temario||'',img:data.img||'',releaseType:data.releaseType||'drip',order:Number(data.order)||nextOrder++,unlockDate:data.unlockDate||''});
           created++;
         }else updated++;
         batch.set(db.collection('courses').doc(id),data,{merge:true});
@@ -1003,7 +1006,7 @@
         }
       }
       // Recargar variables globales desde localStorage actualizado
-      COURSES=syncLoad(SYNC_KEYS.courses)||DEFAULT_COURSES;
+      COURSES=selectCourseCatalog(syncLoad(SYNC_KEYS.courses));
       WEBINARS=syncLoad(SYNC_KEYS.webinars)||DEFAULT_WEBINARS;
       PDFS=syncLoad(SYNC_KEYS.pdfs)||DEFAULT_PDFS;
       NEWS=syncLoad(SYNC_KEYS.news)||DEFAULT_NEWS;
@@ -1238,6 +1241,9 @@
         <input type="text" placeholder="Duración (ej: 45 min)" data-field="dur">
         <input type="text" class="full" placeholder="Bunny Video ID (UUID)" data-field="videoId" style="font-family:monospace;border-left:3px solid #f97316 !important;">
         <input type="text" class="drive-input" placeholder="Link de Drive antiguo (opcional)" data-field="drive">
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary);padding:.25rem 0;">
+          <input type="checkbox" data-field="isPreview" style="width:auto;"> Primera clase gratuita
+        </label>
       </div>
     `;
     list.appendChild(div);
@@ -1268,13 +1274,14 @@
   function collectClases(){
     const items = document.querySelectorAll('#mClasesList .lesson-item-row');
     const clases = [];
-    items.forEach(item => {
+    items.forEach((item, index) => {
       const name = item.querySelector('[data-field="name"]').value.trim();
       const desc = item.querySelector('[data-field="desc"]').value.trim();
       const dur = item.querySelector('[data-field="dur"]').value.trim();
       const videoId = item.querySelector('[data-field="videoId"]').value.trim().toLowerCase();
       const drive = item.querySelector('[data-field="drive"]').value.trim();
-      if(name) clases.push({name, desc, dur, provider:videoId?'bunny':(drive?'drive':''), videoId, drive:videoId?'':drive});
+      const isPreview = item.querySelector('[data-field="isPreview"]').checked;
+      if(name) clases.push({...((item._lessonData&&typeof item._lessonData==='object')?item._lessonData:{}),name,desc,dur,videoId,drive:videoId?'':drive,isPreview,order:index+1,provider:videoId?'bunny':(drive?'drive':'')});
     });
     return clases;
   }
@@ -1306,7 +1313,8 @@
           ${l.desc?`<div style="font-size:.82rem;color:var(--text-secondary);margin-top:.1rem;">${l.desc}</div>`:''}
           <div style="display:flex;gap:.75rem;margin-top:.35rem;flex-wrap:wrap;">
             ${l.dur?`<span style="font-size:.75rem;color:var(--text-muted);">⏱ ${l.dur}</span>`:''}
-            ${l.videoId?`<span class="drive-link" style="color:#ea580c;background:rgba(249,115,22,.08);">Bunny · ${l.videoId.slice(0,8)}…</span>`:(l.drive?`<a class="drive-link" href="${l.drive}" target="_blank">${driveSvg} Video</a>`:`<span class="no-drive">Sin video</span>`)}
+            ${l.videoId?`<span class="badge info">Bunny listo</span>`:(l.drive?`<a class="drive-link" href="${l.drive}" target="_blank">${driveSvg} Video legado</a>`:`<span class="no-drive">Sin video</span>`)}
+            ${l.isPreview?`<span class="badge success">Clase gratuita</span>`:''}
           </div>
         </div>
       </div>
@@ -1532,7 +1540,7 @@
     document.getElementById('mCursoUnlockDate').value=c.unlockDate||'';
     toggleReleaseFields();
     var clList=document.getElementById('mClasesList');clList.innerHTML='';_claseCounter=0;
-    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var row=document.getElementById('clase-'+_claseCounter);if(row){var nf=row.querySelector('[data-field="name"]');var df=row.querySelector('[data-field="desc"]');var du=row.querySelector('[data-field="dur"]');var vi=row.querySelector('[data-field="videoId"]');var dr=row.querySelector('[data-field="drive"]');if(nf)nf.value=l.name||'';if(df)df.value=l.desc||'';if(du)du.value=l.dur||'';if(vi)vi.value=l.videoId||'';if(dr)dr.value=l.drive||'';}})}
+    if(c.lessons&&c.lessons.length){c.lessons.forEach(function(l){addClaseField();var row=document.getElementById('clase-'+_claseCounter);if(row){row._lessonData=l;var nf=row.querySelector('[data-field="name"]');var df=row.querySelector('[data-field="desc"]');var du=row.querySelector('[data-field="dur"]');var vi=row.querySelector('[data-field="videoId"]');var dr=row.querySelector('[data-field="drive"]');var pr=row.querySelector('[data-field="isPreview"]');if(nf)nf.value=l.name||'';if(df)df.value=l.desc||'';if(du)du.value=l.dur||'';if(vi)vi.value=l.videoId||'';if(dr)dr.value=l.drive||'';if(pr)pr.checked=!!l.isPreview;}})}
     updateClaseCount();
     document.querySelector('#cursoModal .modal-title').textContent='Editar curso';
     document.querySelector('#cursoModal .btn-add').textContent='Guardar cambios';
