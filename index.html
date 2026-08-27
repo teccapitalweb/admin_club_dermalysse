@@ -517,7 +517,7 @@
           <div class="form-row">
             <div class="form-field">
               <label>Nombre ficha 1</label>
-              <input type="text" id="cfg-congreso-nombre-1" value="Especial" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
+              <input type="text" id="cfg-congreso-nombre-1" value="Preferente" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
             </div>
             <div class="form-field">
               <label>Precio ficha 1 (MXN)</label>
@@ -536,11 +536,25 @@
           </div>
           <button class="btn-add" style="margin-top:.75rem;" onclick="guardarConfiguracionCongreso()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Guardar fichas</button>
         </div>
+        <!-- ═══ MAPA DE ASIENTOS ═══ -->
+        <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Mapa de asientos</h2><p class="view-subtitle">Estado en vivo de la sala. Fila ★ reservada para ponentes · Filas A–D preferente · Filas E–J general.</p></div><button class="btn-add" onclick="cargarCongresoAsientos()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg> Actualizar</button></div>
+        <div class="settings-group">
+          <div id="asientosResumen" style="display:flex;flex-wrap:wrap;gap:1.5rem;margin-bottom:1.25rem;font-size:.88rem;color:var(--text-secondary);"></div>
+          <div id="asientosMapa" style="display:grid;gap:.4rem;justify-content:center;overflow-x:auto;padding:.5rem 0;"><p style="color:var(--text-muted);text-align:center;">Cargando asientos…</p></div>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.25rem;margin-top:1.25rem;font-size:.78rem;color:var(--text-secondary);">
+            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid #14b8a6;background:rgba(20,184,166,.12);"></i> Disponible</span>
+            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;background:#14b8a6;"></i> Vendido</span>
+            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid #f59e0b;background:rgba(245,158,11,.18);"></i> Apartado (pago en proceso)</span>
+            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid #d9a441;background:rgba(217,164,65,.2);"></i> Ponentes</span>
+            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid var(--border-soft);background:var(--bg-elevated);opacity:.6;"></i> Bloqueado</span>
+          </div>
+          <p style="font-size:.78rem;color:var(--text-muted);margin-top:1rem;text-align:center;">Haz clic en un asiento para ver quién lo compró, o para bloquearlo / liberarlo manualmente (ventas en puerta).</p>
+        </div>
         <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Registros de compra</h2><p class="view-subtitle">Personas que compraron su ficha al congreso.</p></div></div>
         <div class="data-table-wrap">
           <div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar por nombre o correo..." oninput="renderCongresoRegistros(this.value)"></div></div>
-          <table class="data-table"><thead><tr><th>Nombre completo</th><th>Correo</th><th>Teléfono</th><th>Ficha</th><th>Fecha de compra</th><th>Datos extra</th><th></th></tr></thead>
-          <tbody id="congresoBody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Cargando registros...</td></tr></tbody></table>
+          <table class="data-table"><thead><tr><th>Nombre completo</th><th>Correo</th><th>Teléfono</th><th>Ficha</th><th>Asiento</th><th>Fecha de compra</th><th>Datos extra</th><th></th></tr></thead>
+          <tbody id="congresoBody"><tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Cargando registros...</td></tr></tbody></table>
         </div>
       </section>
     <!-- ═══ CONFIG ═══ -->
@@ -1785,14 +1799,122 @@
       const extra = r.extra && typeof r.extra === 'object' && Object.keys(r.extra).length
         ? Object.entries(r.extra).map(([k,v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('')
         : '—';
-      return `<tr><td>${r.nombre || '—'}</td><td>${r.correo || '—'}</td><td>${r.telefono || '—'}</td><td><span class="badge info">${r.ficha || '—'}</span></td><td>${fecha}</td><td style="font-size:.8rem;">${extra}</td><td><div class="action-btns"><button class="action-btn danger" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div></td></tr>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
+      return `<tr><td>${r.nombre || '—'}</td><td>${r.correo || '—'}</td><td>${r.telefono || '—'}</td><td><span class="badge info">${r.ficha || '—'}</span></td><td>${r.asiento ? '<span class="badge success">' + r.asiento + '</span>' : '—'}</td><td>${fecha}</td><td style="font-size:.8rem;">${extra}</td><td><div class="action-btns"><button class="action-btn danger" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div></td></tr>`;
+    }).join('') || '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
   }
   window.eliminarCongresoRegistro = function(id){
     if (!confirm('¿Eliminar este registro?')) return;
     db.collection('congresoRegistrations').doc(id).delete()
       .then(() => { CONGRESO_REGISTROS = CONGRESO_REGISTROS.filter(r => r.id !== id); renderCongresoRegistros(); showToast('Registro eliminado'); })
       .catch(e => showToast('Error al eliminar: ' + e.message));
+  };
+
+  // ═══ MAPA DE ASIENTOS DEL CONGRESO ═══
+  // Mismo layout que el backend (fila ★=ponentes, A–D preferente, E–J general).
+  // Los docs viven en la colección congresoAsientos; el backend los crea solos
+  // con la primera compra o la primera visita al mapa del landing.
+  const ASIENTOS_LAYOUT = [
+    { fila: 'P', asientos: 8,  zona: 'ponente' },
+    { fila: 'A', asientos: 10, zona: 'preferente' },
+    { fila: 'B', asientos: 10, zona: 'preferente' },
+    { fila: 'C', asientos: 10, zona: 'preferente' },
+    { fila: 'D', asientos: 10, zona: 'preferente' },
+    { fila: 'E', asientos: 10, zona: 'general' },
+    { fila: 'F', asientos: 10, zona: 'general' },
+    { fila: 'G', asientos: 10, zona: 'general' },
+    { fila: 'H', asientos: 10, zona: 'general' },
+    { fila: 'I', asientos: 10, zona: 'general' },
+    { fila: 'J', asientos: 10, zona: 'general' }
+  ];
+  let CONGRESO_ASIENTOS = {};
+
+  function estadoAsientoEfectivo(a){
+    if (a.estado === 'hold' && a.holdUntil && new Date(a.holdUntil) < new Date()) return 'libre';
+    return a.estado;
+  }
+
+  window.cargarCongresoAsientos = async function(){
+    const cont = document.getElementById('asientosMapa');
+    if (!cont) return;
+    try {
+      const snap = await db.collection('congresoAsientos').get();
+      CONGRESO_ASIENTOS = {};
+      snap.docs.forEach(d => { CONGRESO_ASIENTOS[d.id] = d.data(); });
+      renderCongresoAsientos();
+    } catch (e) {
+      console.warn('[Admin] asientos load:', e.message);
+      cont.innerHTML = '<p style="color:var(--text-muted);text-align:center;">Aún no hay asientos creados. Se crean solos con la primera visita al mapa en la página del congreso.</p>';
+    }
+  };
+
+  function renderCongresoAsientos(){
+    const cont = document.getElementById('asientosMapa');
+    const resumen = document.getElementById('asientosResumen');
+    if (!cont) return;
+    const colores = {
+      libre:     'border:1px solid #14b8a6;background:rgba(20,184,166,.12);color:var(--text-secondary);',
+      vendido:   'border:1px solid #14b8a6;background:#14b8a6;color:#04211c;',
+      hold:      'border:1px solid #f59e0b;background:rgba(245,158,11,.18);color:#b45309;',
+      reservado: 'border:1px solid #d9a441;background:rgba(217,164,65,.2);color:#a16207;',
+      bloqueado: 'border:1px solid var(--border-soft);background:var(--bg-elevated);color:var(--text-muted);opacity:.6;'
+    };
+    let vendPref = 0, vendGen = 0, holds = 0;
+    const filas = ASIENTOS_LAYOUT.map(f => {
+      const celdas = [];
+      for (let n = 1; n <= f.asientos; n++) {
+        const id = f.fila + n;
+        const a = CONGRESO_ASIENTOS[id] || { estado: f.zona === 'ponente' ? 'reservado' : 'libre', zona: f.zona };
+        const est = estadoAsientoEfectivo(a);
+        if (est === 'vendido') { if (f.zona === 'preferente') vendPref++; else if (f.zona === 'general') vendGen++; }
+        if (est === 'hold') holds++;
+        const titulo = est === 'vendido' ? (a.nombre || 'Vendido') : est === 'reservado' ? 'Ponentes' : est;
+        celdas.push('<button type="button" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + titulo + '" style="width:2rem;height:2rem;border-radius:7px 7px 3px 3px;font-size:.6rem;font-weight:600;cursor:pointer;' + (colores[est] || colores.libre) + '">' + n + '</button>');
+      }
+      const sep = f.fila === 'E' ? 'margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--border-soft);' : '';
+      return '<div style="display:grid;grid-template-columns:1.4rem 1fr;align-items:center;gap:.6rem;' + sep + '"><span style="font-size:.72rem;font-weight:700;text-align:center;color:' + (f.zona === 'ponente' ? '#d9a441' : 'var(--text-muted)') + ';">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div style="display:flex;justify-content:center;gap:.3rem;">' + celdas.join('') + '</div></div>';
+    });
+    cont.innerHTML = '<div style="margin:0 auto .9rem;width:70%;text-align:center;padding:.35rem 0;border-radius:999px 999px 6px 6px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.35);font-size:.65rem;font-weight:700;letter-spacing:.3em;color:#0d9488;">ESCENARIO</div>' + filas.join('');
+    if (resumen) {
+      resumen.innerHTML =
+        '<span><strong style="color:var(--text-primary);">Preferente:</strong> ' + vendPref + ' / 40 vendidos</span>' +
+        '<span><strong style="color:var(--text-primary);">General:</strong> ' + vendGen + ' / 60 vendidos</span>' +
+        '<span><strong style="color:var(--text-primary);">Ponentes:</strong> 8 reservados</span>' +
+        (holds ? '<span><strong style="color:#b45309;">En proceso de pago:</strong> ' + holds + '</span>' : '');
+    }
+  }
+
+  window.detalleAsiento = async function(id){
+    const a = CONGRESO_ASIENTOS[id];
+    if (!a) { showToast('El asiento ' + id + ' aún no existe en Firestore'); return; }
+    const est = estadoAsientoEfectivo(a);
+    if (est === 'vendido') {
+      alert('Asiento ' + id + '\n\nVendido a: ' + (a.nombre || '—') + '\nZona: ' + a.zona + '\n\nPara liberarlo elimina primero el registro de compra correspondiente y usa "Liberar" aquí.');
+      if (confirm('¿Liberar el asiento ' + id + '? (solo si cancelaste/reembolsaste esa compra)')) {
+        await db.collection('congresoAsientos').doc(id).set({ estado: 'libre', holdUntil: null, sessionId: null, registroId: null, nombre: null, actualizadoEn: new Date().toISOString() }, { merge: true });
+        showToast('Asiento ' + id + ' liberado'); cargarCongresoAsientos();
+      }
+      return;
+    }
+    if (est === 'reservado' && a.zona === 'ponente') {
+      showToast('Asiento ' + id + ': reservado para ponentes');
+      return;
+    }
+    if (est === 'hold') {
+      showToast('Asiento ' + id + ': apartado, pago en proceso (se libera solo si no pagan)');
+      return;
+    }
+    if (est === 'bloqueado') {
+      if (confirm('¿Desbloquear el asiento ' + id + '?')) {
+        await db.collection('congresoAsientos').doc(id).set({ estado: 'libre', actualizadoEn: new Date().toISOString() }, { merge: true });
+        showToast('Asiento ' + id + ' disponible de nuevo'); cargarCongresoAsientos();
+      }
+      return;
+    }
+    // libre → ofrecer bloquear (venta en puerta / apartado manual)
+    if (confirm('¿Bloquear el asiento ' + id + '? (deja de aparecer disponible en la página)')) {
+      await db.collection('congresoAsientos').doc(id).set({ estado: 'bloqueado', actualizadoEn: new Date().toISOString() }, { merge: true });
+      showToast('Asiento ' + id + ' bloqueado'); cargarCongresoAsientos();
+    }
   };
 
   // ═══ CONFIGURACIÓN DINÁMICA DE PRECIOS ═══
@@ -1854,7 +1976,7 @@
       setTimeout(() => cargarConfiguracionPrecios(), 100);
     }
     if(section === 'congreso') {
-      setTimeout(() => { cargarConfiguracionCongreso(); cargarCongresoRegistros(); }, 100);
+      setTimeout(() => { cargarConfiguracionCongreso(); cargarCongresoRegistros(); cargarCongresoAsientos(); }, 100);
     }
   };
 

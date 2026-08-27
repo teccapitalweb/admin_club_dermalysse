@@ -61,6 +61,12 @@ service cloud.firestore {
       allow read, write: if admin();
     }
 
+    match /congresoAsientos/{docId} {
+      // El público NO lee esto directo: el mapa del landing pasa por el
+      // backend (GET /congreso/asientos, admin SDK). Aquí solo el admin.
+      allow read, write: if admin();
+    }
+
     match /{collectionName}/{docId} {
       allow read: if signedIn()
         && collectionName in ['courses', 'webinars', 'pdfs', 'news', 'notifications', 'atlas'];
