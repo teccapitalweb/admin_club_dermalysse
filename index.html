@@ -537,6 +537,34 @@
           </div>
           <button class="btn-add" style="margin-top:.75rem;" onclick="guardarConfiguracionCongreso()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Guardar fichas</button>
         </div>
+        <!-- ═══ TAQUILLA / REGISTRO MANUAL ═══ -->
+        <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Taquilla del evento</h2><p class="view-subtitle">Registra ventas presenciales, vincula la ficha y asigna un asiento disponible.</p></div></div>
+        <div class="settings-group" id="taquillaCongreso">
+          <input type="hidden" id="taq-registro-id">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;">
+            <div><h3 id="taq-titulo" style="font-weight:700;margin-bottom:.3rem;">Nuevo asistente</h3><p style="font-size:.82rem;color:var(--text-secondary);line-height:1.5;">Los lugares ocupados aquí desaparecen inmediatamente de la venta pública.</p></div>
+            <span class="badge info" id="taq-modo">VENTA EN PUERTA</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;">
+            <div class="form-field"><label>Nombre completo *</label><input type="text" id="taq-nombre" placeholder="Nombre del asistente"></div>
+            <div class="form-field"><label>Correo</label><input type="email" id="taq-correo" placeholder="correo@ejemplo.com"></div>
+            <div class="form-field"><label>Teléfono</label><input type="tel" id="taq-telefono" placeholder="+52..."></div>
+            <div class="form-field"><label>Ficha *</label><select id="taq-ficha" onchange="actualizarOpcionesAsiento()"><option value="ficha1">Preferente</option><option value="ficha2">General</option></select></div>
+            <div class="form-field"><label>Asiento disponible *</label><select id="taq-asiento"><option value="">Cargando lugares…</option></select></div>
+            <div class="form-field"><label>Método de pago</label><select id="taq-metodo"><option value="efectivo">Efectivo</option><option value="tarjeta_terminal">Tarjeta en terminal</option><option value="transferencia">Transferencia</option><option value="cortesia">Cortesía</option><option value="stripe">Stripe</option></select></div>
+            <div class="form-field"><label>Monto registrado (MXN)</label><input type="number" id="taq-monto" min="0" step="1"></div>
+            <div class="form-field"><label>Empresa</label><input type="text" id="taq-empresa" placeholder="Empresa o consultorio"></div>
+            <div class="form-field"><label>LinkedIn o sitio web</label><input type="text" id="taq-linkedin" placeholder="Perfil o página"></div>
+            <div class="form-field"><label>Instagram</label><input type="text" id="taq-instagram" placeholder="@usuario"></div>
+            <div class="form-field" style="grid-column:1/-1;"><label>Notas internas</label><input type="text" id="taq-notas" placeholder="Observaciones para acreditación"></div>
+          </div>
+          <label style="display:flex;align-items:center;gap:.65rem;margin-top:1.1rem;font-size:.86rem;color:var(--text-secondary);cursor:pointer;"><input type="checkbox" id="taq-enviar" checked style="width:1rem;height:1rem;"> Enviar confirmación por correo al guardar</label>
+          <div style="display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.25rem;">
+            <button class="btn-add" id="taq-guardar" onclick="guardarRegistroTaquilla()">Registrar y ocupar asiento</button>
+            <button class="btn-secondary" onclick="limpiarFormularioTaquilla()">Limpiar</button>
+            <button class="btn-secondary" onclick="bloquearAsientoTaquilla()">Bloquear asiento seleccionado</button>
+          </div>
+        </div>
         <!-- ═══ MAPA DE ASIENTOS ═══ -->
         <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Mapa de asientos</h2><p class="view-subtitle">Estado en vivo de la sala. Fila ★ reservada para ponentes · Filas A–D preferente · Filas E–J general.</p></div><button class="btn-add" onclick="cargarCongresoAsientos()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg> Actualizar</button></div>
         <div class="settings-group">
@@ -1730,6 +1758,33 @@
   }
 
   // ═══ CONGRESO: FICHAS ═══
+  var CONGRESO_FICHAS = {
+    ficha1: { nombre: 'Preferente', precio: 1000, zona: 'preferente' },
+    ficha2: { nombre: 'General', precio: 500, zona: 'general' }
+  };
+
+  function textoSeguro(value){
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+
+  async function apiCongresoAdmin(path, options){
+    if (!auth.currentUser) throw new Error('La sesión de administrador no está disponible');
+    const token = await auth.currentUser.getIdToken();
+    const config = Object.assign({}, options || {});
+    config.cache = 'no-store';
+    config.headers = Object.assign({ Authorization: 'Bearer ' + token }, config.headers || {});
+    if (config.body && typeof config.body !== 'string') {
+      config.headers['Content-Type'] = 'application/json';
+      config.body = JSON.stringify(config.body);
+    }
+    const respuesta = await fetch(CONGRESO_BACKEND + path, config);
+    const data = await respuesta.json().catch(() => ({}));
+    if (!respuesta.ok) throw new Error(data.error || 'El backend no respondió correctamente');
+    return data;
+  }
+
   window.guardarConfiguracionCongreso = async function(){
     try {
       const ficha1Nombre = (document.getElementById('cfg-congreso-nombre-1').value || 'Especial').trim();
@@ -1752,6 +1807,9 @@
         actualizadoEn: new Date().toISOString()
       }, { merge: true });
 
+      CONGRESO_FICHAS.ficha1 = { nombre: ficha1Nombre, precio: ficha1Precio, zona: 'preferente' };
+      CONGRESO_FICHAS.ficha2 = { nombre: ficha2Nombre, precio: ficha2Precio, zona: 'general' };
+      actualizarEtiquetasFichasTaquilla();
       showToast('Fichas guardadas · Se aplican a nuevos checkouts');
     } catch (e) {
       showToast('Error al guardar: ' + e.message);
@@ -1771,6 +1829,9 @@
       if (p1) p1.value = Number(c.ficha1Precio) > 0 ? Number(c.ficha1Precio) : 1000;
       if (n2) n2.value = c.ficha2Nombre || 'General';
       if (p2) p2.value = Number(c.ficha2Precio) > 0 ? Number(c.ficha2Precio) : 500;
+      CONGRESO_FICHAS.ficha1 = { nombre: n1 ? n1.value : 'Preferente', precio: p1 ? Number(p1.value) : 1000, zona: 'preferente' };
+      CONGRESO_FICHAS.ficha2 = { nombre: n2 ? n2.value : 'General', precio: p2 ? Number(p2.value) : 500, zona: 'general' };
+      actualizarEtiquetasFichasTaquilla();
     } catch (e) {
       console.warn('[Admin] config congreso load:', e.message);
     }
@@ -1780,14 +1841,7 @@
   var CONGRESO_REGISTROS = [];
   async function cargarCongresoRegistros(){
     try {
-      if (!auth.currentUser) throw new Error('La sesión de administrador no está disponible');
-      const token = await auth.currentUser.getIdToken();
-      const respuesta = await fetch(CONGRESO_BACKEND + '/congreso/admin/registros', {
-        cache: 'no-store',
-        headers: { Authorization: 'Bearer ' + token }
-      });
-      const data = await respuesta.json().catch(() => ({}));
-      if (!respuesta.ok) throw new Error(data.error || 'El backend no respondió correctamente');
+      const data = await apiCongresoAdmin('/congreso/admin/registros');
       CONGRESO_REGISTROS = Array.isArray(data.registros) ? data.registros : [];
       renderCongresoRegistros();
     } catch (e) {
@@ -1805,26 +1859,155 @@
     body.innerHTML = list.map(r => {
       const fecha = r.fechaCompra ? new Date(r.fechaCompra).toLocaleString('es-MX', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
       const extra = r.extra && typeof r.extra === 'object' && Object.keys(r.extra).length
-        ? Object.entries(r.extra).map(([k,v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('')
+        ? Object.entries(r.extra).filter(([,v]) => v).map(([k,v]) => `<div><strong>${textoSeguro(k)}:</strong> ${textoSeguro(v)}</div>`).join('')
         : '—';
       const notif = r.notificacionCompra || 'sin_estado';
-      const notifLabel = notif === 'enviada' ? 'Enviada' : notif === 'no_configurada' ? 'Falta configurar' : notif === 'sin_estado' ? 'Compra anterior' : 'Pendiente';
-      const notifClass = notif === 'enviada' ? 'success' : notif === 'sin_estado' ? 'neutral' : 'warn';
-      return `<tr><td>${r.nombre || '—'}</td><td>${r.correo || '—'}</td><td>${r.telefono || '—'}</td><td><span class="badge info">${r.ficha || '—'}</span></td><td>${r.asiento ? '<span class="badge success">' + r.asiento + '</span>' : '—'}</td><td>${fecha}</td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td style="font-size:.8rem;">${extra}</td><td><div class="action-btns"><button class="action-btn danger" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div></td></tr>`;
+      const cancelado = r.estadoRegistro === 'cancelado';
+      const notifLabel = cancelado ? 'Cancelado' : notif === 'enviada' ? 'Enviada' : notif === 'no_configurada' ? 'Falta configurar' : notif === 'no_solicitada' ? 'No solicitada' : notif === 'sin_estado' ? 'Compra anterior' : 'Pendiente';
+      const notifClass = cancelado ? 'danger' : notif === 'enviada' ? 'success' : (notif === 'sin_estado' || notif === 'no_solicitada') ? 'neutral' : 'warn';
+      const acciones = cancelado ? '' : `<div class="action-btns"><button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div>`;
+      return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td>${textoSeguro(r.nombre || '—')}</td><td>${textoSeguro(r.correo || '—')}</td><td>${textoSeguro(r.telefono || '—')}</td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span>${r.origen === 'taquilla' ? '<div style="font-size:.65rem;color:var(--text-muted);margin-top:.25rem;">TAQUILLA</div>' : ''}</td><td>${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${fecha}</td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td style="font-size:.8rem;">${extra}${r.metodoPago ? '<div><strong>Pago:</strong> ' + textoSeguro(r.metodoPago) + '</div>' : ''}</td><td>${acciones}</td></tr>`;
     }).join('') || '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
   }
-  window.eliminarCongresoRegistro = function(id){
-    if (!confirm('¿Eliminar este registro?')) return;
-    db.collection('congresoRegistrations').doc(id).delete()
-      .then(() => { CONGRESO_REGISTROS = CONGRESO_REGISTROS.filter(r => r.id !== id); renderCongresoRegistros(); showToast('Registro eliminado'); })
-      .catch(e => showToast('Error al eliminar: ' + e.message));
+  window.eliminarCongresoRegistro = async function(id){
+    if (!confirm('¿Cancelar este registro y liberar su asiento? El historial de la compra se conservará.')) return;
+    try {
+      await apiCongresoAdmin('/congreso/admin/registros/' + encodeURIComponent(id), { method: 'DELETE' });
+      await Promise.all([cargarCongresoRegistros(), cargarCongresoAsientos()]);
+      limpiarFormularioTaquilla();
+      showToast('Registro cancelado · asiento liberado');
+    } catch (e) {
+      showToast('Error al cancelar: ' + e.message);
+    }
+  };
+
+  function actualizarEtiquetasFichasTaquilla(){
+    const select = document.getElementById('taq-ficha');
+    if (!select) return;
+    const actual = select.value || 'ficha1';
+    select.innerHTML =
+      '<option value="ficha1">' + textoSeguro(CONGRESO_FICHAS.ficha1.nombre) + ' · $' + Number(CONGRESO_FICHAS.ficha1.precio).toLocaleString('es-MX') + '</option>' +
+      '<option value="ficha2">' + textoSeguro(CONGRESO_FICHAS.ficha2.nombre) + ' · $' + Number(CONGRESO_FICHAS.ficha2.precio).toLocaleString('es-MX') + '</option>';
+    select.value = actual;
+    actualizarOpcionesAsiento();
+  }
+
+  window.actualizarOpcionesAsiento = function(asientoPreferido){
+    const fichaId = document.getElementById('taq-ficha')?.value || 'ficha1';
+    const select = document.getElementById('taq-asiento');
+    const registroId = document.getElementById('taq-registro-id')?.value || '';
+    const registro = CONGRESO_REGISTROS.find(r => r.id === registroId);
+    const actual = asientoPreferido || select?.value || registro?.asiento || '';
+    if (!select) return;
+    const zona = CONGRESO_FICHAS[fichaId].zona;
+    const disponibles = Object.entries(CONGRESO_ASIENTOS)
+      .filter(([id, a]) => a.zona === zona && (estadoAsientoEfectivo(a) === 'libre' || id === registro?.asiento))
+      .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
+    select.innerHTML = '<option value="">Selecciona un lugar</option>' + disponibles.map(([id]) => '<option value="' + id + '">' + id + '</option>').join('');
+    if (actual && disponibles.some(([id]) => id === actual)) select.value = actual;
+
+    const monto = document.getElementById('taq-monto');
+    if (monto && !registroId) monto.value = CONGRESO_FICHAS[fichaId].precio;
+  };
+
+  window.limpiarFormularioTaquilla = function(){
+    const ids = ['taq-registro-id','taq-nombre','taq-correo','taq-telefono','taq-empresa','taq-linkedin','taq-instagram','taq-notas'];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('taq-ficha').value = 'ficha1';
+    document.getElementById('taq-metodo').value = 'efectivo';
+    document.getElementById('taq-enviar').checked = true;
+    document.getElementById('taq-titulo').textContent = 'Nuevo asistente';
+    document.getElementById('taq-modo').textContent = 'VENTA EN PUERTA';
+    document.getElementById('taq-guardar').textContent = 'Registrar y ocupar asiento';
+    actualizarOpcionesAsiento();
+  };
+
+  function fichaIdDeRegistro(registro){
+    if (registro.fichaId === 'ficha1' || registro.fichaId === 'ficha2') return registro.fichaId;
+    const asiento = CONGRESO_ASIENTOS[registro.asiento];
+    if (asiento?.zona === 'preferente') return 'ficha1';
+    if (asiento?.zona === 'general') return 'ficha2';
+    return registro.ficha === CONGRESO_FICHAS.ficha1.nombre ? 'ficha1' : 'ficha2';
+  }
+
+  window.abrirRegistroTaquilla = function(id){
+    const r = CONGRESO_REGISTROS.find(item => item.id === id);
+    if (!r) return showToast('No se encontró el registro');
+    document.getElementById('taq-registro-id').value = r.id;
+    document.getElementById('taq-nombre').value = r.nombre || '';
+    document.getElementById('taq-correo').value = r.correo || '';
+    document.getElementById('taq-telefono').value = r.telefono || '';
+    document.getElementById('taq-ficha').value = fichaIdDeRegistro(r);
+    document.getElementById('taq-metodo').value = r.metodoPago || (r.stripeSessionId ? 'stripe' : 'efectivo');
+    document.getElementById('taq-monto').value = r.monto == null ? '' : r.monto;
+    document.getElementById('taq-empresa').value = r.extra?.Empresa || '';
+    document.getElementById('taq-linkedin').value = r.extra?.['LinkedIn/Web'] || '';
+    document.getElementById('taq-instagram').value = r.extra?.Instagram || '';
+    document.getElementById('taq-notas').value = r.extra?.Notas || '';
+    document.getElementById('taq-enviar').checked = false;
+    document.getElementById('taq-titulo').textContent = 'Editar asistente';
+    document.getElementById('taq-modo').textContent = r.stripeSessionId ? 'COMPRA STRIPE' : 'VENTA EN PUERTA';
+    document.getElementById('taq-guardar').textContent = 'Guardar cambios';
+    actualizarOpcionesAsiento(r.asiento);
+    document.getElementById('taquillaCongreso').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  window.guardarRegistroTaquilla = async function(){
+    const id = document.getElementById('taq-registro-id').value;
+    const payload = {
+      nombre: document.getElementById('taq-nombre').value,
+      correo: document.getElementById('taq-correo').value,
+      telefono: document.getElementById('taq-telefono').value,
+      fichaId: document.getElementById('taq-ficha').value,
+      asiento: document.getElementById('taq-asiento').value,
+      metodoPago: document.getElementById('taq-metodo').value,
+      monto: document.getElementById('taq-monto').value,
+      empresa: document.getElementById('taq-empresa').value,
+      linkedinWeb: document.getElementById('taq-linkedin').value,
+      instagram: document.getElementById('taq-instagram').value,
+      notas: document.getElementById('taq-notas').value,
+      enviarConfirmacion: document.getElementById('taq-enviar').checked
+    };
+    if (!payload.nombre.trim() || !payload.asiento) return showToast('Nombre y asiento son obligatorios');
+    if (payload.enviarConfirmacion && !payload.correo.trim()) return showToast('Agrega el correo o desactiva la confirmación');
+
+    const boton = document.getElementById('taq-guardar');
+    boton.disabled = true;
+    boton.textContent = 'Guardando…';
+    try {
+      await apiCongresoAdmin('/congreso/admin/registros' + (id ? '/' + encodeURIComponent(id) : ''), {
+        method: id ? 'PUT' : 'POST',
+        body: payload
+      });
+      await Promise.all([cargarCongresoRegistros(), cargarCongresoAsientos()]);
+      limpiarFormularioTaquilla();
+      showToast(id ? 'Asistente actualizado' : 'Venta registrada · asiento ocupado');
+    } catch (e) {
+      showToast('No se pudo guardar: ' + e.message);
+    } finally {
+      boton.disabled = false;
+      boton.textContent = document.getElementById('taq-registro-id').value ? 'Guardar cambios' : 'Registrar y ocupar asiento';
+    }
+  };
+
+  window.bloquearAsientoTaquilla = async function(){
+    const asiento = document.getElementById('taq-asiento').value;
+    if (!asiento) return showToast('Selecciona primero un asiento disponible');
+    if (!confirm('¿Bloquear temporalmente el asiento ' + asiento + '?')) return;
+    try {
+      await apiCongresoAdmin('/congreso/admin/asientos/' + encodeURIComponent(asiento), { method: 'PATCH', body: { accion: 'bloquear' } });
+      await cargarCongresoAsientos();
+      showToast('Asiento ' + asiento + ' bloqueado');
+    } catch (e) {
+      showToast('No se pudo bloquear: ' + e.message);
+    }
   };
 
   // ═══ MAPA DE ASIENTOS DEL CONGRESO ═══
   // Mismo layout que el backend (fila ★=ponentes, A–D preferente, E–J general).
   // Los docs viven en la colección congresoAsientos; el backend los crea solos
   // con la primera compra o la primera visita al mapa del landing.
-  const ASIENTOS_LAYOUT = [
+  let ASIENTOS_LAYOUT = [
     { fila: 'P', asientos: 8,  zona: 'ponente' },
     { fila: 'A', asientos: 10, zona: 'preferente' },
     { fila: 'B', asientos: 10, zona: 'preferente' },
@@ -1848,13 +2031,15 @@
     const cont = document.getElementById('asientosMapa');
     if (!cont) return;
     try {
-      const snap = await db.collection('congresoAsientos').get();
+      const data = await apiCongresoAdmin('/congreso/admin/asientos');
+      if (Array.isArray(data.layout) && data.layout.length) ASIENTOS_LAYOUT = data.layout;
       CONGRESO_ASIENTOS = {};
-      snap.docs.forEach(d => { CONGRESO_ASIENTOS[d.id] = d.data(); });
+      (data.asientos || []).forEach(a => { CONGRESO_ASIENTOS[a.id] = a; });
       renderCongresoAsientos();
+      actualizarOpcionesAsiento();
     } catch (e) {
       console.warn('[Admin] asientos load:', e.message);
-      cont.innerHTML = '<p style="color:var(--text-muted);text-align:center;">Aún no hay asientos creados. Se crean solos con la primera visita al mapa en la página del congreso.</p>';
+      cont.innerHTML = '<p style="color:var(--danger);text-align:center;">No se pudo cargar el mapa: ' + textoSeguro(e.message) + '</p>';
     }
   };
 
@@ -1869,7 +2054,7 @@
       reservado: 'border:1px solid #d9a441;background:rgba(217,164,65,.2);color:#a16207;',
       bloqueado: 'border:1px solid var(--border-soft);background:var(--bg-elevated);color:var(--text-muted);opacity:.6;'
     };
-    let vendPref = 0, vendGen = 0, holds = 0;
+    let vendPref = 0, vendGen = 0, librePref = 0, libreGen = 0, holds = 0, bloqueados = 0;
     const filas = ASIENTOS_LAYOUT.map(f => {
       const celdas = [];
       for (let n = 1; n <= f.asientos; n++) {
@@ -1877,9 +2062,11 @@
         const a = CONGRESO_ASIENTOS[id] || { estado: f.zona === 'ponente' ? 'reservado' : 'libre', zona: f.zona };
         const est = estadoAsientoEfectivo(a);
         if (est === 'vendido') { if (f.zona === 'preferente') vendPref++; else if (f.zona === 'general') vendGen++; }
+        if (est === 'libre') { if (f.zona === 'preferente') librePref++; else if (f.zona === 'general') libreGen++; }
         if (est === 'hold') holds++;
+        if (est === 'bloqueado') bloqueados++;
         const titulo = est === 'vendido' ? (a.nombre || 'Vendido') : est === 'reservado' ? 'Ponentes' : est;
-        celdas.push('<button type="button" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + titulo + '" style="width:2rem;height:2rem;border-radius:7px 7px 3px 3px;font-size:.6rem;font-weight:600;cursor:pointer;' + (colores[est] || colores.libre) + '">' + n + '</button>');
+        celdas.push('<button type="button" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + textoSeguro(titulo) + '" style="width:2rem;height:2rem;border-radius:7px 7px 3px 3px;font-size:.6rem;font-weight:600;cursor:pointer;' + (colores[est] || colores.libre) + '">' + n + '</button>');
       }
       const sep = f.fila === 'E' ? 'margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--border-soft);' : '';
       return '<div style="display:grid;grid-template-columns:1.4rem 1fr;align-items:center;gap:.6rem;' + sep + '"><span style="font-size:.72rem;font-weight:700;text-align:center;color:' + (f.zona === 'ponente' ? '#d9a441' : 'var(--text-muted)') + ';">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div style="display:flex;justify-content:center;gap:.3rem;">' + celdas.join('') + '</div></div>';
@@ -1887,10 +2074,11 @@
     cont.innerHTML = '<div style="margin:0 auto .9rem;width:70%;text-align:center;padding:.35rem 0;border-radius:999px 999px 6px 6px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.35);font-size:.65rem;font-weight:700;letter-spacing:.3em;color:#0d9488;">ESCENARIO</div>' + filas.join('');
     if (resumen) {
       resumen.innerHTML =
-        '<span><strong style="color:var(--text-primary);">Preferente:</strong> ' + vendPref + ' / 40 vendidos</span>' +
-        '<span><strong style="color:var(--text-primary);">General:</strong> ' + vendGen + ' / 60 vendidos</span>' +
+        '<span><strong style="color:var(--text-primary);">Preferente:</strong> ' + librePref + ' disponibles · ' + vendPref + ' vendidos</span>' +
+        '<span><strong style="color:var(--text-primary);">General:</strong> ' + libreGen + ' disponibles · ' + vendGen + ' vendidos</span>' +
         '<span><strong style="color:var(--text-primary);">Ponentes:</strong> 8 reservados</span>' +
-        (holds ? '<span><strong style="color:#b45309;">En proceso de pago:</strong> ' + holds + '</span>' : '');
+        (holds ? '<span><strong style="color:#b45309;">En proceso de pago:</strong> ' + holds + '</span>' : '') +
+        (bloqueados ? '<span><strong style="color:var(--text-muted);">Bloqueados:</strong> ' + bloqueados + '</span>' : '');
     }
   }
 
@@ -1899,11 +2087,9 @@
     if (!a) { showToast('El asiento ' + id + ' aún no existe en Firestore'); return; }
     const est = estadoAsientoEfectivo(a);
     if (est === 'vendido') {
-      alert('Asiento ' + id + '\n\nVendido a: ' + (a.nombre || '—') + '\nZona: ' + a.zona + '\n\nPara liberarlo elimina primero el registro de compra correspondiente y usa "Liberar" aquí.');
-      if (confirm('¿Liberar el asiento ' + id + '? (solo si cancelaste/reembolsaste esa compra)')) {
-        await db.collection('congresoAsientos').doc(id).set({ estado: 'libre', holdUntil: null, sessionId: null, registroId: null, nombre: null, actualizadoEn: new Date().toISOString() }, { merge: true });
-        showToast('Asiento ' + id + ' liberado'); cargarCongresoAsientos();
-      }
+      const registro = CONGRESO_REGISTROS.find(r => r.id === a.registroId || (r.asiento === id && r.estadoRegistro !== 'cancelado'));
+      if (registro) abrirRegistroTaquilla(registro.id);
+      else alert('Asiento ' + id + '\n\nVendido a: ' + (a.nombre || '—') + '\nNo se encontró el registro vinculado.');
       return;
     }
     if (est === 'reservado' && a.zona === 'ponente') {
@@ -1916,16 +2102,18 @@
     }
     if (est === 'bloqueado') {
       if (confirm('¿Desbloquear el asiento ' + id + '?')) {
-        await db.collection('congresoAsientos').doc(id).set({ estado: 'libre', actualizadoEn: new Date().toISOString() }, { merge: true });
-        showToast('Asiento ' + id + ' disponible de nuevo'); cargarCongresoAsientos();
+        try {
+          await apiCongresoAdmin('/congreso/admin/asientos/' + encodeURIComponent(id), { method: 'PATCH', body: { accion: 'liberar' } });
+          showToast('Asiento ' + id + ' disponible de nuevo');
+          cargarCongresoAsientos();
+        } catch (e) { showToast(e.message); }
       }
       return;
     }
-    // libre → ofrecer bloquear (venta en puerta / apartado manual)
-    if (confirm('¿Bloquear el asiento ' + id + '? (deja de aparecer disponible en la página)')) {
-      await db.collection('congresoAsientos').doc(id).set({ estado: 'bloqueado', actualizadoEn: new Date().toISOString() }, { merge: true });
-      showToast('Asiento ' + id + ' bloqueado'); cargarCongresoAsientos();
-    }
+    document.getElementById('taq-ficha').value = a.zona === 'preferente' ? 'ficha1' : 'ficha2';
+    actualizarOpcionesAsiento(id);
+    document.getElementById('taquillaCongreso').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast('Asiento ' + id + ' seleccionado para venta en puerta');
   };
 
   // ═══ CONFIGURACIÓN DINÁMICA DE PRECIOS ═══
