@@ -271,6 +271,111 @@
       .form-row{grid-template-columns:1fr}
     }
     @media(max-width:640px){.kpis-grid{grid-template-columns:1fr 1fr}}
+
+    /* ═══ CONGRESO · TAQUILLA PROFESIONAL ═══ */
+    .congress-head{align-items:center;margin-bottom:1.25rem}
+    .congress-head-actions{display:flex;align-items:center;gap:.65rem}
+    .congress-live{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .8rem;border:1px solid rgba(20,184,166,.25);border-radius:999px;background:rgba(20,184,166,.08);color:#0d9488;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .congress-live::before{content:'';width:7px;height:7px;border-radius:50%;background:#14b8a6;box-shadow:0 0 0 4px rgba(20,184,166,.12)}
+    .congress-nav{position:sticky;z-index:35;top:69px;display:flex;gap:.45rem;overflow-x:auto;margin:0 0 1.25rem;padding:.42rem;border:1px solid var(--border-soft);border-radius:15px;background:rgba(255,255,255,.94);box-shadow:0 8px 30px rgba(46,95,122,.08);backdrop-filter:blur(18px);scrollbar-width:none}
+    .congress-nav::-webkit-scrollbar{display:none}
+    .congress-nav-btn{display:inline-flex;min-height:44px;align-items:center;justify-content:center;gap:.55rem;border-radius:11px;padding:0 1rem;color:var(--text-secondary);font-size:.8rem;font-weight:700;white-space:nowrap;transition:.18s ease}
+    .congress-nav-btn svg{width:16px;height:16px}
+    .congress-nav-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+    .congress-nav-btn.active{background:var(--azul-dark);color:#fff;box-shadow:0 7px 18px rgba(46,95,122,.22)}
+    .congress-pane{display:none;animation:fadeSlide .18s ease}
+    .congress-pane.active{display:block}
+    .congress-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .congress-section-head h2{font-size:1.25rem;letter-spacing:-.02em}
+    .congress-section-head p{margin-top:.2rem;color:var(--text-secondary);font-size:.84rem;line-height:1.5}
+
+    .taq-shell{overflow:hidden;border:1px solid var(--border-soft);border-radius:20px;background:var(--bg-surface);box-shadow:0 14px 45px rgba(46,95,122,.09)}
+    .taq-shell-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--border-soft);padding:1.15rem 1.4rem;background:linear-gradient(135deg,var(--bg-surface),var(--azul-ghost))}
+    .taq-shell-title{display:flex;align-items:center;gap:.85rem}
+    .taq-shell-icon{display:grid;width:42px;height:42px;place-items:center;border-radius:13px;background:var(--azul-dark);color:#fff;box-shadow:0 7px 18px rgba(46,95,122,.22)}
+    .taq-shell-title h3{font-size:1rem;margin:0}
+    .taq-shell-title p{margin:.15rem 0 0;color:var(--text-muted);font-size:.74rem}
+    .taq-steps{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border-soft);background:var(--bg-elevated)}
+    .taq-step-tab{position:relative;display:flex;min-height:67px;align-items:center;justify-content:center;gap:.7rem;border-right:1px solid var(--border-soft);padding:.75rem;color:var(--text-muted);text-align:left}
+    .taq-step-tab:last-child{border-right:0}
+    .taq-step-tab b{display:grid;width:27px;height:27px;flex:0 0 27px;place-items:center;border:1px solid var(--border);border-radius:50%;background:var(--bg-surface);font-size:.72rem}
+    .taq-step-tab span{display:grid;gap:.08rem;font-size:.78rem;font-weight:800}
+    .taq-step-tab small{font-size:.65rem;font-weight:500;color:var(--text-muted)}
+    .taq-step-tab.active{background:var(--bg-surface);color:var(--azul-dark)}
+    .taq-step-tab.active::after{content:'';position:absolute;right:15%;bottom:-1px;left:15%;height:3px;border-radius:3px 3px 0 0;background:#14b8a6}
+    .taq-step-tab.active b{border-color:var(--azul-dark);background:var(--azul-dark);color:#fff}
+    .taq-step-panel{display:none;padding:1.5rem}
+    .taq-step-panel.active{display:block;animation:fadeSlide .16s ease}
+    .taq-essential-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:1rem}
+    .taq-essential-grid .taq-ticket-field{grid-column:1/-1;max-width:420px}
+    .taq-help{display:flex;align-items:flex-start;gap:.65rem;margin:.25rem 0 1rem;border-radius:12px;padding:.8rem 1rem;background:var(--azul-ghost);color:var(--text-secondary);font-size:.78rem;line-height:1.5}
+    .taq-help strong{color:var(--azul-dark)}
+    .taq-actions{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-top:1.25rem;padding-top:1.1rem;border-top:1px solid var(--border-soft)}
+    .taq-actions-right{display:flex;gap:.65rem;margin-left:auto}
+
+    .taq-seat-experience{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:#f7faf9}
+    .taq-seat-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid #dce8e4;padding:1rem 1.15rem;background:#fff}
+    .taq-seat-toolbar h4{font-size:1rem}
+    .taq-seat-toolbar p{margin:.15rem 0 0;color:#587067;font-size:.73rem}
+    .taq-customer-btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid #0b766e;border-radius:10px;padding:.65rem .85rem;background:#fff;color:#0b766e;font-size:.72rem;font-weight:800}
+    .taq-customer-btn:hover{background:#0b766e;color:#fff}
+    .taq-seat-stage{width:min(74%,560px);margin:1.4rem auto .7rem;border-bottom:5px solid #54d8bd;border-radius:100% 100% 8px 8px/75% 75% 8px 8px;padding:.65rem;background:linear-gradient(180deg,#163b33,#071612);color:#9cf2da;font-size:.62rem;font-weight:800;letter-spacing:.28em;text-align:center;box-shadow:0 13px 30px rgba(8,30,25,.16)}
+    .taq-seat-canvas{display:grid;gap:.5rem;justify-content:center;overflow-x:auto;padding:1rem 1rem 1.4rem}
+    .taq-seat-row{display:grid;min-width:max-content;grid-template-columns:24px 1fr;align-items:center;gap:.55rem;margin-inline:auto}
+    .taq-seat-row.is-aisle{margin-top:.7rem;border-top:1px dashed #b9cac4;padding-top:1rem}
+    .taq-seat-row-label{font-size:.68rem;font-weight:800;color:#5d726b;text-align:center}
+    .taq-seat-list{display:flex;gap:.32rem}
+    .taq-chair{position:relative;width:35px;height:34px;border:0;background:transparent;color:#18362f;cursor:pointer}
+    .taq-chair::before{content:'';position:absolute;top:2px;left:5px;width:25px;height:23px;border:1.5px solid #0b8177;border-radius:8px 8px 5px 5px;background:#fff;box-shadow:inset 0 -4px rgba(0,0,0,.04)}
+    .taq-chair::after{content:'';position:absolute;right:2px;bottom:2px;left:2px;height:11px;border:1.5px solid #0b8177;border-radius:4px 4px 7px 7px;background:#fff;box-shadow:0 3px #b5ded5}
+    .taq-chair span{position:relative;z-index:2;display:grid;height:27px;place-items:center;font-size:.58rem;font-weight:800}
+    .taq-chair:hover:not(:disabled){transform:translateY(-3px)}
+    .taq-chair.selected::before,.taq-chair.selected::after{border-color:#062e29;background:#18bda9}.taq-chair.selected::after{box-shadow:0 3px #7ce7ce}
+    .taq-chair.sold,.taq-chair.hold,.taq-chair.blocked,.taq-chair.speaker,.taq-chair.other-zone{cursor:not-allowed}
+    .taq-chair.sold::before,.taq-chair.sold::after{border-color:#a59f96;background:#d8d3cb}.taq-chair.sold::after{box-shadow:0 3px #bbb4aa}
+    .taq-chair.hold::before,.taq-chair.hold::after{border-color:#d49a26;background:#fff5d9}.taq-chair.hold::after{box-shadow:0 3px #edc76c}
+    .taq-chair.blocked{opacity:.28}.taq-chair.speaker::before,.taq-chair.speaker::after{border-color:#071612;background:#0b211c}.taq-chair.speaker{color:#fff}.taq-chair.other-zone{opacity:.16}
+    .taq-seat-selection{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid #dce8e4;padding:1rem 1.2rem;background:#fff}
+    .taq-seat-selection small{display:block;color:#6f817b;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase}
+    .taq-seat-selection strong{display:block;margin-top:.15rem;font-size:1.3rem;color:#096e66}
+    .taq-seat-legend{display:flex;flex-wrap:wrap;gap:.65rem 1rem;color:#61736d;font-size:.68rem}
+    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:10px;height:10px;border:1px solid #0b8177;border-radius:3px;background:#fff}.taq-seat-legend .sold{border-color:#aaa;background:#d8d3cb}.taq-seat-legend .selected{border-color:#062e29;background:#18bda9}
+    body.taq-customer-mode{overflow:hidden}
+    body.taq-customer-mode .taq-seat-experience{position:fixed;z-index:10020;inset:0;border:0;border-radius:0;background:#f6faf8;display:flex;flex-direction:column}
+    body.taq-customer-mode .taq-seat-toolbar{padding:1.25rem 2rem}
+    body.taq-customer-mode .taq-seat-canvas{flex:1;align-content:center;transform:scale(1.18)}
+    body.taq-customer-mode .taq-seat-selection{padding:1rem 2rem}
+
+    .taq-payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .taq-sale-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin:0 0 1rem}
+    .taq-sale-summary div{border:1px solid var(--border-soft);border-radius:12px;padding:.8rem;background:var(--bg-elevated)}
+    .taq-sale-summary small{display:block;color:var(--text-muted);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}
+    .taq-sale-summary strong{display:block;overflow:hidden;margin-top:.2rem;font-size:.86rem;text-overflow:ellipsis;white-space:nowrap}
+    .taq-advanced{margin-top:.5rem;border:1px solid var(--border-soft);border-radius:13px;background:var(--bg-surface)}
+    .taq-advanced summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:1rem;font-size:.82rem;font-weight:800;list-style:none}
+    .taq-advanced summary::-webkit-details-marker{display:none}.taq-advanced summary::after{content:'+';font-size:1.2rem;color:var(--azul-dark)}.taq-advanced[open] summary::after{content:'−'}
+    .taq-advanced-body{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;border-top:1px solid var(--border-soft);padding:1rem}
+    .taq-confirm-check{display:flex;align-items:flex-start;gap:.7rem;margin-top:1rem;border:1px solid rgba(20,184,166,.22);border-radius:12px;padding:.9rem 1rem;background:rgba(20,184,166,.07);font-size:.8rem;color:var(--text-secondary);cursor:pointer}
+    .taq-confirm-check input{width:17px;height:17px;flex:0 0 17px;margin-top:1px}
+
+    .congress-map-card{border:1px solid var(--border-soft);border-radius:18px;padding:1.3rem;background:var(--bg-surface);box-shadow:var(--shadow-xs)}
+    .congress-map-summary{display:flex;flex-wrap:wrap;gap:.65rem;margin-bottom:1rem}
+    .congress-map-summary span{border:1px solid var(--border-soft);border-radius:10px;padding:.6rem .8rem;background:var(--bg-elevated);font-size:.76rem;color:var(--text-secondary)}
+    .congress-config-card{max-width:980px;border:1px solid var(--border-soft);border-radius:18px;padding:1.5rem;background:var(--bg-surface)}
+    .congress-detail-backdrop{position:fixed;z-index:10010;inset:0;display:none;place-items:center;padding:1rem;background:rgba(10,22,19,.55);backdrop-filter:blur(5px)}
+    .congress-detail-backdrop.active{display:grid}
+    .congress-detail-card{width:min(540px,100%);max-height:90vh;overflow:auto;border-radius:20px;padding:1.5rem;background:var(--bg-surface);box-shadow:var(--shadow-lg)}
+    .congress-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--border-soft);padding-bottom:1rem}
+    .congress-detail-close{width:34px;height:34px;border-radius:50%;background:var(--bg-elevated);color:var(--text-muted);font-size:1.1rem}
+    .congress-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1rem}
+    .congress-detail-grid div{border-bottom:1px solid var(--border-soft);padding:.7rem 0}
+    .congress-detail-grid small{display:block;color:var(--text-muted);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}.congress-detail-grid strong{display:block;margin-top:.25rem;font-size:.84rem;word-break:break-word}
+    .congress-record-primary{display:grid;gap:.15rem}.congress-record-primary small{color:var(--text-muted);font-size:.7rem}
+
+    body.dark-mode .congress-nav{background:rgba(36,31,26,.94)}
+    body.dark-mode .taq-seat-experience,body.dark-mode .congress-map-card,body.dark-mode .congress-config-card{border-color:var(--border)}
+    @media(max-width:900px){.taq-essential-grid{grid-template-columns:1fr 1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto;max-width:none}.taq-sale-summary{grid-template-columns:1fr 1fr}}
+    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}body.taq-customer-mode .taq-seat-canvas{transform:none}}
   </style>
 
   <!-- FIREBASE SDK -->
@@ -509,81 +614,117 @@
         <tbody id="atlasTableBody"></tbody></table>
       </div>
     </section>
-    <!-- ═══ CONGRESO ═══ -->
+    <!-- ═══ CONGRESO · OPERACIÓN DE TAQUILLA ═══ -->
       <section class="view" id="view-congreso">
-        <div class="view-header"><div><h1 class="view-title">Congreso</h1><p class="view-subtitle">Fichas de acceso al congreso y registros de compra.</p></div></div>
-        <div class="settings-group">
-          <h3 style="font-weight:700;margin-bottom:1rem;">🎟️ Fichas del Congreso</h3>
-          <p style="font-size:.88rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6">Nombre y precio de cada ficha. Se reflejan en vivo en la página del congreso y en el checkout de Stripe. Mínimo $10 MXN (límite de Stripe).</p>
-          <div class="form-row">
-            <div class="form-field">
-              <label>Nombre ficha 1</label>
-              <input type="text" id="cfg-congreso-nombre-1" value="Preferente" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
-            </div>
-            <div class="form-field">
-              <label>Precio ficha 1 (MXN)</label>
-              <input type="number" id="cfg-congreso-precio-1" min="10" value="1000" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
-            </div>
-          </div>
-          <div class="form-row" style="margin-top:1rem;">
-            <div class="form-field">
-              <label>Nombre ficha 2</label>
-              <input type="text" id="cfg-congreso-nombre-2" value="General" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
-            </div>
-            <div class="form-field">
-              <label>Precio ficha 2 (MXN)</label>
-              <input type="number" id="cfg-congreso-precio-2" min="10" value="500" style="width:100%;padding:.85rem 1rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--radius-sm);font-size:.92rem;font-weight:500;">
-            </div>
-          </div>
-          <button class="btn-add" style="margin-top:.75rem;" onclick="guardarConfiguracionCongreso()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Guardar fichas</button>
+        <div class="view-header congress-head">
+          <div><h1 class="view-title">Congreso</h1><p class="view-subtitle">Taquilla, sala y asistentes en un flujo operativo ordenado.</p></div>
+          <div class="congress-head-actions"><span class="congress-live">Sincronización en vivo</span><button class="btn-add" onclick="iniciarNuevaVenta()">+ Nueva venta</button></div>
         </div>
-        <!-- ═══ TAQUILLA / REGISTRO MANUAL ═══ -->
-        <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Taquilla del evento</h2><p class="view-subtitle">Registra ventas presenciales, vincula la ficha y asigna un asiento disponible.</p></div></div>
-        <div class="settings-group" id="taquillaCongreso">
+
+        <nav class="congress-nav" aria-label="Secciones del congreso">
+          <button class="congress-nav-btn active" data-congress-tab="taquilla" onclick="mostrarCongresoPanel('taquilla')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v14H3z"/><path d="M7 9h4M7 13h7"/></svg>Venta en taquilla</button>
+          <button class="congress-nav-btn" data-congress-tab="sala" onclick="mostrarCongresoPanel('sala')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 10v9M19 10v9M5 15h14M8 5h8a3 3 0 0 1 3 3v7H5V8a3 3 0 0 1 3-3Z"/></svg>Mapa de sala</button>
+          <button class="congress-nav-btn" data-congress-tab="registros" onclick="mostrarCongresoPanel('registros')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Asistentes</button>
+          <button class="congress-nav-btn" data-congress-tab="fichas" onclick="mostrarCongresoPanel('fichas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v10H3z"/><path d="M8 7v10M16 7v10"/></svg>Fichas y precios</button>
+        </nav>
+
+        <!-- TAQUILLA: FLUJO EN 3 PASOS -->
+        <div class="congress-pane active" data-congress-pane="taquilla" id="taquillaCongreso">
           <input type="hidden" id="taq-registro-id">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;">
-            <div><h3 id="taq-titulo" style="font-weight:700;margin-bottom:.3rem;">Nuevo asistente</h3><p style="font-size:.82rem;color:var(--text-secondary);line-height:1.5;">Los lugares ocupados aquí desaparecen inmediatamente de la venta pública.</p></div>
-            <span class="badge info" id="taq-modo">VENTA EN PUERTA</span>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;">
-            <div class="form-field"><label>Nombre completo *</label><input type="text" id="taq-nombre" placeholder="Nombre del asistente"></div>
-            <div class="form-field"><label>Correo</label><input type="email" id="taq-correo" placeholder="correo@ejemplo.com"></div>
-            <div class="form-field"><label>Teléfono</label><input type="tel" id="taq-telefono" placeholder="+52..."></div>
-            <div class="form-field"><label>Ficha *</label><select id="taq-ficha" onchange="actualizarOpcionesAsiento()"><option value="ficha1">Preferente</option><option value="ficha2">General</option></select></div>
-            <div class="form-field"><label>Asiento disponible *</label><select id="taq-asiento"><option value="">Cargando lugares…</option></select></div>
-            <div class="form-field"><label>Método de pago</label><select id="taq-metodo"><option value="efectivo">Efectivo</option><option value="tarjeta_terminal">Tarjeta en terminal</option><option value="transferencia">Transferencia</option><option value="cortesia">Cortesía</option><option value="stripe">Stripe</option></select></div>
-            <div class="form-field"><label>Monto registrado (MXN)</label><input type="number" id="taq-monto" min="0" step="1"></div>
-            <div class="form-field"><label>Empresa</label><input type="text" id="taq-empresa" placeholder="Empresa o consultorio"></div>
-            <div class="form-field"><label>LinkedIn o sitio web</label><input type="text" id="taq-linkedin" placeholder="Perfil o página"></div>
-            <div class="form-field"><label>Instagram</label><input type="text" id="taq-instagram" placeholder="@usuario"></div>
-            <div class="form-field" style="grid-column:1/-1;"><label>Notas internas</label><input type="text" id="taq-notas" placeholder="Observaciones para acreditación"></div>
-          </div>
-          <label style="display:flex;align-items:center;gap:.65rem;margin-top:1.1rem;font-size:.86rem;color:var(--text-secondary);cursor:pointer;"><input type="checkbox" id="taq-enviar" checked style="width:1rem;height:1rem;"> Enviar confirmación por correo al guardar</label>
-          <div style="display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.25rem;">
-            <button class="btn-add" id="taq-guardar" onclick="guardarRegistroTaquilla()">Registrar y ocupar asiento</button>
-            <button class="btn-secondary" onclick="limpiarFormularioTaquilla()">Limpiar</button>
-            <button class="btn-secondary" onclick="bloquearAsientoTaquilla()">Bloquear asiento seleccionado</button>
+          <select id="taq-asiento" hidden aria-hidden="true"><option value="">Cargando lugares…</option></select>
+          <div class="taq-shell">
+            <div class="taq-shell-head">
+              <div class="taq-shell-title"><span class="taq-shell-icon">✦</span><div><h3 id="taq-titulo">Nuevo asistente</h3><p>Venta presencial · el lugar se descuenta inmediatamente de la página pública</p></div></div>
+              <span class="badge info" id="taq-modo">VENTA EN PUERTA</span>
+            </div>
+            <div class="taq-steps" aria-label="Proceso de registro">
+              <button class="taq-step-tab active" data-taq-step-tab="1" onclick="irPasoTaquilla(1)"><b>1</b><span>Datos básicos<small>Persona y ficha</small></span></button>
+              <button class="taq-step-tab" data-taq-step-tab="2" onclick="irPasoTaquilla(2)"><b>2</b><span>Elegir asiento<small>Vista para el asistente</small></span></button>
+              <button class="taq-step-tab" data-taq-step-tab="3" onclick="irPasoTaquilla(3)"><b>3</b><span>Pago y confirmar<small>Revisión final</small></span></button>
+            </div>
+
+            <div class="taq-step-panel active" data-taq-step-panel="1">
+              <div class="congress-section-head"><div><h2>Datos esenciales</h2><p>Captura únicamente lo necesario para identificar la reservación.</p></div></div>
+              <div class="taq-help"><span>ⓘ</span><div><strong>Correo y teléfono son datos de contacto.</strong> La selección visual del lugar se realiza en el siguiente paso.</div></div>
+              <div class="taq-essential-grid">
+                <div class="form-field"><label>Nombre completo *</label><input type="text" id="taq-nombre" placeholder="Nombre del asistente" autocomplete="name" oninput="actualizarResumenVenta()"></div>
+                <div class="form-field"><label>Correo</label><input type="email" id="taq-correo" placeholder="correo@ejemplo.com" autocomplete="email"></div>
+                <div class="form-field"><label>Teléfono</label><input type="tel" id="taq-telefono" placeholder="+52…" autocomplete="tel"></div>
+                <div class="form-field taq-ticket-field"><label>Tipo de ficha *</label><select id="taq-ficha" onchange="cambiarFichaTaquilla()"><option value="ficha1">Especial</option><option value="ficha2">General</option></select></div>
+              </div>
+              <div class="taq-actions"><button class="btn-secondary" onclick="limpiarFormularioTaquilla()">Limpiar</button><div class="taq-actions-right"><button class="btn-add" onclick="irPasoTaquilla(2)">Continuar a asientos →</button></div></div>
+            </div>
+
+            <div class="taq-step-panel" data-taq-step-panel="2">
+              <div class="taq-seat-experience" id="taqSeatExperience">
+                <div class="taq-seat-toolbar">
+                  <div><h4>Elige tu lugar</h4><p id="taq-zona-copy">Mostrando los lugares disponibles para la ficha seleccionada.</p></div>
+                  <button class="taq-customer-btn" type="button" onclick="alternarVistaAsistente()"><span id="taq-customer-icon">▣</span><span id="taq-customer-label">Vista para asistente</span></button>
+                </div>
+                <div class="taq-seat-stage">ESCENARIO / RUNWAY</div>
+                <div class="taq-seat-canvas" id="asientosMapaTaquilla"><p style="color:#6f817b;text-align:center;">Cargando disponibilidad…</p></div>
+                <div class="taq-seat-selection">
+                  <div><small>Asiento seleccionado</small><strong id="taq-asiento-resumen">Ninguno</strong></div>
+                  <div class="taq-seat-legend"><span><i></i>Disponible</span><span><i class="selected"></i>Seleccionado</span><span><i class="sold"></i>No disponible</span></div>
+                </div>
+              </div>
+              <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(1)">← Volver a datos</button><div class="taq-actions-right"><button class="btn-secondary" onclick="bloquearAsientoTaquilla()">Bloquear lugar</button><button class="btn-add" onclick="irPasoTaquilla(3)">Continuar al pago →</button></div></div>
+            </div>
+
+            <div class="taq-step-panel" data-taq-step-panel="3">
+              <div class="congress-section-head"><div><h2>Pago y confirmación</h2><p>Revisa la venta antes de ocupar definitivamente el asiento.</p></div></div>
+              <div class="taq-sale-summary"><div><small>Asistente</small><strong id="taq-resumen-nombre">—</strong></div><div><small>Ficha</small><strong id="taq-resumen-ficha">—</strong></div><div><small>Asiento</small><strong id="taq-resumen-asiento">—</strong></div><div><small>Total</small><strong id="taq-resumen-total">—</strong></div></div>
+              <div class="taq-payment-grid">
+                <div class="form-field"><label>Método de pago</label><select id="taq-metodo"><option value="efectivo">Efectivo</option><option value="tarjeta_terminal">Tarjeta en terminal</option><option value="transferencia">Transferencia</option><option value="cortesia">Cortesía</option><option value="stripe">Stripe</option></select></div>
+                <div class="form-field"><label>Monto registrado (MXN)</label><input type="number" id="taq-monto" min="0" step="1" oninput="actualizarResumenVenta()"></div>
+              </div>
+              <details class="taq-advanced">
+                <summary>Agregar información complementaria <span style="font-weight:500;color:var(--text-muted);">Opcional</span></summary>
+                <div class="taq-advanced-body">
+                  <div class="form-field"><label>Empresa</label><input type="text" id="taq-empresa" placeholder="Empresa o consultorio"></div>
+                  <div class="form-field"><label>Instagram</label><input type="text" id="taq-instagram" placeholder="@usuario"></div>
+                  <div class="form-field"><label>LinkedIn o sitio web</label><input type="text" id="taq-linkedin" placeholder="Perfil o página"></div>
+                  <div class="form-field"><label>Notas internas</label><input type="text" id="taq-notas" placeholder="Observaciones para acreditación"></div>
+                </div>
+              </details>
+              <label class="taq-confirm-check"><input type="checkbox" id="taq-enviar" checked><span><strong>Enviar confirmación de compra por correo</strong><br>Se enviará cuando el registro quede guardado.</span></label>
+              <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(2)">← Volver a asiento</button><div class="taq-actions-right"><button class="btn-add" id="taq-guardar" onclick="guardarRegistroTaquilla()">Registrar venta y ocupar asiento</button></div></div>
+            </div>
           </div>
         </div>
-        <!-- ═══ MAPA DE ASIENTOS ═══ -->
-        <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Mapa de asientos</h2><p class="view-subtitle">Estado en vivo de la sala. Fila ★ reservada para ponentes · Filas A–D preferente · Filas E–J general.</p></div><button class="btn-add" onclick="cargarCongresoAsientos()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg> Actualizar</button></div>
-        <div class="settings-group">
-          <div id="asientosResumen" style="display:flex;flex-wrap:wrap;gap:1.5rem;margin-bottom:1.25rem;font-size:.88rem;color:var(--text-secondary);"></div>
-          <div id="asientosMapa" style="display:grid;gap:.4rem;justify-content:center;overflow-x:auto;padding:.5rem 0;"><p style="color:var(--text-muted);text-align:center;">Cargando asientos…</p></div>
-          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.25rem;margin-top:1.25rem;font-size:.78rem;color:var(--text-secondary);">
-            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid #14b8a6;background:rgba(20,184,166,.12);"></i> Disponible</span>
-            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;background:#14b8a6;"></i> Vendido</span>
-            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid #f59e0b;background:rgba(245,158,11,.18);"></i> Apartado (pago en proceso)</span>
-            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid #d9a441;background:rgba(217,164,65,.2);"></i> Ponentes</span>
-            <span style="display:inline-flex;align-items:center;gap:.4rem;"><i style="display:inline-block;width:.85rem;height:.85rem;border-radius:4px;border:1px solid var(--border-soft);background:var(--bg-elevated);opacity:.6;"></i> Bloqueado</span>
+
+        <!-- MAPA OPERATIVO -->
+        <div class="congress-pane" data-congress-pane="sala">
+          <div class="congress-section-head"><div><h2>Mapa operativo de la sala</h2><p>Consulta ventas, pagos en proceso y bloqueos sin mezclarlo con el registro de taquilla.</p></div><button class="btn-add" onclick="cargarCongresoAsientos()">↻ Actualizar</button></div>
+          <div class="congress-map-card">
+            <div id="asientosResumen" class="congress-map-summary"></div>
+            <div id="asientosMapa" style="display:grid;gap:.4rem;justify-content:center;overflow-x:auto;padding:.5rem 0;"><p style="color:var(--text-muted);text-align:center;">Cargando asientos…</p></div>
+            <p style="font-size:.76rem;color:var(--text-muted);margin-top:1rem;text-align:center;">Haz clic en un asiento para consultar su estado, editar al asistente o bloquearlo.</p>
           </div>
-          <p style="font-size:.78rem;color:var(--text-muted);margin-top:1rem;text-align:center;">Haz clic en un asiento para ver quién lo compró, o para bloquearlo / liberarlo manualmente (ventas en puerta).</p>
         </div>
-        <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Registros de compra</h2><p class="view-subtitle">Personas que compraron su ficha al congreso.</p></div></div>
-        <div class="data-table-wrap">
-          <div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar por nombre o correo..." oninput="renderCongresoRegistros(this.value)"></div></div>
-          <table class="data-table"><thead><tr><th>Nombre completo</th><th>Correo</th><th>Teléfono</th><th>Ficha</th><th>Asiento</th><th>Fecha de compra</th><th>Confirmación</th><th>Datos extra</th><th></th></tr></thead>
-          <tbody id="congresoBody"><tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted);">Cargando registros...</td></tr></tbody></table>
+
+        <!-- REGISTROS -->
+        <div class="congress-pane" data-congress-pane="registros">
+          <div class="congress-section-head"><div><h2>Asistentes y compras</h2><p>Vista resumida. Abre cada registro para consultar el resto de la información.</p></div><button class="btn-add" onclick="iniciarNuevaVenta()">+ Registrar asistente</button></div>
+          <div class="data-table-wrap">
+            <div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar por nombre, correo o asiento…" oninput="renderCongresoRegistros(this.value)"></div></div>
+            <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Asistente</th><th>Ficha y asiento</th><th>Contacto</th><th>Compra</th><th>Estado</th><th></th></tr></thead><tbody id="congresoBody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Cargando registros…</td></tr></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- CONFIGURACIÓN DE FICHAS -->
+        <div class="congress-pane" data-congress-pane="fichas">
+          <div class="congress-section-head"><div><h2>Fichas y precios</h2><p>Configuración administrativa; los cambios se reflejan en la página pública y Stripe.</p></div></div>
+          <div class="congress-config-card">
+            <div class="taq-help"><span>ⓘ</span><div>El monto mínimo permitido por Stripe es <strong>$10 MXN</strong>. Esta sección no forma parte del flujo diario de recepción.</div></div>
+            <div class="form-row"><div class="form-field"><label>Nombre ficha 1</label><input type="text" id="cfg-congreso-nombre-1" value="Especial"></div><div class="form-field"><label>Precio ficha 1 (MXN)</label><input type="number" id="cfg-congreso-precio-1" min="10" value="15"></div></div>
+            <div class="form-row" style="margin-top:1rem;"><div class="form-field"><label>Nombre ficha 2</label><input type="text" id="cfg-congreso-nombre-2" value="General"></div><div class="form-field"><label>Precio ficha 2 (MXN)</label><input type="number" id="cfg-congreso-precio-2" min="10" value="10"></div></div>
+            <button class="btn-add" style="margin-top:.75rem;" onclick="guardarConfiguracionCongreso()">✓ Guardar fichas</button>
+          </div>
+        </div>
+
+        <div class="congress-detail-backdrop" id="congresoDetalle" onclick="if(event.target===this)cerrarDetalleRegistro()">
+          <div class="congress-detail-card"><div class="congress-detail-head"><div><span class="badge info">DETALLE DE ASISTENTE</span><h3 id="congreso-detalle-titulo" style="margin-top:.55rem;">Registro</h3></div><button class="congress-detail-close" onclick="cerrarDetalleRegistro()" aria-label="Cerrar">×</button></div><div id="congreso-detalle-contenido"></div><div class="taq-actions"><button class="btn-secondary" onclick="cerrarDetalleRegistro()">Cerrar</button><div class="taq-actions-right"><button class="btn-add" id="congreso-detalle-editar">Editar registro</button></div></div></div>
         </div>
       </section>
     <!-- ═══ CONFIG ═══ -->
@@ -1759,8 +1900,8 @@
 
   // ═══ CONGRESO: FICHAS ═══
   var CONGRESO_FICHAS = {
-    ficha1: { nombre: 'Preferente', precio: 1000, zona: 'preferente' },
-    ficha2: { nombre: 'General', precio: 500, zona: 'general' }
+    ficha1: { nombre: 'Especial', precio: 15, zona: 'preferente' },
+    ficha2: { nombre: 'General', precio: 10, zona: 'general' }
   };
 
   function textoSeguro(value){
@@ -1789,8 +1930,8 @@
     try {
       const ficha1Nombre = (document.getElementById('cfg-congreso-nombre-1').value || 'Especial').trim();
       const ficha2Nombre = (document.getElementById('cfg-congreso-nombre-2').value || 'General').trim();
-      const ficha1Precio = parseInt(document.getElementById('cfg-congreso-precio-1').value) || 1000;
-      const ficha2Precio = parseInt(document.getElementById('cfg-congreso-precio-2').value) || 500;
+      const ficha1Precio = parseInt(document.getElementById('cfg-congreso-precio-1').value) || 15;
+      const ficha2Precio = parseInt(document.getElementById('cfg-congreso-precio-2').value) || 10;
 
       if (ficha1Precio < 10 || ficha2Precio < 10) {
         showToast('El precio mínimo es $10 MXN (límite de Stripe)');
@@ -1826,11 +1967,11 @@
       const n2 = document.getElementById('cfg-congreso-nombre-2');
       const p2 = document.getElementById('cfg-congreso-precio-2');
       if (n1) n1.value = c.ficha1Nombre || 'Especial';
-      if (p1) p1.value = Number(c.ficha1Precio) > 0 ? Number(c.ficha1Precio) : 1000;
+      if (p1) p1.value = Number(c.ficha1Precio) > 0 ? Number(c.ficha1Precio) : 15;
       if (n2) n2.value = c.ficha2Nombre || 'General';
-      if (p2) p2.value = Number(c.ficha2Precio) > 0 ? Number(c.ficha2Precio) : 500;
-      CONGRESO_FICHAS.ficha1 = { nombre: n1 ? n1.value : 'Preferente', precio: p1 ? Number(p1.value) : 1000, zona: 'preferente' };
-      CONGRESO_FICHAS.ficha2 = { nombre: n2 ? n2.value : 'General', precio: p2 ? Number(p2.value) : 500, zona: 'general' };
+      if (p2) p2.value = Number(c.ficha2Precio) > 0 ? Number(c.ficha2Precio) : 10;
+      CONGRESO_FICHAS.ficha1 = { nombre: n1 ? n1.value : 'Especial', precio: p1 ? Number(p1.value) : 15, zona: 'preferente' };
+      CONGRESO_FICHAS.ficha2 = { nombre: n2 ? n2.value : 'General', precio: p2 ? Number(p2.value) : 10, zona: 'general' };
       actualizarEtiquetasFichasTaquilla();
     } catch (e) {
       console.warn('[Admin] config congreso load:', e.message);
@@ -1846,7 +1987,7 @@
       renderCongresoRegistros();
     } catch (e) {
       console.warn('[Admin] congreso registros load:', e.message);
-      document.getElementById('congresoBody').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--danger);">No se pudieron cargar los registros: ' + e.message + '</td></tr>';
+      document.getElementById('congresoBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--danger);">No se pudieron cargar los registros: ' + textoSeguro(e.message) + '</td></tr>';
     }
   }
   function renderCongresoRegistros(search){
@@ -1854,21 +1995,122 @@
     if (!body) return;
     const q = (search || '').toLowerCase();
     const list = q ? CONGRESO_REGISTROS.filter(r =>
-      (r.nombre || '').toLowerCase().includes(q) || (r.correo || '').toLowerCase().includes(q)
+      (r.nombre || '').toLowerCase().includes(q) || (r.correo || '').toLowerCase().includes(q) ||
+      (r.telefono || '').toLowerCase().includes(q) || (r.asiento || '').toLowerCase().includes(q)
     ) : CONGRESO_REGISTROS;
     body.innerHTML = list.map(r => {
       const fecha = r.fechaCompra ? new Date(r.fechaCompra).toLocaleString('es-MX', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
-      const extra = r.extra && typeof r.extra === 'object' && Object.keys(r.extra).length
-        ? Object.entries(r.extra).filter(([,v]) => v).map(([k,v]) => `<div><strong>${textoSeguro(k)}:</strong> ${textoSeguro(v)}</div>`).join('')
-        : '—';
       const notif = r.notificacionCompra || 'sin_estado';
       const cancelado = r.estadoRegistro === 'cancelado';
       const notifLabel = cancelado ? 'Cancelado' : notif === 'enviada' ? 'Enviada' : notif === 'no_configurada' ? 'Falta configurar' : notif === 'no_solicitada' ? 'No solicitada' : notif === 'sin_estado' ? 'Compra anterior' : 'Pendiente';
       const notifClass = cancelado ? 'danger' : notif === 'enviada' ? 'success' : (notif === 'sin_estado' || notif === 'no_solicitada') ? 'neutral' : 'warn';
-      const acciones = cancelado ? '' : `<div class="action-btns"><button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div>`;
-      return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td>${textoSeguro(r.nombre || '—')}</td><td>${textoSeguro(r.correo || '—')}</td><td>${textoSeguro(r.telefono || '—')}</td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span>${r.origen === 'taquilla' ? '<div style="font-size:.65rem;color:var(--text-muted);margin-top:.25rem;">TAQUILLA</div>' : ''}</td><td>${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${fecha}</td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td style="font-size:.8rem;">${extra}${r.metodoPago ? '<div><strong>Pago:</strong> ' + textoSeguro(r.metodoPago) + '</div>' : ''}</td><td>${acciones}</td></tr>`;
-    }).join('') || '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
+      const contacto = r.correo || r.telefono
+        ? `<div class="congress-record-primary"><span>${textoSeguro(r.correo || 'Sin correo')}</span><small>${textoSeguro(r.telefono || 'Sin teléfono')}</small></div>`
+        : '<span style="color:var(--text-muted)">Sin contacto</span>';
+      const origen = r.origen === 'taquilla' ? 'Taquilla' : r.stripeSessionId ? 'Stripe' : 'Registro';
+      const verSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>';
+      const acciones = `<div class="action-btns"><button class="action-btn" title="Ver detalles" onclick="verDetalleRegistro('${r.id}')">${verSvg}</button>${cancelado ? '' : `<button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button>`}</div>`;
+      return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td><div class="congress-record-primary"><strong>${textoSeguro(r.nombre || '—')}</strong><small>${textoSeguro(origen)}</small></div></td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span> ${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${contacto}</td><td><div class="congress-record-primary"><span>${fecha}</span><small>${textoSeguro(r.metodoPago || 'Método no indicado')}</small></div></td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td>${acciones}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
   }
+
+  window.verDetalleRegistro = function(id){
+    const r = CONGRESO_REGISTROS.find(item => item.id === id);
+    if (!r) return showToast('No se encontró el registro');
+    const extra = r.extra && typeof r.extra === 'object' ? r.extra : {};
+    const fecha = r.fechaCompra ? new Date(r.fechaCompra).toLocaleString('es-MX') : '—';
+    const estado = r.estadoRegistro === 'cancelado' ? 'Cancelado' : 'Activo';
+    const campos = [
+      ['Nombre completo', r.nombre], ['Correo', r.correo], ['Teléfono', r.telefono],
+      ['Ficha', r.ficha], ['Asiento', r.asiento], ['Fecha de compra', fecha],
+      ['Origen', r.origen === 'taquilla' ? 'Venta en taquilla' : 'Compra en línea'],
+      ['Método de pago', r.metodoPago || (r.stripeSessionId ? 'Stripe' : '—')],
+      ['Monto registrado', r.monto == null || r.monto === '' ? '—' : '$' + Number(r.monto).toLocaleString('es-MX') + ' MXN'],
+      ['Estado', estado], ['Empresa', extra.Empresa], ['LinkedIn / Web', extra['LinkedIn/Web']],
+      ['Instagram', extra.Instagram], ['Notas internas', extra.Notas]
+    ];
+    document.getElementById('congreso-detalle-titulo').textContent = r.nombre || 'Registro del congreso';
+    document.getElementById('congreso-detalle-contenido').innerHTML = '<div class="congress-detail-grid">' + campos.filter(([,valor]) => valor !== undefined && valor !== null && valor !== '').map(([etiqueta,valor]) => '<div><small>' + textoSeguro(etiqueta) + '</small><strong>' + textoSeguro(valor) + '</strong></div>').join('') + '</div>';
+    const editar = document.getElementById('congreso-detalle-editar');
+    editar.style.display = r.estadoRegistro === 'cancelado' ? 'none' : '';
+    editar.onclick = () => { cerrarDetalleRegistro(); abrirRegistroTaquilla(id); };
+    document.getElementById('congresoDetalle').classList.add('active');
+  };
+
+  window.cerrarDetalleRegistro = function(){ document.getElementById('congresoDetalle')?.classList.remove('active'); };
+
+  window.mostrarCongresoPanel = function(panel){
+    document.querySelectorAll('[data-congress-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.congressTab === panel));
+    document.querySelectorAll('[data-congress-pane]').forEach(pane => pane.classList.toggle('active', pane.dataset.congressPane === panel));
+    if (panel === 'sala' || panel === 'taquilla') cargarCongresoAsientos();
+    if (panel === 'registros') cargarCongresoRegistros();
+    if (panel === 'fichas') cargarConfiguracionCongreso();
+  };
+
+  window.iniciarNuevaVenta = function(){
+    mostrarCongresoPanel('taquilla');
+    limpiarFormularioTaquilla();
+    irPasoTaquilla(1, true);
+    document.getElementById('taquillaCongreso')?.scrollIntoView({ behavior:'smooth', block:'start' });
+    setTimeout(() => document.getElementById('taq-nombre')?.focus(), 250);
+  };
+
+  window.irPasoTaquilla = function(paso, omitirValidacion){
+    const nombre = document.getElementById('taq-nombre')?.value.trim();
+    const asiento = document.getElementById('taq-asiento')?.value;
+    if (!omitirValidacion && paso >= 2 && !nombre) {
+      showToast('Primero captura el nombre del asistente');
+      document.getElementById('taq-nombre')?.focus();
+      return;
+    }
+    if (!omitirValidacion && paso >= 3 && !asiento) {
+      showToast('Selecciona un asiento disponible');
+      return;
+    }
+    document.querySelectorAll('[data-taq-step-tab]').forEach(tab => tab.classList.toggle('active', Number(tab.dataset.taqStepTab) === paso));
+    document.querySelectorAll('[data-taq-step-panel]').forEach(panel => panel.classList.toggle('active', Number(panel.dataset.taqStepPanel) === paso));
+    if (paso === 2) renderTaquillaAsientos();
+    if (paso === 3) actualizarResumenVenta();
+  };
+
+  window.cambiarFichaTaquilla = function(){
+    const asiento = document.getElementById('taq-asiento');
+    if (asiento) asiento.value = '';
+    actualizarOpcionesAsiento();
+    actualizarResumenVenta();
+  };
+
+  window.actualizarResumenVenta = function(){
+    const fichaId = document.getElementById('taq-ficha')?.value || 'ficha1';
+    const ficha = CONGRESO_FICHAS[fichaId];
+    const monto = document.getElementById('taq-monto')?.value;
+    const asiento = document.getElementById('taq-asiento')?.value || 'Por elegir';
+    const nombre = document.getElementById('taq-nombre')?.value.trim() || 'Sin capturar';
+    const asignar = (id, valor) => { const el = document.getElementById(id); if (el) el.textContent = valor; };
+    asignar('taq-resumen-nombre', nombre);
+    asignar('taq-resumen-ficha', ficha?.nombre || '—');
+    asignar('taq-resumen-asiento', asiento);
+    asignar('taq-resumen-total', '$' + Number(monto === '' || monto == null ? ficha?.precio || 0 : monto).toLocaleString('es-MX') + ' MXN');
+    asignar('taq-asiento-resumen', asiento === 'Por elegir' ? 'Ninguno' : asiento);
+    const zonaCopy = document.getElementById('taq-zona-copy');
+    if (zonaCopy) zonaCopy.textContent = fichaId === 'ficha1' ? 'Filas A–D · acceso Especial' : 'Filas E–J · acceso General';
+  };
+
+  window.alternarVistaAsistente = function(forzarSalida){
+    const activar = forzarSalida === true ? false : !document.body.classList.contains('taq-customer-mode');
+    document.body.classList.toggle('taq-customer-mode', activar);
+    const label = document.getElementById('taq-customer-label');
+    const icon = document.getElementById('taq-customer-icon');
+    if (label) label.textContent = activar ? 'Volver al panel' : 'Vista para asistente';
+    if (icon) icon.textContent = activar ? '×' : '▣';
+  };
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      if (document.body.classList.contains('taq-customer-mode')) alternarVistaAsistente(true);
+      cerrarDetalleRegistro();
+    }
+  });
   window.eliminarCongresoRegistro = async function(id){
     if (!confirm('¿Cancelar este registro y liberar su asiento? El historial de la compra se conservará.')) return;
     try {
@@ -1905,9 +2147,12 @@
       .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
     select.innerHTML = '<option value="">Selecciona un lugar</option>' + disponibles.map(([id]) => '<option value="' + id + '">' + id + '</option>').join('');
     if (actual && disponibles.some(([id]) => id === actual)) select.value = actual;
+    else select.value = '';
 
     const monto = document.getElementById('taq-monto');
     if (monto && !registroId) monto.value = CONGRESO_FICHAS[fichaId].precio;
+    renderTaquillaAsientos();
+    actualizarResumenVenta();
   };
 
   window.limpiarFormularioTaquilla = function(){
@@ -1918,8 +2163,10 @@
     document.getElementById('taq-enviar').checked = true;
     document.getElementById('taq-titulo').textContent = 'Nuevo asistente';
     document.getElementById('taq-modo').textContent = 'VENTA EN PUERTA';
-    document.getElementById('taq-guardar').textContent = 'Registrar y ocupar asiento';
+    document.getElementById('taq-guardar').textContent = 'Registrar venta y ocupar asiento';
+    document.querySelector('.taq-advanced')?.removeAttribute('open');
     actualizarOpcionesAsiento();
+    irPasoTaquilla(1, true);
   };
 
   function fichaIdDeRegistro(registro){
@@ -1949,6 +2196,9 @@
     document.getElementById('taq-modo').textContent = r.stripeSessionId ? 'COMPRA STRIPE' : 'VENTA EN PUERTA';
     document.getElementById('taq-guardar').textContent = 'Guardar cambios';
     actualizarOpcionesAsiento(r.asiento);
+    mostrarCongresoPanel('taquilla');
+    irPasoTaquilla(1, true);
+    actualizarResumenVenta();
     document.getElementById('taquillaCongreso').scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -1981,12 +2231,13 @@
       });
       await Promise.all([cargarCongresoRegistros(), cargarCongresoAsientos()]);
       limpiarFormularioTaquilla();
+      mostrarCongresoPanel('registros');
       showToast(id ? 'Asistente actualizado' : 'Venta registrada · asiento ocupado');
     } catch (e) {
       showToast('No se pudo guardar: ' + e.message);
     } finally {
       boton.disabled = false;
-      boton.textContent = document.getElementById('taq-registro-id').value ? 'Guardar cambios' : 'Registrar y ocupar asiento';
+      boton.textContent = document.getElementById('taq-registro-id').value ? 'Guardar cambios' : 'Registrar venta y ocupar asiento';
     }
   };
 
@@ -2027,9 +2278,44 @@
     return a.estado;
   }
 
+  function renderTaquillaAsientos(){
+    const cont = document.getElementById('asientosMapaTaquilla');
+    if (!cont) return;
+    const fichaId = document.getElementById('taq-ficha')?.value || 'ficha1';
+    const zona = CONGRESO_FICHAS[fichaId]?.zona || 'preferente';
+    const seleccionado = document.getElementById('taq-asiento')?.value || '';
+    const registroId = document.getElementById('taq-registro-id')?.value || '';
+    const registro = CONGRESO_REGISTROS.find(r => r.id === registroId);
+    const filas = ASIENTOS_LAYOUT.map(f => {
+      const sillas = [];
+      for (let n = 1; n <= f.asientos; n++) {
+        const id = f.fila + n;
+        const a = CONGRESO_ASIENTOS[id] || { estado: f.zona === 'ponente' ? 'reservado' : 'libre', zona:f.zona };
+        const estado = estadoAsientoEfectivo(a);
+        const esActual = id === seleccionado || id === registro?.asiento;
+        const esZona = f.zona === zona;
+        const disponible = esZona && (estado === 'libre' || esActual);
+        let clase = disponible ? '' : !esZona && f.zona !== 'ponente' ? 'other-zone' : estado === 'vendido' ? 'sold' : estado === 'hold' ? 'hold' : estado === 'bloqueado' ? 'blocked' : 'speaker';
+        if (id === seleccionado) clase += ' selected';
+        const titulo = id + ' · ' + (disponible ? 'Disponible' : estado === 'vendido' ? 'Vendido' : estado === 'hold' ? 'Pago en proceso' : f.zona === 'ponente' ? 'Ponentes' : 'No disponible para esta ficha');
+        sillas.push('<button type="button" class="taq-chair ' + clase.trim() + '" ' + (disponible ? 'onclick="seleccionarAsientoTaquilla(\'' + id + '\')"' : 'disabled') + ' title="' + textoSeguro(titulo) + '" aria-label="' + textoSeguro(titulo) + '"><span>' + n + '</span></button>');
+      }
+      return '<div class="taq-seat-row ' + (f.fila === 'E' ? 'is-aisle' : '') + '"><span class="taq-seat-row-label">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div class="taq-seat-list">' + sillas.join('') + '</div></div>';
+    });
+    cont.innerHTML = filas.join('');
+    actualizarResumenVenta();
+  }
+
+  window.seleccionarAsientoTaquilla = function(id){
+    const select = document.getElementById('taq-asiento');
+    if (!select || !Array.from(select.options).some(option => option.value === id)) return showToast('Ese lugar ya no está disponible');
+    select.value = id;
+    renderTaquillaAsientos();
+    showToast('Asiento ' + id + ' seleccionado');
+  };
+
   window.cargarCongresoAsientos = async function(){
     const cont = document.getElementById('asientosMapa');
-    if (!cont) return;
     try {
       const data = await apiCongresoAdmin('/congreso/admin/asientos');
       if (Array.isArray(data.layout) && data.layout.length) ASIENTOS_LAYOUT = data.layout;
@@ -2039,14 +2325,16 @@
       actualizarOpcionesAsiento();
     } catch (e) {
       console.warn('[Admin] asientos load:', e.message);
-      cont.innerHTML = '<p style="color:var(--danger);text-align:center;">No se pudo cargar el mapa: ' + textoSeguro(e.message) + '</p>';
+      if (cont) cont.innerHTML = '<p style="color:var(--danger);text-align:center;">No se pudo cargar el mapa: ' + textoSeguro(e.message) + '</p>';
+      const taquilla = document.getElementById('asientosMapaTaquilla');
+      if (taquilla) taquilla.innerHTML = '<p style="color:#b45309;text-align:center;padding:2rem;">No se pudo cargar la disponibilidad. Vuelve a intentarlo.</p>';
     }
   };
 
   function renderCongresoAsientos(){
     const cont = document.getElementById('asientosMapa');
     const resumen = document.getElementById('asientosResumen');
-    if (!cont) return;
+    if (!cont) { renderTaquillaAsientos(); return; }
     const colores = {
       libre:     'border:1px solid #14b8a6;background:rgba(20,184,166,.12);color:var(--text-secondary);',
       vendido:   'border:1px solid #14b8a6;background:#14b8a6;color:#04211c;',
@@ -2080,6 +2368,7 @@
         (holds ? '<span><strong style="color:#b45309;">En proceso de pago:</strong> ' + holds + '</span>' : '') +
         (bloqueados ? '<span><strong style="color:var(--text-muted);">Bloqueados:</strong> ' + bloqueados + '</span>' : '');
     }
+    renderTaquillaAsientos();
   }
 
   window.detalleAsiento = async function(id){
@@ -2088,7 +2377,7 @@
     const est = estadoAsientoEfectivo(a);
     if (est === 'vendido') {
       const registro = CONGRESO_REGISTROS.find(r => r.id === a.registroId || (r.asiento === id && r.estadoRegistro !== 'cancelado'));
-      if (registro) abrirRegistroTaquilla(registro.id);
+      if (registro) verDetalleRegistro(registro.id);
       else alert('Asiento ' + id + '\n\nVendido a: ' + (a.nombre || '—') + '\nNo se encontró el registro vinculado.');
       return;
     }
@@ -2112,6 +2401,8 @@
     }
     document.getElementById('taq-ficha').value = a.zona === 'preferente' ? 'ficha1' : 'ficha2';
     actualizarOpcionesAsiento(id);
+    mostrarCongresoPanel('taquilla');
+    irPasoTaquilla(2, true);
     document.getElementById('taquillaCongreso').scrollIntoView({ behavior: 'smooth', block: 'start' });
     showToast('Asiento ' + id + ' seleccionado para venta en puerta');
   };
