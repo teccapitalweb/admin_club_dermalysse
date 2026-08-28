@@ -325,21 +325,22 @@
     .taq-seat-row.is-aisle{margin-top:.7rem;border-top:1px dashed #b9cac4;padding-top:1rem}
     .taq-seat-row-label{font-size:.68rem;font-weight:800;color:#5d726b;text-align:center}
     .taq-seat-list{display:flex;gap:.32rem}
-    .taq-chair{position:relative;width:35px;height:34px;border:0;background:transparent;color:#18362f;cursor:pointer}
-    .taq-chair::before{content:'';position:absolute;top:2px;left:5px;width:25px;height:23px;border:1.5px solid #0b8177;border-radius:8px 8px 5px 5px;background:#fff;box-shadow:inset 0 -4px rgba(0,0,0,.04)}
-    .taq-chair::after{content:'';position:absolute;right:2px;bottom:2px;left:2px;height:11px;border:1.5px solid #0b8177;border-radius:4px 4px 7px 7px;background:#fff;box-shadow:0 3px #b5ded5}
+    .taq-chair{position:relative;width:35px;height:34px;border:0;background:transparent;color:#fff;cursor:pointer}
+    .taq-chair::before{content:'';position:absolute;top:2px;left:5px;width:25px;height:23px;border:1.5px solid #04443d;border-radius:8px 8px 5px 5px;background:#0b8177;box-shadow:inset 0 -4px rgba(0,0,0,.12)}
+    .taq-chair::after{content:'';position:absolute;right:2px;bottom:2px;left:2px;height:11px;border:1.5px solid #04443d;border-radius:4px 4px 7px 7px;background:#0b8177;box-shadow:0 3px #075c55}
     .taq-chair span{position:relative;z-index:2;display:grid;height:27px;place-items:center;font-size:.58rem;font-weight:800}
     .taq-chair:hover:not(:disabled){transform:translateY(-3px)}
-    .taq-chair.selected::before,.taq-chair.selected::after{border-color:#062e29;background:#18bda9}.taq-chair.selected::after{box-shadow:0 3px #7ce7ce}
+    .taq-chair.selected::before,.taq-chair.selected::after{border-color:#062e29;background:#18bda9}.taq-chair.selected::after{box-shadow:0 3px #7ce7ce}.taq-chair.selected{color:#062e29}
     .taq-chair.sold,.taq-chair.hold,.taq-chair.blocked,.taq-chair.speaker,.taq-chair.other-zone{cursor:not-allowed}
     .taq-chair.sold::before,.taq-chair.sold::after{border-color:#a59f96;background:#d8d3cb}.taq-chair.sold::after{box-shadow:0 3px #bbb4aa}
-    .taq-chair.hold::before,.taq-chair.hold::after{border-color:#d49a26;background:#fff5d9}.taq-chair.hold::after{box-shadow:0 3px #edc76c}
+    .taq-chair.sold span{font-size:0}.taq-chair.sold span::before{content:'';width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235a534b'%3E%3Ccircle cx='12' cy='7.5' r='4'/%3E%3Cpath d='M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5z'/%3E%3C/svg%3E") center/contain no-repeat}
+    .taq-chair.hold::before,.taq-chair.hold::after{border-color:#d49a26;background:#fff5d9}.taq-chair.hold::after{box-shadow:0 3px #edc76c}.taq-chair.hold{color:#18362f}
     .taq-chair.blocked{opacity:.28}.taq-chair.speaker::before,.taq-chair.speaker::after{border-color:#071612;background:#0b211c}.taq-chair.speaker{color:#fff}.taq-chair.other-zone{opacity:.16}
     .taq-seat-selection{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid #dce8e4;padding:1rem 1.2rem;background:#fff}
     .taq-seat-selection small{display:block;color:#6f817b;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase}
     .taq-seat-selection strong{display:block;margin-top:.15rem;font-size:1.3rem;color:#096e66}
     .taq-seat-legend{display:flex;flex-wrap:wrap;gap:.65rem 1rem;color:#61736d;font-size:.68rem}
-    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:10px;height:10px;border:1px solid #0b8177;border-radius:3px;background:#fff}.taq-seat-legend .sold{border-color:#aaa;background:#d8d3cb}.taq-seat-legend .selected{border-color:#062e29;background:#18bda9}
+    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:10px;height:10px;border:1px solid #04443d;border-radius:3px;background:#0b8177}.taq-seat-legend .sold{border-color:#aaa;background:#d8d3cb}.taq-seat-legend .selected{border-color:#062e29;background:#18bda9}
     body.taq-customer-mode{overflow:hidden}
     body.taq-customer-mode .taq-seat-experience{position:fixed;z-index:10020;inset:0;border:0;border-radius:0;background:#f6faf8;display:flex;flex-direction:column}
     body.taq-customer-mode .taq-seat-toolbar{padding:1.25rem 2rem}
