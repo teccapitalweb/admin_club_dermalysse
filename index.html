@@ -325,21 +325,21 @@
     .taq-seat-row.is-aisle{margin-top:.7rem;border-top:1px dashed #b9cac4;padding-top:1rem}
     .taq-seat-row-label{font-size:.68rem;font-weight:800;color:#5d726b;text-align:center}
     .taq-seat-list{display:flex;gap:.32rem}
-    .taq-chair{position:relative;width:35px;height:34px;border:0;background:transparent;color:#fff;cursor:pointer}
-    .taq-chair::before{content:'';position:absolute;top:2px;left:5px;width:25px;height:23px;border:1.5px solid #04443d;border-radius:8px 8px 5px 5px;background:#0b8177;box-shadow:inset 0 -4px rgba(0,0,0,.12)}
-    .taq-chair::after{content:'';position:absolute;right:2px;bottom:2px;left:2px;height:11px;border:1.5px solid #04443d;border-radius:4px 4px 7px 7px;background:#0b8177;box-shadow:0 3px #075c55}
+    .taq-chair{position:relative;width:35px;height:34px;border:0;background:transparent;color:#18362f;cursor:pointer}
+    .taq-chair::before{content:'';position:absolute;top:2px;left:5px;width:25px;height:23px;border:1.5px solid #0b8177;border-radius:8px 8px 5px 5px;background:#fff;box-shadow:inset 0 -4px rgba(0,0,0,.04)}
+    .taq-chair::after{content:'';position:absolute;right:2px;bottom:2px;left:2px;height:11px;border:1.5px solid #0b8177;border-radius:4px 4px 7px 7px;background:#fff;box-shadow:0 3px #b5ded5}
     .taq-chair span{position:relative;z-index:2;display:grid;height:27px;place-items:center;font-size:.58rem;font-weight:800}
     .taq-chair:hover:not(:disabled){transform:translateY(-3px)}
-    .taq-chair.selected::before,.taq-chair.selected::after{border-color:#062e29;background:#18bda9}.taq-chair.selected::after{box-shadow:0 3px #7ce7ce}.taq-chair.selected{color:#062e29}
+    .taq-chair.selected::before,.taq-chair.selected::after{border-color:#062e29;background:#18bda9}.taq-chair.selected::after{box-shadow:0 3px #7ce7ce}
     .taq-chair.sold,.taq-chair.hold,.taq-chair.blocked,.taq-chair.speaker,.taq-chair.other-zone{cursor:not-allowed}
-    .taq-chair.sold::before,.taq-chair.sold::after{display:none}.taq-chair.sold span{position:absolute;inset:0;height:100%;width:100%;font-size:0;display:grid;place-items:center}.taq-chair.sold span::before{content:'';width:35px;height:34px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235a534b'%3E%3Ccircle cx='12' cy='7.5' r='4'/%3E%3Cpath d='M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5z'/%3E%3C/svg%3E") center/contain no-repeat}
-    .taq-chair.hold::before,.taq-chair.hold::after{border-color:#d49a26;background:#fff5d9}.taq-chair.hold::after{box-shadow:0 3px #edc76c}.taq-chair.hold{color:#18362f}
+    .taq-chair.sold::before,.taq-chair.sold::after{border-color:#a59f96;background:#d8d3cb}.taq-chair.sold::after{box-shadow:0 3px #bbb4aa}
+    .taq-chair.hold::before,.taq-chair.hold::after{border-color:#d49a26;background:#fff5d9}.taq-chair.hold::after{box-shadow:0 3px #edc76c}
     .taq-chair.blocked{opacity:.28}.taq-chair.speaker::before,.taq-chair.speaker::after{border-color:#071612;background:#0b211c}.taq-chair.speaker{color:#fff}.taq-chair.other-zone{opacity:.16}
     .taq-seat-selection{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid #dce8e4;padding:1rem 1.2rem;background:#fff}
     .taq-seat-selection small{display:block;color:#6f817b;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase}
     .taq-seat-selection strong{display:block;margin-top:.15rem;font-size:1.3rem;color:#096e66}
     .taq-seat-legend{display:flex;flex-wrap:wrap;gap:.65rem 1rem;color:#61736d;font-size:.68rem}
-    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:10px;height:10px;border:1px solid #04443d;border-radius:3px;background:#0b8177}.taq-seat-legend .sold{border-color:#aaa;background:#d8d3cb}.taq-seat-legend .selected{border-color:#062e29;background:#18bda9}
+    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:10px;height:10px;border:1px solid #0b8177;border-radius:3px;background:#fff}.taq-seat-legend .sold{border-color:#aaa;background:#d8d3cb}.taq-seat-legend .selected{border-color:#062e29;background:#18bda9}
     body.taq-customer-mode{overflow:hidden}
     body.taq-customer-mode .taq-seat-experience{position:fixed;z-index:10020;inset:0;border:0;border-radius:0;background:#f6faf8;display:flex;flex-direction:column}
     body.taq-customer-mode .taq-seat-toolbar{padding:1.25rem 2rem}
@@ -384,6 +384,12 @@
     .qr-import-empty b{display:grid;width:52px;height:52px;place-items:center;border-radius:15px;background:var(--azul-dark);color:#fff;font-size:1.2rem;box-shadow:6px 6px 0 var(--azul-pale)}
     .qr-import-empty h4{margin:1rem 0 .35rem}.qr-import-empty p{max-width:390px;margin:0 0 1rem;color:var(--text-muted);font-size:.78rem;line-height:1.55}
     .qr-link-selects{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+    .qr-searchable-select{display:grid;gap:.42rem}
+    .qr-select-search{position:relative}
+    .qr-select-search svg{position:absolute;left:.9rem;top:50%;width:16px;height:16px;transform:translateY(-50%);color:var(--azul-main);pointer-events:none}
+    .qr-select-search input{width:100%;padding:.72rem .9rem .72rem 2.55rem;background:linear-gradient(135deg,var(--bg-elevated),var(--bg-surface));border:1px solid var(--border-soft);border-radius:12px;font-size:.84rem;font-weight:600;transition:border-color .2s,box-shadow .2s}
+    .qr-select-search input:focus{outline:none;border-color:var(--azul-main);box-shadow:0 0 0 3px rgba(45,104,136,.1)}
+    .qr-searchable-select small{color:var(--text-muted);font-size:.69rem}
     .qr-profile-form{display:none;margin-top:1rem;border-top:1px solid var(--border-soft);padding-top:1rem}
     .qr-profile-form.active{display:block;animation:fadeSlide .15s ease}
     .qr-quick-actions{display:flex;align-items:center;justify-content:space-between;gap:.65rem;margin-top:.75rem;padding:.7rem .8rem;border:1px solid var(--border-soft);border-radius:11px;background:var(--bg-elevated)}
@@ -752,7 +758,10 @@
               <div class="qr-panel-head"><div><h3>Vincular tarjeta</h3><p>Elige el número impreso y la persona registrada. Después revisa su tarjeta virtual.</p></div><span class="badge info">RECEPCIÓN</span></div>
               <div id="qr-import-empty" class="qr-import-empty"><b>⌁</b><h4>Importa primero el lote privado</h4><p>Selecciona el archivo JSON incluido con los 100 códigos. Los tokens no se mostrarán ni quedarán guardados en el repositorio.</p><button class="btn-add" onclick="document.getElementById('qr-import-file').click()">Elegir archivo del lote</button></div>
               <div id="qr-link-workspace" hidden>
-                <div class="qr-link-selects"><div class="form-field"><label>Número de tarjeta física disponible *</label><select id="qr-codigo" onchange="prepararVinculoQr()"><option value="">Selecciona QR disponible</option></select></div><div class="form-field"><label>Asistente registrado *</label><select id="qr-registro" onchange="prepararVinculoQr()"><option value="">Selecciona persona</option></select></div></div>
+                <div class="qr-link-selects">
+                  <div class="form-field qr-searchable-select"><label>Número de tarjeta física disponible *</label><div class="qr-select-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="qr-codigo-busqueda" type="search" inputmode="numeric" autocomplete="off" placeholder="Buscar número, por ejemplo 099" oninput="filtrarOpcionesVinculoQr('codigo',this.value)"></div><select id="qr-codigo" size="5" onchange="prepararVinculoQr()"><option value="">Selecciona QR disponible</option></select><small>Escribe el número o elige la siguiente disponible.</small></div>
+                  <div class="form-field qr-searchable-select"><label>Asistente registrado *</label><div class="qr-select-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="qr-registro-busqueda" type="search" autocomplete="off" placeholder="Buscar nombre, correo o asiento" oninput="filtrarOpcionesVinculoQr('registro',this.value)"></div><select id="qr-registro" size="5" onchange="prepararVinculoQr()"><option value="">Selecciona persona</option></select><small>Solo aparecen registros activos.</small></div>
+                </div>
                 <div class="qr-quick-actions"><span>¿No importa el número? Selecciona automáticamente la primera tarjeta libre.</span><button class="btn-secondary" type="button" onclick="elegirSiguienteQrDisponible()">Elegir siguiente disponible</button></div>
                 <div class="qr-profile-form" id="qr-profile-form">
                   <div class="taq-help"><span>ⓘ</span><div>Esta será la información visible al escanear la tarjeta. <strong>Las notas internas nunca se publican.</strong></div></div>
@@ -2080,7 +2089,10 @@
         : '<span style="color:var(--text-muted)">Sin contacto</span>';
       const origen = r.origen === 'taquilla' ? 'Taquilla' : r.stripeSessionId ? 'Stripe' : 'Registro';
       const verSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>';
-      const acciones = `<div class="action-btns"><button class="action-btn" title="Ver detalles" onclick="verDetalleRegistro('${r.id}')">${verSvg}</button>${cancelado ? '' : `<button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button>`}</div>`;
+      const reactivarSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 0-2 5"/></svg>';
+      const accionesCancelado = `<button class="action-btn" title="Reactivar y elegir asiento" onclick="reactivarCongresoRegistro('${r.id}')">${reactivarSvg}</button><button class="action-btn danger" title="Eliminar definitivamente" onclick="eliminarCongresoRegistroDefinitivo('${r.id}')">${deleteSvg}</button>`;
+      const accionesActivo = `<button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button>`;
+      const acciones = `<div class="action-btns"><button class="action-btn" title="Ver detalles" onclick="verDetalleRegistro('${r.id}')">${verSvg}</button>${cancelado ? accionesCancelado : accionesActivo}</div>`;
       return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td><div class="congress-record-primary"><strong>${textoSeguro(r.nombre || '—')}</strong><small>${textoSeguro(origen)}</small></div></td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span> ${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${contacto}</td><td><div class="congress-record-primary"><span>${fecha}</span><small>${textoSeguro(r.metodoPago || 'Método no indicado')}</small></div></td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td>${acciones}</td></tr>`;
     }).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
   }
@@ -2104,8 +2116,9 @@
     document.getElementById('congreso-detalle-contenido').innerHTML = '<div class="congress-detail-grid">' + campos.filter(([,valor]) => valor !== undefined && valor !== null && valor !== '').map(([etiqueta,valor]) => '<div><small>' + textoSeguro(etiqueta) + '</small><strong>' + textoSeguro(valor) + '</strong></div>').join('') + '</div>';
     const editar = document.getElementById('congreso-detalle-editar');
     const qr = document.getElementById('congreso-detalle-qr');
-    editar.style.display = r.estadoRegistro === 'cancelado' ? 'none' : '';
-    editar.onclick = () => { cerrarDetalleRegistro(); abrirRegistroTaquilla(id); };
+    editar.style.display = '';
+    editar.textContent = r.estadoRegistro === 'cancelado' ? 'Reactivar y elegir asiento' : 'Editar registro';
+    editar.onclick = () => { cerrarDetalleRegistro(); r.estadoRegistro === 'cancelado' ? reactivarCongresoRegistro(id) : abrirRegistroTaquilla(id); };
     qr.style.display = r.estadoRegistro === 'cancelado' ? 'none' : '';
     qr.textContent = r.qrCodigo ? 'Editar ' + r.qrCodigo : 'Vincular QR';
     qr.onclick = () => { cerrarDetalleRegistro(); abrirQrParaRegistro(id, r.qrCodigo || ''); };
@@ -2271,14 +2284,41 @@
     const cardSelect = document.getElementById('qr-codigo');
     const regSelect = document.getElementById('qr-registro');
     if (!cardSelect || !regSelect) return;
+    renderOpcionesVinculoQr(
+      document.getElementById('qr-codigo-busqueda')?.value || '',
+      document.getElementById('qr-registro-busqueda')?.value || ''
+    );
+  };
+
+  function renderOpcionesVinculoQr(busquedaCodigo, busquedaRegistro){
+    const cardSelect = document.getElementById('qr-codigo');
+    const regSelect = document.getElementById('qr-registro');
+    if (!cardSelect || !regSelect) return;
     const cardActual = cardSelect.value;
     const regActual = regSelect.value;
+    const codigoQ = String(busquedaCodigo || '').trim().toLowerCase();
+    const registroQ = String(busquedaRegistro || '').trim().toLowerCase();
     const disponiblesQr = CONGRESO_QR.filter(card => !card.asignadoRegistroId || card.codigo === cardActual);
-    cardSelect.innerHTML = '<option value="">Selecciona QR disponible</option>' + disponiblesQr.map(card => '<option value="' + textoSeguro(card.codigo) + '">' + textoSeguro(card.codigo) + (card.asignadoRegistroId ? ' · ' + textoSeguro(card.perfil?.nombre || 'Asignada') : ' · Disponible') + '</option>').join('');
+    const qrFiltradas = codigoQ ? disponiblesQr.filter(card => String(card.codigo || '').toLowerCase().includes(codigoQ)) : disponiblesQr;
+    cardSelect.innerHTML = '<option value="">' + (qrFiltradas.length ? 'Selecciona QR disponible' : 'Sin coincidencias') + '</option>' + qrFiltradas.map(card => '<option value="' + textoSeguro(card.codigo) + '">' + textoSeguro(card.codigo) + (card.asignadoRegistroId ? ' · ' + textoSeguro(card.perfil?.nombre || 'Asignada') : ' · Disponible') + '</option>').join('');
     const activos = CONGRESO_REGISTROS.filter(r => r.estadoRegistro !== 'cancelado');
-    regSelect.innerHTML = '<option value="">Selecciona persona</option>' + activos.map(r => '<option value="' + textoSeguro(r.id) + '">' + textoSeguro(r.nombre || 'Sin nombre') + ' · ' + textoSeguro(r.asiento || 'Sin asiento') + (r.qrCodigo ? ' · ' + textoSeguro(r.qrCodigo) : '') + '</option>').join('');
+    const registrosFiltrados = registroQ ? activos.filter(r => [r.nombre,r.correo,r.telefono,r.asiento,r.qrCodigo].some(value => String(value || '').toLowerCase().includes(registroQ))) : activos;
+    regSelect.innerHTML = '<option value="">' + (registrosFiltrados.length ? 'Selecciona persona' : 'Sin coincidencias') + '</option>' + registrosFiltrados.map(r => '<option value="' + textoSeguro(r.id) + '">' + textoSeguro(r.nombre || 'Sin nombre') + ' · ' + textoSeguro(r.asiento || 'Sin asiento') + (r.qrCodigo ? ' · ' + textoSeguro(r.qrCodigo) : '') + '</option>').join('');
     if (CONGRESO_QR.some(card => card.codigo === cardActual)) cardSelect.value = cardActual;
     if (activos.some(r => r.id === regActual)) regSelect.value = regActual;
+  }
+
+  window.filtrarOpcionesVinculoQr = function(tipo, valor){
+    const cardSelect = document.getElementById('qr-codigo');
+    const regSelect = document.getElementById('qr-registro');
+    const cardActual = cardSelect?.value || '';
+    const regActual = regSelect?.value || '';
+    renderOpcionesVinculoQr(
+      tipo === 'codigo' ? valor : document.getElementById('qr-codigo-busqueda')?.value || '',
+      tipo === 'registro' ? valor : document.getElementById('qr-registro-busqueda')?.value || ''
+    );
+    if (cardActual && [...cardSelect.options].some(option => option.value === cardActual)) cardSelect.value = cardActual;
+    if (regActual && [...regSelect.options].some(option => option.value === regActual)) regSelect.value = regActual;
   };
 
   window.importarLoteQr = async function(file){
@@ -2350,6 +2390,9 @@
   window.abrirQrParaRegistro = async function(registroId, codigo){
     mostrarCongresoPanel('qr');
     if (!CONGRESO_QR.length) await cargarCongresoQr();
+    const buscarRegistro = document.getElementById('qr-registro-busqueda');
+    if (buscarRegistro) buscarRegistro.value = '';
+    actualizarOpcionesQr();
     document.getElementById('qr-registro').value = registroId;
     if (codigo) seleccionarCodigoQr(codigo);
     prepararVinculoQr();
@@ -2359,6 +2402,11 @@
   window.editarTarjetaQr = function(codigo){
     mostrarCongresoPanel('qr');
     const card = CONGRESO_QR.find(item => item.codigo === codigo);
+    const buscarCodigo = document.getElementById('qr-codigo-busqueda');
+    const buscarRegistro = document.getElementById('qr-registro-busqueda');
+    if (buscarCodigo) buscarCodigo.value = '';
+    if (buscarRegistro) buscarRegistro.value = '';
+    actualizarOpcionesQr();
     seleccionarCodigoQr(codigo);
     document.getElementById('qr-registro').value = card?.asignadoRegistroId || '';
     prepararVinculoQr();
@@ -2416,6 +2464,11 @@
     document.getElementById('qr-profile-form')?.classList.remove('active');
     const card = document.getElementById('qr-codigo'); const reg = document.getElementById('qr-registro');
     if (card) card.value = ''; if (reg) reg.value = '';
+    const buscarCodigo = document.getElementById('qr-codigo-busqueda');
+    const buscarRegistro = document.getElementById('qr-registro-busqueda');
+    if (buscarCodigo) buscarCodigo.value = '';
+    if (buscarRegistro) buscarRegistro.value = '';
+    actualizarOpcionesQr();
   };
 
   window.desvincularQr = async function(codigo){
@@ -2459,7 +2512,10 @@
     if (!select) return;
     const zona = CONGRESO_FICHAS[fichaId].zona;
     const disponibles = Object.entries(CONGRESO_ASIENTOS)
-      .filter(([id, a]) => a.zona === zona && (estadoAsientoEfectivo(a) === 'libre' || id === registro?.asiento))
+      .filter(([id, a]) => a.zona === zona && (
+        estadoAsientoEfectivo(a) === 'libre' ||
+        (registro?.estadoRegistro !== 'cancelado' && id === registro?.asiento && a.registroId === registroId)
+      ))
       .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
     select.innerHTML = '<option value="">Selecciona un lugar</option>' + disponibles.map(([id]) => '<option value="' + id + '">' + id + '</option>').join('');
     if (actual && disponibles.some(([id]) => id === actual)) select.value = actual;
@@ -2645,6 +2701,31 @@
       const taquilla = document.getElementById('asientosMapaTaquilla');
       if (taquilla) taquilla.innerHTML = '<p style="color:#b45309;text-align:center;padding:2rem;">No se pudo cargar la disponibilidad. Vuelve a intentarlo.</p>';
     }
+  };
+
+  window.reactivarCongresoRegistro = function(id){
+    const registro = CONGRESO_REGISTROS.find(item => item.id === id);
+    if (!registro || registro.estadoRegistro !== 'cancelado') return showToast('Ese registro no está cancelado');
+    abrirRegistroTaquilla(id);
+    document.getElementById('taq-titulo').textContent = 'Reactivar asistente';
+    document.getElementById('taq-modo').textContent = 'REACTIVACIÓN';
+    document.getElementById('taq-guardar').textContent = 'Reactivar ficha y ocupar asiento';
+    document.getElementById('taq-enviar').checked = Boolean(registro.correo);
+    showToast('Selecciona la ficha y un asiento disponible para reactivar');
+  };
+
+  window.eliminarCongresoRegistroDefinitivo = async function(id){
+    const registro = CONGRESO_REGISTROS.find(item => item.id === id);
+    if (!registro || registro.estadoRegistro !== 'cancelado') return showToast('Primero cancela el registro');
+    const nombre = registro.nombre || 'este asistente';
+    if (!confirm('¿Eliminar definitivamente el perfil de ' + nombre + '?\n\nEsta acción borra sus datos del panel y no se puede deshacer. No realiza reembolsos en Stripe.')) return;
+    if (!confirm('Última confirmación: ¿eliminar permanentemente este perfil cancelado?')) return;
+    try {
+      await apiCongresoAdmin('/congreso/admin/registros/' + encodeURIComponent(id) + '/permanente', { method:'DELETE' });
+      await Promise.all([cargarCongresoRegistros(), cargarCongresoAsientos(), cargarCongresoQr()]);
+      cerrarDetalleRegistro();
+      showToast('Perfil cancelado eliminado definitivamente');
+    } catch (e) { showToast('No se pudo eliminar: ' + e.message); }
   };
 
   function renderCongresoAsientos(){
