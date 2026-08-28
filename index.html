@@ -372,10 +372,36 @@
     .congress-detail-grid small{display:block;color:var(--text-muted);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}.congress-detail-grid strong{display:block;margin-top:.25rem;font-size:.84rem;word-break:break-word}
     .congress-record-primary{display:grid;gap:.15rem}.congress-record-primary small{color:var(--text-muted);font-size:.7rem}
 
+    .qr-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem}
+    .qr-kpi{border:1px solid var(--border-soft);border-radius:14px;padding:1rem 1.1rem;background:var(--bg-surface)}
+    .qr-kpi small{display:block;color:var(--text-muted);font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+    .qr-kpi strong{display:block;margin-top:.25rem;font-size:1.55rem;color:var(--azul-dark)}
+    .qr-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);gap:1rem;align-items:start}
+    .qr-panel{border:1px solid var(--border-soft);border-radius:18px;padding:1.3rem;background:var(--bg-surface);box-shadow:var(--shadow-xs)}
+    .qr-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .qr-panel-head h3{font-size:1rem}.qr-panel-head p{margin-top:.2rem;color:var(--text-muted);font-size:.75rem;line-height:1.45}
+    .qr-import-empty{display:grid;min-height:230px;place-content:center;justify-items:center;border:1px dashed var(--border);border-radius:15px;padding:2rem;text-align:center;background:var(--bg-elevated)}
+    .qr-import-empty b{display:grid;width:52px;height:52px;place-items:center;border-radius:15px;background:var(--azul-dark);color:#fff;font-size:1.2rem;box-shadow:6px 6px 0 var(--azul-pale)}
+    .qr-import-empty h4{margin:1rem 0 .35rem}.qr-import-empty p{max-width:390px;margin:0 0 1rem;color:var(--text-muted);font-size:.78rem;line-height:1.55}
+    .qr-link-selects{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+    .qr-profile-form{display:none;margin-top:1rem;border-top:1px solid var(--border-soft);padding-top:1rem}
+    .qr-profile-form.active{display:block;animation:fadeSlide .15s ease}
+    .qr-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.qr-profile-grid .wide{grid-column:1/-1}
+    .qr-privacy{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem}
+    .qr-privacy label{display:flex;align-items:center;gap:.5rem;border:1px solid var(--border-soft);border-radius:10px;padding:.65rem .75rem;background:var(--bg-elevated);font-size:.73rem;color:var(--text-secondary);cursor:pointer}
+    .qr-privacy input{width:15px;height:15px}
+    .qr-consent{display:flex;align-items:flex-start;gap:.6rem;margin-top:.85rem;border:1px solid rgba(20,184,166,.25);border-radius:11px;padding:.8rem;background:rgba(20,184,166,.07);font-size:.74rem;color:var(--text-secondary);line-height:1.45;cursor:pointer}
+    .qr-consent input{width:16px;height:16px;flex:0 0 16px;margin-top:1px}
+    .qr-table-wrap{max-height:520px;overflow:auto;border:1px solid var(--border-soft);border-radius:13px}
+    .qr-table{width:100%;border-collapse:collapse}.qr-table th{position:sticky;z-index:2;top:0;padding:.7rem .8rem;background:var(--bg-elevated);color:var(--text-muted);font-size:.63rem;letter-spacing:.11em;text-align:left;text-transform:uppercase}.qr-table td{padding:.7rem .8rem;border-top:1px solid var(--border-soft);font-size:.76rem}.qr-table tr:hover{background:var(--bg-hover)}
+    .qr-code{display:inline-flex;align-items:center;gap:.4rem;font-weight:800;color:var(--azul-dark)}.qr-code::before{content:'';width:8px;height:8px;border-radius:3px;background:#14b8a6}.qr-code.available::before{border:1px solid #14b8a6;background:transparent}
+    .qr-row-actions{display:flex;justify-content:flex-end;gap:.3rem}
+
     body.dark-mode .congress-nav{background:rgba(36,31,26,.94)}
     body.dark-mode .taq-seat-experience,body.dark-mode .congress-map-card,body.dark-mode .congress-config-card{border-color:var(--border)}
-    @media(max-width:900px){.taq-essential-grid{grid-template-columns:1fr 1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto;max-width:none}.taq-sale-summary{grid-template-columns:1fr 1fr}}
-    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}body.taq-customer-mode .taq-seat-canvas{transform:none}}
+    @media(max-width:1100px){.qr-layout{grid-template-columns:1fr}}
+    @media(max-width:900px){.taq-essential-grid{grid-template-columns:1fr 1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto;max-width:none}.taq-sale-summary{grid-template-columns:1fr 1fr}.qr-kpis{grid-template-columns:1fr 1fr}}
+    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body,.qr-profile-grid,.qr-link-selects{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field,.qr-profile-grid .wide{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}.qr-privacy{grid-template-columns:1fr}body.taq-customer-mode .taq-seat-canvas{transform:none}}
   </style>
 
   <!-- FIREBASE SDK -->
@@ -625,6 +651,7 @@
           <button class="congress-nav-btn active" data-congress-tab="taquilla" onclick="mostrarCongresoPanel('taquilla')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v14H3z"/><path d="M7 9h4M7 13h7"/></svg>Venta en taquilla</button>
           <button class="congress-nav-btn" data-congress-tab="sala" onclick="mostrarCongresoPanel('sala')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 10v9M19 10v9M5 15h14M8 5h8a3 3 0 0 1 3 3v7H5V8a3 3 0 0 1 3-3Z"/></svg>Mapa de sala</button>
           <button class="congress-nav-btn" data-congress-tab="registros" onclick="mostrarCongresoPanel('registros')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Asistentes</button>
+          <button class="congress-nav-btn" data-congress-tab="qr" onclick="mostrarCongresoPanel('qr')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 20h3"/></svg>Tarjetas QR</button>
           <button class="congress-nav-btn" data-congress-tab="fichas" onclick="mostrarCongresoPanel('fichas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v10H3z"/><path d="M8 7v10M16 7v10"/></svg>Fichas y precios</button>
         </nav>
 
@@ -712,6 +739,43 @@
           </div>
         </div>
 
+        <!-- TARJETAS QR -->
+        <div class="congress-pane" data-congress-pane="qr">
+          <div class="congress-section-head"><div><h2>Tarjetas QR profesionales</h2><p>Vincula una tarjeta física con un asistente y controla qué datos serán públicos.</p></div><div style="display:flex;gap:.55rem;"><input type="file" id="qr-import-file" accept="application/json,.json" hidden onchange="importarLoteQr(this.files[0])"><button class="btn-secondary" onclick="document.getElementById('qr-import-file').click()">Importar lote</button><button class="btn-add" onclick="cargarCongresoQr()">↻ Actualizar</button></div></div>
+          <div class="qr-kpis"><div class="qr-kpi"><small>Total físico</small><strong id="qr-kpi-total">0</strong></div><div class="qr-kpi"><small>Disponibles</small><strong id="qr-kpi-disponibles">0</strong></div><div class="qr-kpi"><small>Asignadas</small><strong id="qr-kpi-asignadas">0</strong></div><div class="qr-kpi"><small>Privadas / pausadas</small><strong id="qr-kpi-privadas">0</strong></div></div>
+          <div class="qr-layout">
+            <div class="qr-panel">
+              <div class="qr-panel-head"><div><h3>Vincular tarjeta</h3><p>Elige el número impreso y la persona registrada. Después revisa su tarjeta virtual.</p></div><span class="badge info">RECEPCIÓN</span></div>
+              <div id="qr-import-empty" class="qr-import-empty"><b>⌁</b><h4>Importa primero el lote privado</h4><p>Selecciona el archivo JSON incluido con los 100 códigos. Los tokens no se mostrarán ni quedarán guardados en el repositorio.</p><button class="btn-add" onclick="document.getElementById('qr-import-file').click()">Elegir archivo del lote</button></div>
+              <div id="qr-link-workspace" hidden>
+                <div class="qr-link-selects"><div class="form-field"><label>Número de tarjeta física *</label><select id="qr-codigo" onchange="prepararVinculoQr()"><option value="">Selecciona QR</option></select></div><div class="form-field"><label>Asistente registrado *</label><select id="qr-registro" onchange="prepararVinculoQr()"><option value="">Selecciona persona</option></select></div></div>
+                <div class="qr-profile-form" id="qr-profile-form">
+                  <div class="taq-help"><span>ⓘ</span><div>Esta será la información visible al escanear la tarjeta. <strong>Las notas internas nunca se publican.</strong></div></div>
+                  <div class="qr-profile-grid">
+                    <div class="form-field"><label>Nombre profesional *</label><input type="text" id="qr-nombre" placeholder="Nombre completo"></div>
+                    <div class="form-field"><label>Cargo o especialidad</label><input type="text" id="qr-cargo" placeholder="Dermatóloga, especialista…"></div>
+                    <div class="form-field wide"><label>Empresa o lugar de trabajo</label><input type="text" id="qr-empresa" placeholder="Clínica, hospital o consultorio"></div>
+                    <div class="form-field wide"><label>Presentación breve</label><textarea id="qr-bio" rows="3" placeholder="Una descripción profesional breve"></textarea></div>
+                    <div class="form-field"><label>Correo</label><input type="email" id="qr-correo" placeholder="correo@ejemplo.com"></div>
+                    <div class="form-field"><label>Teléfono</label><input type="tel" id="qr-telefono" placeholder="+52…"></div>
+                    <div class="form-field"><label>Sitio web</label><input type="text" id="qr-web" placeholder="https://..."></div>
+                    <div class="form-field"><label>LinkedIn</label><input type="text" id="qr-linkedin" placeholder="Perfil profesional"></div>
+                    <div class="form-field wide"><label>Instagram profesional</label><input type="text" id="qr-instagram" placeholder="@usuario"></div>
+                  </div>
+                  <div class="qr-privacy"><label><input type="checkbox" id="qr-mostrar-correo" checked>Mostrar correo</label><label><input type="checkbox" id="qr-mostrar-telefono" checked>Mostrar teléfono</label><label><input type="checkbox" id="qr-mostrar-web" checked>Mostrar sitio web</label><label><input type="checkbox" id="qr-mostrar-linkedin" checked>Mostrar LinkedIn</label><label><input type="checkbox" id="qr-mostrar-instagram" checked>Mostrar Instagram</label><label><input type="checkbox" id="qr-activa" checked>Tarjeta visible</label></div>
+                  <label class="qr-consent"><input type="checkbox" id="qr-consentimiento"><span>La persona autorizó que los datos marcados se muestren públicamente al escanear su QR.</span></label>
+                  <div class="taq-actions"><button class="btn-secondary" onclick="cancelarEdicionQr()">Cancelar</button><div class="taq-actions-right"><button class="btn-add" id="qr-guardar" onclick="guardarVinculoQr()">Vincular tarjeta y publicar</button></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="qr-panel">
+              <div class="qr-panel-head"><div><h3>Inventario de tarjetas</h3><p>Localiza rápidamente números disponibles o vinculados.</p></div></div>
+              <div class="data-table-search" style="margin-bottom:.75rem;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="qr-busqueda" placeholder="Buscar QR o asistente…" oninput="renderCongresoQr(this.value)"></div>
+              <div class="qr-table-wrap"><table class="qr-table"><thead><tr><th>Número</th><th>Estado</th><th>Asistente</th><th></th></tr></thead><tbody id="qrBody"><tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">Aún no se ha cargado el lote.</td></tr></tbody></table></div>
+            </div>
+          </div>
+        </div>
+
         <!-- CONFIGURACIÓN DE FICHAS -->
         <div class="congress-pane" data-congress-pane="fichas">
           <div class="congress-section-head"><div><h2>Fichas y precios</h2><p>Configuración administrativa; los cambios se reflejan en la página pública y Stripe.</p></div></div>
@@ -724,7 +788,7 @@
         </div>
 
         <div class="congress-detail-backdrop" id="congresoDetalle" onclick="if(event.target===this)cerrarDetalleRegistro()">
-          <div class="congress-detail-card"><div class="congress-detail-head"><div><span class="badge info">DETALLE DE ASISTENTE</span><h3 id="congreso-detalle-titulo" style="margin-top:.55rem;">Registro</h3></div><button class="congress-detail-close" onclick="cerrarDetalleRegistro()" aria-label="Cerrar">×</button></div><div id="congreso-detalle-contenido"></div><div class="taq-actions"><button class="btn-secondary" onclick="cerrarDetalleRegistro()">Cerrar</button><div class="taq-actions-right"><button class="btn-add" id="congreso-detalle-editar">Editar registro</button></div></div></div>
+          <div class="congress-detail-card"><div class="congress-detail-head"><div><span class="badge info">DETALLE DE ASISTENTE</span><h3 id="congreso-detalle-titulo" style="margin-top:.55rem;">Registro</h3></div><button class="congress-detail-close" onclick="cerrarDetalleRegistro()" aria-label="Cerrar">×</button></div><div id="congreso-detalle-contenido"></div><div class="taq-actions"><button class="btn-secondary" onclick="cerrarDetalleRegistro()">Cerrar</button><div class="taq-actions-right"><button class="btn-secondary" id="congreso-detalle-qr">Vincular QR</button><button class="btn-add" id="congreso-detalle-editar">Editar registro</button></div></div></div>
         </div>
       </section>
     <!-- ═══ CONFIG ═══ -->
@@ -1985,6 +2049,7 @@
       const data = await apiCongresoAdmin('/congreso/admin/registros');
       CONGRESO_REGISTROS = Array.isArray(data.registros) ? data.registros : [];
       renderCongresoRegistros();
+      actualizarOpcionesQr();
     } catch (e) {
       console.warn('[Admin] congreso registros load:', e.message);
       document.getElementById('congresoBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--danger);">No se pudieron cargar los registros: ' + textoSeguro(e.message) + '</td></tr>';
@@ -2026,14 +2091,18 @@
       ['Origen', r.origen === 'taquilla' ? 'Venta en taquilla' : 'Compra en línea'],
       ['Método de pago', r.metodoPago || (r.stripeSessionId ? 'Stripe' : '—')],
       ['Monto registrado', r.monto == null || r.monto === '' ? '—' : '$' + Number(r.monto).toLocaleString('es-MX') + ' MXN'],
-      ['Estado', estado], ['Empresa', extra.Empresa], ['LinkedIn / Web', extra['LinkedIn/Web']],
+      ['Estado', estado], ['Tarjeta QR', r.qrCodigo], ['Empresa', extra.Empresa], ['LinkedIn / Web', extra['LinkedIn/Web']],
       ['Instagram', extra.Instagram], ['Notas internas', extra.Notas]
     ];
     document.getElementById('congreso-detalle-titulo').textContent = r.nombre || 'Registro del congreso';
     document.getElementById('congreso-detalle-contenido').innerHTML = '<div class="congress-detail-grid">' + campos.filter(([,valor]) => valor !== undefined && valor !== null && valor !== '').map(([etiqueta,valor]) => '<div><small>' + textoSeguro(etiqueta) + '</small><strong>' + textoSeguro(valor) + '</strong></div>').join('') + '</div>';
     const editar = document.getElementById('congreso-detalle-editar');
+    const qr = document.getElementById('congreso-detalle-qr');
     editar.style.display = r.estadoRegistro === 'cancelado' ? 'none' : '';
     editar.onclick = () => { cerrarDetalleRegistro(); abrirRegistroTaquilla(id); };
+    qr.style.display = r.estadoRegistro === 'cancelado' ? 'none' : '';
+    qr.textContent = r.qrCodigo ? 'Editar ' + r.qrCodigo : 'Vincular QR';
+    qr.onclick = () => { cerrarDetalleRegistro(); abrirQrParaRegistro(id, r.qrCodigo || ''); };
     document.getElementById('congresoDetalle').classList.add('active');
   };
 
@@ -2045,6 +2114,7 @@
     if (panel === 'sala' || panel === 'taquilla') cargarCongresoAsientos();
     if (panel === 'registros') cargarCongresoRegistros();
     if (panel === 'fichas') cargarConfiguracionCongreso();
+    if (panel === 'qr') cargarCongresoQr();
   };
 
   window.iniciarNuevaVenta = function(){
@@ -2111,6 +2181,213 @@
       cerrarDetalleRegistro();
     }
   });
+
+  // ═══ CONGRESO: INVENTARIO Y VINCULACIÓN DE TARJETAS QR ═══
+  var CONGRESO_QR = [];
+
+  window.cargarCongresoQr = async function(){
+    try {
+      const data = await apiCongresoAdmin('/congreso/admin/qr');
+      CONGRESO_QR = Array.isArray(data.tarjetas) ? data.tarjetas : [];
+      renderCongresoQr(document.getElementById('qr-busqueda')?.value || '');
+      actualizarOpcionesQr();
+    } catch (e) {
+      console.warn('[Admin] QR load:', e.message);
+      const body = document.getElementById('qrBody');
+      if (body) body.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--danger);">No se pudo cargar el inventario: ' + textoSeguro(e.message) + '</td></tr>';
+    }
+  };
+
+  window.renderCongresoQr = function(search){
+    const total = CONGRESO_QR.length;
+    const disponibles = CONGRESO_QR.filter(card => !card.asignadoRegistroId).length;
+    const asignadas = CONGRESO_QR.filter(card => card.asignadoRegistroId).length;
+    const privadas = CONGRESO_QR.filter(card => card.asignadoRegistroId && (!card.activo || !card.consentimientoPublicacion)).length;
+    const poner = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    poner('qr-kpi-total', total); poner('qr-kpi-disponibles', disponibles); poner('qr-kpi-asignadas', asignadas); poner('qr-kpi-privadas', privadas);
+    const vacio = document.getElementById('qr-import-empty');
+    const workspace = document.getElementById('qr-link-workspace');
+    if (vacio) vacio.style.display = total ? 'none' : 'grid';
+    if (workspace) workspace.hidden = !total;
+
+    const q = String(search || '').trim().toLowerCase();
+    const list = q ? CONGRESO_QR.filter(card =>
+      String(card.codigo || '').toLowerCase().includes(q) ||
+      String(card.perfil?.nombre || '').toLowerCase().includes(q)
+    ) : CONGRESO_QR;
+    const body = document.getElementById('qrBody');
+    if (!body) return;
+    body.innerHTML = list.map(card => {
+      const asignada = Boolean(card.asignadoRegistroId);
+      const privada = asignada && (!card.activo || !card.consentimientoPublicacion);
+      const estado = !asignada ? '<span class="badge neutral">Disponible</span>' : privada ? '<span class="badge warn">Privada</span>' : '<span class="badge success">Publicada</span>';
+      const persona = asignada ? textoSeguro(card.perfil?.nombre || 'Asistente vinculado') : '<span style="color:var(--text-muted)">Sin asignar</span>';
+      const acciones = asignada
+        ? '<div class="qr-row-actions"><button class="action-btn" title="Editar tarjeta" onclick="editarTarjetaQr(\'' + card.codigo + '\')">' + editSvg + '</button><button class="action-btn danger" title="Desvincular" onclick="desvincularQr(\'' + card.codigo + '\')">' + deleteSvg + '</button></div>'
+        : '<div class="qr-row-actions"><button class="action-btn" title="Asignar" onclick="editarTarjetaQr(\'' + card.codigo + '\')">＋</button></div>';
+      return '<tr><td><span class="qr-code ' + (asignada ? '' : 'available') + '">' + textoSeguro(card.codigo) + '</span></td><td>' + estado + '</td><td>' + persona + '</td><td>' + acciones + '</td></tr>';
+    }).join('') || '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">No hay resultados.</td></tr>';
+  };
+
+  window.actualizarOpcionesQr = function(){
+    const cardSelect = document.getElementById('qr-codigo');
+    const regSelect = document.getElementById('qr-registro');
+    if (!cardSelect || !regSelect) return;
+    const cardActual = cardSelect.value;
+    const regActual = regSelect.value;
+    cardSelect.innerHTML = '<option value="">Selecciona QR</option>' + CONGRESO_QR.map(card => '<option value="' + textoSeguro(card.codigo) + '">' + textoSeguro(card.codigo) + (card.asignadoRegistroId ? ' · ' + textoSeguro(card.perfil?.nombre || 'Asignada') : ' · Disponible') + '</option>').join('');
+    const activos = CONGRESO_REGISTROS.filter(r => r.estadoRegistro !== 'cancelado');
+    regSelect.innerHTML = '<option value="">Selecciona persona</option>' + activos.map(r => '<option value="' + textoSeguro(r.id) + '">' + textoSeguro(r.nombre || 'Sin nombre') + ' · ' + textoSeguro(r.asiento || 'Sin asiento') + (r.qrCodigo ? ' · ' + textoSeguro(r.qrCodigo) : '') + '</option>').join('');
+    if (CONGRESO_QR.some(card => card.codigo === cardActual)) cardSelect.value = cardActual;
+    if (activos.some(r => r.id === regActual)) regSelect.value = regActual;
+  };
+
+  window.importarLoteQr = async function(file){
+    if (!file) return;
+    const input = document.getElementById('qr-import-file');
+    try {
+      const raw = await file.text();
+      const lote = JSON.parse(raw);
+      if (!Array.isArray(lote.cards) || lote.cards.length !== 100) throw new Error('El archivo no contiene las 100 tarjetas');
+      const boton = document.querySelector('[onclick*="qr-import-file"]');
+      if (boton) boton.disabled = true;
+      const resultado = await apiCongresoAdmin('/congreso/admin/qr/lote', { method:'POST', body:{ cards:lote.cards } });
+      showToast(resultado.creadas ? resultado.creadas + ' tarjetas QR importadas' : 'El lote QR ya estaba importado');
+      await cargarCongresoQr();
+    } catch (e) {
+      showToast('No se pudo importar: ' + e.message);
+    } finally {
+      if (input) input.value = '';
+      document.querySelectorAll('[onclick*="qr-import-file"]').forEach(btn => btn.disabled = false);
+    }
+  };
+
+  function llenarPerfilQr(registro, card){
+    const perfil = card?.perfil || {};
+    const extra = registro?.extra && typeof registro.extra === 'object' ? registro.extra : {};
+    const valor = (id, value) => { const el = document.getElementById(id); if (el) el.value = value || ''; };
+    const marca = (id, value, fallback) => { const el = document.getElementById(id); if (el) el.checked = typeof value === 'boolean' ? value : fallback; };
+    valor('qr-nombre', perfil.nombre || registro?.nombre);
+    valor('qr-cargo', perfil.cargo || extra.Cargo);
+    valor('qr-empresa', perfil.empresa || extra.Empresa);
+    valor('qr-bio', perfil.bio);
+    valor('qr-correo', perfil.correo || registro?.correo);
+    valor('qr-telefono', perfil.telefono || registro?.telefono);
+    valor('qr-web', perfil.sitioWeb || extra['Sitio web']);
+    valor('qr-linkedin', perfil.linkedin || extra['LinkedIn/Web']);
+    valor('qr-instagram', perfil.instagram || extra.Instagram);
+    marca('qr-mostrar-correo', perfil.mostrarCorreo, Boolean(perfil.correo || registro?.correo));
+    marca('qr-mostrar-telefono', perfil.mostrarTelefono, Boolean(perfil.telefono || registro?.telefono));
+    marca('qr-mostrar-web', perfil.mostrarSitioWeb, Boolean(perfil.sitioWeb || extra['Sitio web']));
+    marca('qr-mostrar-linkedin', perfil.mostrarLinkedin, Boolean(perfil.linkedin || extra['LinkedIn/Web']));
+    marca('qr-mostrar-instagram', perfil.mostrarInstagram, Boolean(perfil.instagram || extra.Instagram));
+    marca('qr-activa', card?.activo, true);
+    marca('qr-consentimiento', card?.consentimientoPublicacion, false);
+  }
+
+  window.prepararVinculoQr = function(){
+    const cardSelect = document.getElementById('qr-codigo');
+    const regSelect = document.getElementById('qr-registro');
+    let card = CONGRESO_QR.find(item => item.codigo === cardSelect?.value);
+    let registro = CONGRESO_REGISTROS.find(item => item.id === regSelect?.value);
+    if (card?.asignadoRegistroId && (!registro || registro.id !== card.asignadoRegistroId)) {
+      regSelect.value = card.asignadoRegistroId;
+      registro = CONGRESO_REGISTROS.find(item => item.id === card.asignadoRegistroId);
+    } else if (registro?.qrCodigo && (!card || card.codigo !== registro.qrCodigo)) {
+      cardSelect.value = registro.qrCodigo;
+      card = CONGRESO_QR.find(item => item.codigo === registro.qrCodigo);
+    }
+    const form = document.getElementById('qr-profile-form');
+    if (!card || !registro) { form?.classList.remove('active'); return; }
+    if (card.asignadoRegistroId && card.asignadoRegistroId !== registro.id) {
+      form?.classList.remove('active');
+      return showToast('Esa tarjeta ya pertenece a otra persona');
+    }
+    llenarPerfilQr(registro, card);
+    form?.classList.add('active');
+    document.getElementById('qr-guardar').textContent = card.asignadoRegistroId ? 'Guardar tarjeta virtual' : 'Vincular tarjeta y publicar';
+  };
+
+  window.abrirQrParaRegistro = async function(registroId, codigo){
+    mostrarCongresoPanel('qr');
+    if (!CONGRESO_QR.length) await cargarCongresoQr();
+    document.getElementById('qr-registro').value = registroId;
+    if (codigo) document.getElementById('qr-codigo').value = codigo;
+    prepararVinculoQr();
+    document.querySelector('[data-congress-pane="qr"]')?.scrollIntoView({ behavior:'smooth', block:'start' });
+  };
+
+  window.editarTarjetaQr = function(codigo){
+    mostrarCongresoPanel('qr');
+    const card = CONGRESO_QR.find(item => item.codigo === codigo);
+    document.getElementById('qr-codigo').value = codigo;
+    document.getElementById('qr-registro').value = card?.asignadoRegistroId || '';
+    prepararVinculoQr();
+    if (!card?.asignadoRegistroId) showToast('Ahora selecciona al asistente');
+  };
+
+  function payloadPerfilQr(){
+    return {
+      nombre: document.getElementById('qr-nombre').value,
+      cargo: document.getElementById('qr-cargo').value,
+      empresa: document.getElementById('qr-empresa').value,
+      bio: document.getElementById('qr-bio').value,
+      correo: document.getElementById('qr-correo').value,
+      telefono: document.getElementById('qr-telefono').value,
+      sitioWeb: document.getElementById('qr-web').value,
+      linkedin: document.getElementById('qr-linkedin').value,
+      instagram: document.getElementById('qr-instagram').value,
+      mostrarCorreo: document.getElementById('qr-mostrar-correo').checked,
+      mostrarTelefono: document.getElementById('qr-mostrar-telefono').checked,
+      mostrarSitioWeb: document.getElementById('qr-mostrar-web').checked,
+      mostrarLinkedin: document.getElementById('qr-mostrar-linkedin').checked,
+      mostrarInstagram: document.getElementById('qr-mostrar-instagram').checked
+    };
+  }
+
+  window.guardarVinculoQr = async function(){
+    const codigo = document.getElementById('qr-codigo').value;
+    const registroId = document.getElementById('qr-registro').value;
+    const consentimiento = document.getElementById('qr-consentimiento').checked;
+    if (!codigo || !registroId) return showToast('Selecciona la tarjeta y el asistente');
+    if (!document.getElementById('qr-nombre').value.trim()) return showToast('Escribe el nombre profesional');
+    if (!consentimiento) return showToast('Confirma la autorización de publicación');
+    const card = CONGRESO_QR.find(item => item.codigo === codigo);
+    const boton = document.getElementById('qr-guardar');
+    boton.disabled = true; boton.textContent = 'Guardando…';
+    try {
+      const perfil = payloadPerfilQr();
+      if (card?.asignadoRegistroId) {
+        if (card.asignadoRegistroId !== registroId) throw new Error('Esa tarjeta pertenece a otra persona');
+        await apiCongresoAdmin('/congreso/admin/qr/' + encodeURIComponent(codigo), { method:'PUT', body:{ perfil, activo:document.getElementById('qr-activa').checked, consentimientoPublicacion:true } });
+      } else {
+        await apiCongresoAdmin('/congreso/admin/qr/asignar', { method:'POST', body:{ codigo, registroId, perfil, consentimientoPublicacion:true } });
+      }
+      await Promise.all([cargarCongresoQr(), cargarCongresoRegistros()]);
+      cancelarEdicionQr();
+      showToast('Tarjeta ' + codigo + ' vinculada y lista para escanear');
+    } catch (e) {
+      showToast('No se pudo guardar: ' + e.message);
+    } finally {
+      boton.disabled = false; boton.textContent = 'Vincular tarjeta y publicar';
+    }
+  };
+
+  window.cancelarEdicionQr = function(){
+    document.getElementById('qr-profile-form')?.classList.remove('active');
+    const card = document.getElementById('qr-codigo'); const reg = document.getElementById('qr-registro');
+    if (card) card.value = ''; if (reg) reg.value = '';
+  };
+
+  window.desvincularQr = async function(codigo){
+    if (!confirm('¿Desvincular ' + codigo + '? El QR volverá a quedar disponible y la tarjeta virtual dejará de mostrar datos.')) return;
+    try {
+      await apiCongresoAdmin('/congreso/admin/qr/' + encodeURIComponent(codigo) + '/vinculo', { method:'DELETE' });
+      await Promise.all([cargarCongresoQr(), cargarCongresoRegistros()]);
+      cancelarEdicionQr();
+      showToast(codigo + ' quedó disponible');
+    } catch (e) { showToast('No se pudo desvincular: ' + e.message); }
+  };
   window.eliminarCongresoRegistro = async function(id){
     if (!confirm('¿Cancelar este registro y liberar su asiento? El historial de la compra se conservará.')) return;
     try {
