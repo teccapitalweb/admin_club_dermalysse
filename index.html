@@ -386,6 +386,8 @@
     .qr-link-selects{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
     .qr-profile-form{display:none;margin-top:1rem;border-top:1px solid var(--border-soft);padding-top:1rem}
     .qr-profile-form.active{display:block;animation:fadeSlide .15s ease}
+    .qr-quick-actions{display:flex;align-items:center;justify-content:space-between;gap:.65rem;margin-top:.75rem;padding:.7rem .8rem;border:1px solid var(--border-soft);border-radius:11px;background:var(--bg-elevated)}
+    .qr-quick-actions span{color:var(--text-muted);font-size:.7rem;line-height:1.4}.qr-quick-actions button{white-space:nowrap}
     .qr-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.qr-profile-grid .wide{grid-column:1/-1}
     .qr-privacy{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.75rem}
     .qr-privacy label{display:flex;align-items:center;gap:.5rem;border:1px solid var(--border-soft);border-radius:10px;padding:.65rem .75rem;background:var(--bg-elevated);font-size:.73rem;color:var(--text-secondary);cursor:pointer}
@@ -396,12 +398,14 @@
     .qr-table{width:100%;border-collapse:collapse}.qr-table th{position:sticky;z-index:2;top:0;padding:.7rem .8rem;background:var(--bg-elevated);color:var(--text-muted);font-size:.63rem;letter-spacing:.11em;text-align:left;text-transform:uppercase}.qr-table td{padding:.7rem .8rem;border-top:1px solid var(--border-soft);font-size:.76rem}.qr-table tr:hover{background:var(--bg-hover)}
     .qr-code{display:inline-flex;align-items:center;gap:.4rem;font-weight:800;color:var(--azul-dark)}.qr-code::before{content:'';width:8px;height:8px;border-radius:3px;background:#14b8a6}.qr-code.available::before{border:1px solid #14b8a6;background:transparent}
     .qr-row-actions{display:flex;justify-content:flex-end;gap:.3rem}
+    .qr-filters{display:flex;gap:.35rem;margin-bottom:.7rem;padding:.25rem;border:1px solid var(--border-soft);border-radius:11px;background:var(--bg-elevated)}
+    .qr-filter{flex:1;min-height:34px;border:0;border-radius:8px;background:transparent;color:var(--text-muted);font-size:.68rem;font-weight:700;cursor:pointer;transition:.15s ease}.qr-filter:hover{color:var(--azul-dark)}.qr-filter.active{background:var(--azul-dark);color:#fff;box-shadow:var(--shadow-xs)}
 
     body.dark-mode .congress-nav{background:rgba(36,31,26,.94)}
     body.dark-mode .taq-seat-experience,body.dark-mode .congress-map-card,body.dark-mode .congress-config-card{border-color:var(--border)}
     @media(max-width:1100px){.qr-layout{grid-template-columns:1fr}}
     @media(max-width:900px){.taq-essential-grid{grid-template-columns:1fr 1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto;max-width:none}.taq-sale-summary{grid-template-columns:1fr 1fr}.qr-kpis{grid-template-columns:1fr 1fr}}
-    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body,.qr-profile-grid,.qr-link-selects{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field,.qr-profile-grid .wide{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}.qr-privacy{grid-template-columns:1fr}body.taq-customer-mode .taq-seat-canvas{transform:none}}
+    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body,.qr-profile-grid,.qr-link-selects{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field,.qr-profile-grid .wide{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}.qr-privacy{grid-template-columns:1fr}.qr-quick-actions{align-items:stretch;flex-direction:column}.qr-filters{overflow-x:auto}.qr-filter{min-width:105px}body.taq-customer-mode .taq-seat-canvas{transform:none}}
   </style>
 
   <!-- FIREBASE SDK -->
@@ -748,7 +752,8 @@
               <div class="qr-panel-head"><div><h3>Vincular tarjeta</h3><p>Elige el número impreso y la persona registrada. Después revisa su tarjeta virtual.</p></div><span class="badge info">RECEPCIÓN</span></div>
               <div id="qr-import-empty" class="qr-import-empty"><b>⌁</b><h4>Importa primero el lote privado</h4><p>Selecciona el archivo JSON incluido con los 100 códigos. Los tokens no se mostrarán ni quedarán guardados en el repositorio.</p><button class="btn-add" onclick="document.getElementById('qr-import-file').click()">Elegir archivo del lote</button></div>
               <div id="qr-link-workspace" hidden>
-                <div class="qr-link-selects"><div class="form-field"><label>Número de tarjeta física *</label><select id="qr-codigo" onchange="prepararVinculoQr()"><option value="">Selecciona QR</option></select></div><div class="form-field"><label>Asistente registrado *</label><select id="qr-registro" onchange="prepararVinculoQr()"><option value="">Selecciona persona</option></select></div></div>
+                <div class="qr-link-selects"><div class="form-field"><label>Número de tarjeta física disponible *</label><select id="qr-codigo" onchange="prepararVinculoQr()"><option value="">Selecciona QR disponible</option></select></div><div class="form-field"><label>Asistente registrado *</label><select id="qr-registro" onchange="prepararVinculoQr()"><option value="">Selecciona persona</option></select></div></div>
+                <div class="qr-quick-actions"><span>¿No importa el número? Selecciona automáticamente la primera tarjeta libre.</span><button class="btn-secondary" type="button" onclick="elegirSiguienteQrDisponible()">Elegir siguiente disponible</button></div>
                 <div class="qr-profile-form" id="qr-profile-form">
                   <div class="taq-help"><span>ⓘ</span><div>Esta será la información visible al escanear la tarjeta. <strong>Las notas internas nunca se publican.</strong></div></div>
                   <div class="qr-profile-grid">
@@ -770,6 +775,7 @@
             </div>
             <div class="qr-panel">
               <div class="qr-panel-head"><div><h3>Inventario de tarjetas</h3><p>Localiza rápidamente números disponibles o vinculados.</p></div></div>
+              <div class="qr-filters"><button class="qr-filter active" type="button" data-qr-filter="disponibles" onclick="filtrarCongresoQr('disponibles')">Disponibles <span id="qr-filter-disponibles">0</span></button><button class="qr-filter" type="button" data-qr-filter="asignadas" onclick="filtrarCongresoQr('asignadas')">Asignadas <span id="qr-filter-asignadas">0</span></button><button class="qr-filter" type="button" data-qr-filter="todas" onclick="filtrarCongresoQr('todas')">Todas <span id="qr-filter-todas">0</span></button></div>
               <div class="data-table-search" style="margin-bottom:.75rem;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="qr-busqueda" placeholder="Buscar QR o asistente…" oninput="renderCongresoQr(this.value)"></div>
               <div class="qr-table-wrap"><table class="qr-table"><thead><tr><th>Número</th><th>Estado</th><th>Asistente</th><th></th></tr></thead><tbody id="qrBody"><tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">Aún no se ha cargado el lote.</td></tr></tbody></table></div>
             </div>
@@ -2184,6 +2190,7 @@
 
   // ═══ CONGRESO: INVENTARIO Y VINCULACIÓN DE TARJETAS QR ═══
   var CONGRESO_QR = [];
+  var CONGRESO_QR_FILTRO = 'disponibles';
 
   window.cargarCongresoQr = async function(){
     try {
@@ -2205,16 +2212,22 @@
     const privadas = CONGRESO_QR.filter(card => card.asignadoRegistroId && (!card.activo || !card.consentimientoPublicacion)).length;
     const poner = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
     poner('qr-kpi-total', total); poner('qr-kpi-disponibles', disponibles); poner('qr-kpi-asignadas', asignadas); poner('qr-kpi-privadas', privadas);
+    poner('qr-filter-disponibles', disponibles); poner('qr-filter-asignadas', asignadas); poner('qr-filter-todas', total);
     const vacio = document.getElementById('qr-import-empty');
     const workspace = document.getElementById('qr-link-workspace');
     if (vacio) vacio.style.display = total ? 'none' : 'grid';
     if (workspace) workspace.hidden = !total;
 
     const q = String(search || '').trim().toLowerCase();
-    const list = q ? CONGRESO_QR.filter(card =>
+    const porEstado = CONGRESO_QR_FILTRO === 'disponibles'
+      ? CONGRESO_QR.filter(card => !card.asignadoRegistroId)
+      : CONGRESO_QR_FILTRO === 'asignadas'
+        ? CONGRESO_QR.filter(card => card.asignadoRegistroId)
+        : CONGRESO_QR;
+    const list = q ? porEstado.filter(card =>
       String(card.codigo || '').toLowerCase().includes(q) ||
       String(card.perfil?.nombre || '').toLowerCase().includes(q)
-    ) : CONGRESO_QR;
+    ) : porEstado;
     const body = document.getElementById('qrBody');
     if (!body) return;
     body.innerHTML = list.map(card => {
@@ -2229,13 +2242,39 @@
     }).join('') || '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">No hay resultados.</td></tr>';
   };
 
+  window.filtrarCongresoQr = function(filtro){
+    CONGRESO_QR_FILTRO = ['disponibles','asignadas','todas'].includes(filtro) ? filtro : 'disponibles';
+    document.querySelectorAll('[data-qr-filter]').forEach(btn => btn.classList.toggle('active', btn.dataset.qrFilter === CONGRESO_QR_FILTRO));
+    renderCongresoQr(document.getElementById('qr-busqueda')?.value || '');
+  };
+
+  function seleccionarCodigoQr(codigo){
+    const select = document.getElementById('qr-codigo');
+    if (!select || !codigo) return;
+    if (![...select.options].some(option => option.value === codigo)) {
+      const card = CONGRESO_QR.find(item => item.codigo === codigo);
+      if (card) select.add(new Option(card.codigo + ' · ' + (card.perfil?.nombre || 'Asignada'), card.codigo));
+    }
+    select.value = codigo;
+  }
+
+  window.elegirSiguienteQrDisponible = function(){
+    const card = CONGRESO_QR.find(item => !item.asignadoRegistroId);
+    if (!card) return showToast('No quedan tarjetas QR disponibles');
+    seleccionarCodigoQr(card.codigo);
+    prepararVinculoQr();
+    document.getElementById('qr-registro')?.focus();
+    showToast(card.codigo + ' seleccionada · ahora elige al asistente');
+  };
+
   window.actualizarOpcionesQr = function(){
     const cardSelect = document.getElementById('qr-codigo');
     const regSelect = document.getElementById('qr-registro');
     if (!cardSelect || !regSelect) return;
     const cardActual = cardSelect.value;
     const regActual = regSelect.value;
-    cardSelect.innerHTML = '<option value="">Selecciona QR</option>' + CONGRESO_QR.map(card => '<option value="' + textoSeguro(card.codigo) + '">' + textoSeguro(card.codigo) + (card.asignadoRegistroId ? ' · ' + textoSeguro(card.perfil?.nombre || 'Asignada') : ' · Disponible') + '</option>').join('');
+    const disponiblesQr = CONGRESO_QR.filter(card => !card.asignadoRegistroId || card.codigo === cardActual);
+    cardSelect.innerHTML = '<option value="">Selecciona QR disponible</option>' + disponiblesQr.map(card => '<option value="' + textoSeguro(card.codigo) + '">' + textoSeguro(card.codigo) + (card.asignadoRegistroId ? ' · ' + textoSeguro(card.perfil?.nombre || 'Asignada') : ' · Disponible') + '</option>').join('');
     const activos = CONGRESO_REGISTROS.filter(r => r.estadoRegistro !== 'cancelado');
     regSelect.innerHTML = '<option value="">Selecciona persona</option>' + activos.map(r => '<option value="' + textoSeguro(r.id) + '">' + textoSeguro(r.nombre || 'Sin nombre') + ' · ' + textoSeguro(r.asiento || 'Sin asiento') + (r.qrCodigo ? ' · ' + textoSeguro(r.qrCodigo) : '') + '</option>').join('');
     if (CONGRESO_QR.some(card => card.codigo === cardActual)) cardSelect.value = cardActual;
@@ -2294,7 +2333,7 @@
       regSelect.value = card.asignadoRegistroId;
       registro = CONGRESO_REGISTROS.find(item => item.id === card.asignadoRegistroId);
     } else if (registro?.qrCodigo && (!card || card.codigo !== registro.qrCodigo)) {
-      cardSelect.value = registro.qrCodigo;
+      seleccionarCodigoQr(registro.qrCodigo);
       card = CONGRESO_QR.find(item => item.codigo === registro.qrCodigo);
     }
     const form = document.getElementById('qr-profile-form');
@@ -2312,7 +2351,7 @@
     mostrarCongresoPanel('qr');
     if (!CONGRESO_QR.length) await cargarCongresoQr();
     document.getElementById('qr-registro').value = registroId;
-    if (codigo) document.getElementById('qr-codigo').value = codigo;
+    if (codigo) seleccionarCodigoQr(codigo);
     prepararVinculoQr();
     document.querySelector('[data-congress-pane="qr"]')?.scrollIntoView({ behavior:'smooth', block:'start' });
   };
@@ -2320,7 +2359,7 @@
   window.editarTarjetaQr = function(codigo){
     mostrarCongresoPanel('qr');
     const card = CONGRESO_QR.find(item => item.codigo === codigo);
-    document.getElementById('qr-codigo').value = codigo;
+    seleccionarCodigoQr(codigo);
     document.getElementById('qr-registro').value = card?.asignadoRegistroId || '';
     prepararVinculoQr();
     if (!card?.asignadoRegistroId) showToast('Ahora selecciona al asistente');
