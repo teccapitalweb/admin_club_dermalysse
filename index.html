@@ -283,6 +283,7 @@
     const auth=firebase.auth();
     const db=firebase.firestore();
     const googleProvider=new firebase.auth.GoogleAuthProvider();
+    const CONGRESO_BACKEND='https://dermalysse-webhook-production.up.railway.app';
   </script>
 </head>
 <body>
@@ -553,8 +554,8 @@
         <div class="view-header" style="margin-top:2rem;"><div><h2 class="view-title" style="font-size:1.15rem;">Registros de compra</h2><p class="view-subtitle">Personas que compraron su ficha al congreso.</p></div></div>
         <div class="data-table-wrap">
           <div class="data-table-toolbar"><div class="data-table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar por nombre o correo..." oninput="renderCongresoRegistros(this.value)"></div></div>
-          <table class="data-table"><thead><tr><th>Nombre completo</th><th>Correo</th><th>Teléfono</th><th>Ficha</th><th>Asiento</th><th>Fecha de compra</th><th>Datos extra</th><th></th></tr></thead>
-          <tbody id="congresoBody"><tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Cargando registros...</td></tr></tbody></table>
+          <table class="data-table"><thead><tr><th>Nombre completo</th><th>Correo</th><th>Teléfono</th><th>Ficha</th><th>Asiento</th><th>Fecha de compra</th><th>Confirmación</th><th>Datos extra</th><th></th></tr></thead>
+          <tbody id="congresoBody"><tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted);">Cargando registros...</td></tr></tbody></table>
         </div>
       </section>
     <!-- ═══ CONFIG ═══ -->
@@ -1779,12 +1780,19 @@
   var CONGRESO_REGISTROS = [];
   async function cargarCongresoRegistros(){
     try {
-      const snap = await db.collection('congresoRegistrations').orderBy('fechaCompra', 'desc').limit(500).get();
-      CONGRESO_REGISTROS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (!auth.currentUser) throw new Error('La sesión de administrador no está disponible');
+      const token = await auth.currentUser.getIdToken();
+      const respuesta = await fetch(CONGRESO_BACKEND + '/congreso/admin/registros', {
+        cache: 'no-store',
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      const data = await respuesta.json().catch(() => ({}));
+      if (!respuesta.ok) throw new Error(data.error || 'El backend no respondió correctamente');
+      CONGRESO_REGISTROS = Array.isArray(data.registros) ? data.registros : [];
       renderCongresoRegistros();
     } catch (e) {
       console.warn('[Admin] congreso registros load:', e.message);
-      document.getElementById('congresoBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">No se pudieron cargar los registros.</td></tr>';
+      document.getElementById('congresoBody').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--danger);">No se pudieron cargar los registros: ' + e.message + '</td></tr>';
     }
   }
   function renderCongresoRegistros(search){
@@ -1799,8 +1807,11 @@
       const extra = r.extra && typeof r.extra === 'object' && Object.keys(r.extra).length
         ? Object.entries(r.extra).map(([k,v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('')
         : '—';
-      return `<tr><td>${r.nombre || '—'}</td><td>${r.correo || '—'}</td><td>${r.telefono || '—'}</td><td><span class="badge info">${r.ficha || '—'}</span></td><td>${r.asiento ? '<span class="badge success">' + r.asiento + '</span>' : '—'}</td><td>${fecha}</td><td style="font-size:.8rem;">${extra}</td><td><div class="action-btns"><button class="action-btn danger" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div></td></tr>`;
-    }).join('') || '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
+      const notif = r.notificacionCompra || 'sin_estado';
+      const notifLabel = notif === 'enviada' ? 'Enviada' : notif === 'no_configurada' ? 'Falta configurar' : notif === 'sin_estado' ? 'Compra anterior' : 'Pendiente';
+      const notifClass = notif === 'enviada' ? 'success' : notif === 'sin_estado' ? 'neutral' : 'warn';
+      return `<tr><td>${r.nombre || '—'}</td><td>${r.correo || '—'}</td><td>${r.telefono || '—'}</td><td><span class="badge info">${r.ficha || '—'}</span></td><td>${r.asiento ? '<span class="badge success">' + r.asiento + '</span>' : '—'}</td><td>${fecha}</td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td style="font-size:.8rem;">${extra}</td><td><div class="action-btns"><button class="action-btn danger" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button></div></td></tr>`;
+    }).join('') || '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
   }
   window.eliminarCongresoRegistro = function(id){
     if (!confirm('¿Eliminar este registro?')) return;
