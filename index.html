@@ -2091,7 +2091,8 @@
     const q = (search || '').toLowerCase();
     const list = q ? CONGRESO_REGISTROS.filter(r =>
       (r.nombre || '').toLowerCase().includes(q) || (r.correo || '').toLowerCase().includes(q) ||
-      (r.telefono || '').toLowerCase().includes(q) || (r.asiento || '').toLowerCase().includes(q)
+      (r.telefono || '').toLowerCase().includes(q) || (r.asiento || '').toLowerCase().includes(q) ||
+      (Array.isArray(r.asientosGrupo) ? r.asientosGrupo.join(' ') : '').toLowerCase().includes(q)
     ) : CONGRESO_REGISTROS;
     body.innerHTML = list.map(r => {
       const fecha = r.fechaCompra ? new Date(r.fechaCompra).toLocaleString('es-MX', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
@@ -2108,7 +2109,8 @@
       const accionesCancelado = `<button class="action-btn" title="Reactivar y elegir asiento" onclick="reactivarCongresoRegistro('${r.id}')">${reactivarSvg}</button><button class="action-btn danger" title="Eliminar definitivamente" onclick="eliminarCongresoRegistroDefinitivo('${r.id}')">${deleteSvg}</button>`;
       const accionesActivo = `<button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button>`;
       const acciones = `<div class="action-btns"><button class="action-btn" title="Ver detalles" onclick="verDetalleRegistro('${r.id}')">${verSvg}</button>${cancelado ? accionesCancelado : accionesActivo}</div>`;
-      return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td><div class="congress-record-primary"><strong>${textoSeguro(r.nombre || '—')}</strong><small>${textoSeguro(origen)}</small></div></td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span> ${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${contacto}</td><td><div class="congress-record-primary"><span>${fecha}</span><small>${textoSeguro(r.metodoPago || 'Método no indicado')}</small></div></td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td>${acciones}</td></tr>`;
+      const grupo = Number(r.cantidadBoletos) > 1 ? '<span class="badge neutral">Grupo · ' + Number(r.cantidadBoletos) + '</span>' : '';
+      return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td><div class="congress-record-primary"><strong>${textoSeguro(r.nombre || '—')}</strong><small>${textoSeguro(origen)} ${grupo}</small></div></td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span> ${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${contacto}</td><td><div class="congress-record-primary"><span>${fecha}</span><small>${textoSeguro(r.metodoPago || 'Método no indicado')}</small></div></td><td><span class="badge ${notifClass}">${notifLabel}</span></td><td>${acciones}</td></tr>`;
     }).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Sin registros de compra todavía.</td></tr>';
   }
 
@@ -2120,10 +2122,14 @@
     const estado = r.estadoRegistro === 'cancelado' ? 'Cancelado' : 'Activo';
     const campos = [
       ['Nombre completo', r.nombre], ['Correo', r.correo], ['Teléfono', r.telefono],
-      ['Ficha', r.ficha], ['Asiento', r.asiento], ['Fecha de compra', fecha],
+      ['Ficha', r.ficha], ['Asiento', r.asiento],
+      ['Compra grupal', Number(r.cantidadBoletos) > 1 ? r.cantidadBoletos + ' lugares' : 'No'],
+      ['Lugares del grupo', Array.isArray(r.asientosGrupo) ? r.asientosGrupo.join(', ') : ''],
+      ['Fecha de compra', fecha],
       ['Origen', r.origen === 'taquilla' ? 'Venta en taquilla' : 'Compra en línea'],
       ['Método de pago', r.metodoPago || (r.stripeSessionId ? 'Stripe' : '—')],
       ['Monto registrado', r.monto == null || r.monto === '' ? '—' : '$' + Number(r.monto).toLocaleString('es-MX') + ' MXN'],
+      ['Total de la compra', r.montoTotalCompra == null || r.montoTotalCompra === '' ? '' : '$' + Number(r.montoTotalCompra).toLocaleString('es-MX') + ' MXN'],
       ['Estado', estado], ['Tarjeta QR', r.qrCodigo], ['Empresa', extra.Empresa], ['LinkedIn / Web', extra['LinkedIn/Web']],
       ['Instagram', extra.Instagram], ['Notas internas', extra.Notas]
     ];
