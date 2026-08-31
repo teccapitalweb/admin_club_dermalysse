@@ -313,37 +313,54 @@
     .taq-actions{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-top:1.25rem;padding-top:1.1rem;border-top:1px solid var(--border-soft)}
     .taq-actions-right{display:flex;gap:.65rem;margin-left:auto}
 
-    .taq-seat-experience{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:#f7faf9}
-    .taq-seat-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid #dce8e4;padding:1rem 1.15rem;background:#fff}
-    .taq-seat-toolbar h4{font-size:1rem}
-    .taq-seat-toolbar p{margin:.15rem 0 0;color:#587067;font-size:.73rem}
-    .taq-customer-btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid #0b766e;border-radius:10px;padding:.65rem .85rem;background:#fff;color:#0b766e;font-size:.72rem;font-weight:800}
-    .taq-customer-btn:hover{background:#0b766e;color:#fff}
-    .taq-seat-stage{width:min(74%,560px);margin:1.4rem auto .7rem;border-bottom:5px solid #54d8bd;border-radius:100% 100% 8px 8px/75% 75% 8px 8px;padding:.65rem;background:linear-gradient(180deg,#163b33,#071612);color:#9cf2da;font-size:.62rem;font-weight:800;letter-spacing:.28em;text-align:center;box-shadow:0 13px 30px rgba(8,30,25,.16)}
-    .taq-seat-canvas{display:grid;gap:.5rem;justify-content:center;overflow-x:auto;padding:1rem 1rem 1.4rem}
-    .taq-seat-row{display:grid;min-width:max-content;grid-template-columns:24px 1fr;align-items:center;gap:.55rem;margin-inline:auto}
-    .taq-seat-row.is-aisle{margin-top:.7rem;border-top:1px dashed #b9cac4;padding-top:1rem}
-    .taq-seat-row-label{font-size:.68rem;font-weight:800;color:#5d726b;text-align:center}
-    .taq-seat-list{display:flex;gap:.32rem}
-    .taq-chair{position:relative;width:35px;height:34px;border:0;background:transparent;color:#18362f;cursor:pointer}
-    .taq-chair::before{content:'';position:absolute;top:2px;left:5px;width:25px;height:23px;border:1.5px solid #0b8177;border-radius:8px 8px 5px 5px;background:#fff;box-shadow:inset 0 -4px rgba(0,0,0,.04)}
-    .taq-chair::after{content:'';position:absolute;right:2px;bottom:2px;left:2px;height:11px;border:1.5px solid #0b8177;border-radius:4px 4px 7px 7px;background:#fff;box-shadow:0 3px #b5ded5}
-    .taq-chair span{position:relative;z-index:2;display:grid;height:27px;place-items:center;font-size:.58rem;font-weight:800}
-    .taq-chair:hover:not(:disabled){transform:translateY(-3px)}
-    .taq-chair.selected::before,.taq-chair.selected::after{border-color:#062e29;background:#18bda9}.taq-chair.selected::after{box-shadow:0 3px #7ce7ce}
-    .taq-chair.sold,.taq-chair.hold,.taq-chair.blocked,.taq-chair.speaker,.taq-chair.other-zone{cursor:not-allowed}
-    .taq-chair.sold::before,.taq-chair.sold::after{border-color:#a59f96;background:#d8d3cb}.taq-chair.sold::after{box-shadow:0 3px #bbb4aa}
-    .taq-chair.hold::before,.taq-chair.hold::after{border-color:#d49a26;background:#fff5d9}.taq-chair.hold::after{box-shadow:0 3px #edc76c}
-    .taq-chair.blocked{opacity:.28}.taq-chair.speaker::before,.taq-chair.speaker::after{border-color:#071612;background:#0b211c}.taq-chair.speaker{color:#fff}.taq-chair.other-zone{opacity:.16}
-    .taq-seat-selection{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid #dce8e4;padding:1rem 1.2rem;background:#fff}
-    .taq-seat-selection small{display:block;color:#6f817b;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase}
-    .taq-seat-selection strong{display:block;margin-top:.15rem;font-size:1.3rem;color:#096e66}
-    .taq-seat-legend{display:flex;flex-wrap:wrap;gap:.65rem 1rem;color:#61736d;font-size:.68rem}
-    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:10px;height:10px;border:1px solid #0b8177;border-radius:3px;background:#fff}.taq-seat-legend .sold{border-color:#aaa;background:#d8d3cb}.taq-seat-legend .selected{border-color:#062e29;background:#18bda9}
+    .taq-seat-experience{--seat-ink:#0b0d0d;--seat-smoke:#626a6a;--seat-line:#151919;--seat-soft:#edf0f0;--seat-teal:#0a6e78;--seat-teal-deep:#064a52;--seat-mint:#14b8a6;position:relative;overflow:hidden;border:1px solid var(--seat-line);border-radius:0;background:#fff;color:var(--seat-ink);box-shadow:0 22px 58px rgba(8,22,19,.11)}
+    .taq-seat-experience::before{content:'';position:absolute;z-index:3;inset:7px;border:1px solid rgba(10,110,120,.16);pointer-events:none}
+    .taq-seat-toolbar{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--seat-line);padding:1.15rem 1.35rem;background:#fff}
+    .taq-seat-toolbar h4{font-size:1.28rem;letter-spacing:-.035em}
+    .taq-seat-toolbar p{margin:.2rem 0 0;color:var(--seat-smoke);font-size:.7rem}
+    .taq-customer-btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--seat-teal-deep);border-radius:0;padding:.68rem .9rem;background:#fff;color:var(--seat-teal-deep);font-size:.7rem;font-weight:800;letter-spacing:.04em}
+    .taq-customer-btn:hover{background:var(--seat-teal-deep);color:#fff}
+    .taq-seat-stage-wrap{position:relative;margin:1.75rem auto 1.15rem;text-align:center}
+    .taq-seat-stage-wrap::after{content:'';position:absolute;z-index:0;top:14px;left:50%;width:min(80%,560px);height:48px;background:rgba(10,110,120,.13);filter:blur(22px);translate:-50% 0}
+    .taq-seat-stage{position:relative;z-index:1;width:min(80%,560px);height:62px;margin:0 auto .75rem;overflow:hidden;border:1px solid #050606;border-radius:4px;background:linear-gradient(180deg,#2e3132,#0b0d0d 78%);box-shadow:0 4px 0 #6f7778,0 7px 0 var(--seat-teal),0 16px 30px rgba(11,13,13,.18);clip-path:polygon(7% 0,93% 0,100% 100%,0 100%)}
+    .taq-seat-stage::before{content:'';position:absolute;inset:0;opacity:.2;background:repeating-linear-gradient(105deg,transparent 0 28px,#fff 29px 30px)}
+    .taq-seat-stage::after{content:'';position:absolute;right:0;bottom:0;left:0;height:3px;background:var(--seat-mint)}
+    .taq-seat-stage span{position:absolute;inset:0;z-index:1;display:grid;place-items:center;color:#fff;font-size:.45rem;font-weight:800;letter-spacing:.32em;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+    .taq-seat-stage-wrap small{position:relative;z-index:1;color:var(--seat-smoke);font-size:.42rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    .taq-seat-canvas,.congress-seat-rows{display:grid;gap:.48rem;justify-content:center;overflow-x:auto;padding:.25rem 1rem 1.5rem}
+    .taq-seat-row{display:grid;min-width:max-content;grid-template-columns:24px 1fr;align-items:center;gap:.65rem;margin-inline:auto}
+    .taq-seat-row.is-aisle{position:relative;margin-top:.9rem;border-top:1px dashed #a6adae;padding-top:1.25rem}
+    .taq-seat-row.is-aisle::before{content:'PASILLO / ACCESO CENTRAL';position:absolute;top:.2rem;right:0;left:31px;color:#7f8788;font-size:.32rem;font-weight:800;letter-spacing:.2em;text-align:center}
+    .taq-seat-row-label{font-size:.58rem;font-weight:800;color:var(--seat-smoke);text-align:center}
+    .taq-seat-row[data-zone="ponente"] .taq-seat-row-label{color:var(--seat-mint)}
+    .taq-seat-list{display:flex;gap:.36rem}
+    .taq-chair,.cong-chair{--chair-fill:#111313;--chair-edge:#000;--chair-ink:#fff;--chair-shadow:#666d6e;position:relative;width:40px;height:39px;flex:0 0 40px;border:0;padding:0;background:transparent;color:var(--chair-ink);cursor:pointer;transition:transform .18s ease,filter .18s ease}
+    .taq-chair::before,.taq-chair::after,.cong-chair::before,.cong-chair::after{content:'';position:absolute;z-index:3;top:18px;width:6px;height:16px;border:1px solid var(--chair-edge);border-radius:4px;background:var(--chair-fill)}
+    .taq-chair::before,.cong-chair::before{left:0}.taq-chair::after,.cong-chair::after{right:0}
+    .taq-chair span,.cong-chair span{position:absolute;inset:0;display:block}
+    .taq-chair span::before,.cong-chair span::before{content:'';position:absolute;z-index:1;top:1px;left:5px;width:28px;height:26px;border:1.5px solid var(--chair-edge);border-radius:9px 9px 6px 6px;background:var(--chair-fill);box-shadow:inset 0 -5px 0 rgba(0,0,0,.06)}
+    .taq-chair span::after,.cong-chair span::after{content:'';position:absolute;z-index:4;right:3px;bottom:3px;left:3px;height:12px;border:1.5px solid var(--chair-edge);border-radius:5px 5px 8px 8px;background:var(--chair-fill);box-shadow:0 3px 0 var(--chair-shadow)}
+    .taq-chair b,.cong-chair b{position:absolute;z-index:5;top:8px;right:0;left:0;color:var(--chair-ink);font-size:.48rem;font-weight:800;text-align:center}
+    .taq-chair:hover:not(:disabled),.cong-chair:hover:not(:disabled){transform:translateY(-4px);filter:drop-shadow(0 6px 5px rgba(17,17,17,.16))}
+    .taq-chair.selected{--chair-fill:var(--seat-teal);--chair-edge:#032f34;--chair-ink:#fff;--chair-shadow:var(--seat-mint);transform:translateY(-4px)}
+    .taq-chair.hold,.cong-chair-hold{--chair-fill:#c7cccd;--chair-edge:#7d8586;--chair-ink:#43494a;--chair-shadow:#9ea5a6;cursor:not-allowed}
+    .taq-chair.blocked,.cong-chair-bloqueado{--chair-fill:#d6d9d9;--chair-edge:#9aa1a2;--chair-ink:#6f7778;--chair-shadow:#b6bcbc;cursor:not-allowed}
+    .taq-chair.speaker,.cong-chair-reservado{--chair-fill:#596163;--chair-edge:#343a3b;--chair-ink:#fff;--chair-shadow:#899193;cursor:not-allowed}
+    .taq-chair.sold,.cong-chair-vendido{cursor:not-allowed;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b9294'%3E%3Ccircle cx='12' cy='7.5' r='4'/%3E%3Cpath d='M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5z'/%3E%3C/svg%3E") center/34px 34px no-repeat}
+    .taq-chair.sold::before,.taq-chair.sold::after,.taq-chair.sold span,.taq-chair.sold b,.cong-chair-vendido::before,.cong-chair-vendido::after,.cong-chair-vendido span,.cong-chair-vendido b{display:none}
+    .taq-chair.other-zone{opacity:.17;filter:grayscale(1);cursor:not-allowed}
+    .taq-chair:disabled:hover{transform:none;filter:none}
+    .taq-seat-selection{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid var(--seat-line);padding:1rem 1.35rem;background:#fff}
+    .taq-seat-selection small{display:block;color:var(--seat-smoke);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}
+    .taq-seat-selection strong{display:block;max-width:520px;margin-top:.18rem;color:var(--seat-teal);font-size:1.1rem;line-height:1.35}
+    .taq-seat-legend{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.6rem .9rem;color:var(--seat-smoke);font-size:.58rem}
+    .taq-seat-legend span{display:inline-flex;align-items:center;gap:.35rem}.taq-seat-legend i{width:11px;height:11px;border:1px solid #000;border-radius:3px;background:#111313;box-shadow:0 2px 0 #666d6e}.taq-seat-legend .selected{border-color:#032f34;background:var(--seat-teal);box-shadow:0 2px 0 var(--seat-mint)}.taq-seat-legend .hold{border-color:#7d8586;background:#c7cccd;box-shadow:0 2px 0 #9ea5a6}.taq-seat-legend .sold{border-color:#858c8e;background:#b9bfc0;box-shadow:0 2px 0 #9ca2a3}.taq-seat-legend .speaker{border-color:#343a3b;background:#596163;box-shadow:0 2px 0 #899193}.taq-seat-legend .other{opacity:.23}
+    .congress-seat-map{--seat-ink:#0b0d0d;--seat-smoke:#626a6a;--seat-line:#151919;--seat-teal:#0a6e78;--seat-mint:#14b8a6;overflow:hidden;border:1px solid var(--seat-line);padding:0 1rem 1.25rem;background:#fff;color:var(--seat-ink)}
+    .congress-map-legend{justify-content:center;margin-top:.25rem;border-top:1px solid var(--seat-line);padding-top:1rem}
     body.taq-customer-mode{overflow:hidden}
-    body.taq-customer-mode .taq-seat-experience{position:fixed;z-index:10020;inset:0;border:0;border-radius:0;background:#f6faf8;display:flex;flex-direction:column}
+    body.taq-customer-mode .taq-seat-experience{position:fixed;z-index:10020;inset:0;border:0;border-radius:0;background:#fff;display:flex;flex-direction:column}
     body.taq-customer-mode .taq-seat-toolbar{padding:1.25rem 2rem}
-    body.taq-customer-mode .taq-seat-canvas{flex:1;align-content:center;transform:scale(1.18)}
+    body.taq-customer-mode .taq-seat-canvas{flex:1;align-content:center}
     body.taq-customer-mode .taq-seat-selection{padding:1rem 2rem}
 
     .taq-payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -358,9 +375,9 @@
     .taq-confirm-check{display:flex;align-items:flex-start;gap:.7rem;margin-top:1rem;border:1px solid rgba(20,184,166,.22);border-radius:12px;padding:.9rem 1rem;background:rgba(20,184,166,.07);font-size:.8rem;color:var(--text-secondary);cursor:pointer}
     .taq-confirm-check input{width:17px;height:17px;flex:0 0 17px;margin-top:1px}
 
-    .congress-map-card{border:1px solid var(--border-soft);border-radius:18px;padding:1.3rem;background:var(--bg-surface);box-shadow:var(--shadow-xs)}
+    .congress-map-card{--seat-ink:#0b0d0d;--seat-smoke:#626a6a;--seat-line:#151919;--seat-teal:#0a6e78;--seat-mint:#14b8a6;border:1px solid var(--border-soft);border-radius:18px;padding:1.3rem;background:var(--bg-surface);box-shadow:var(--shadow-xs)}
     .congress-map-summary{display:flex;flex-wrap:wrap;gap:.65rem;margin-bottom:1rem}
-    .congress-map-summary span{border:1px solid var(--border-soft);border-radius:10px;padding:.6rem .8rem;background:var(--bg-elevated);font-size:.76rem;color:var(--text-secondary)}
+    .congress-map-summary span{border:1px solid #cfd4d4;border-radius:0;padding:.6rem .8rem;background:#fff;font-size:.76rem;color:var(--seat-smoke)}
     .congress-config-card{max-width:980px;border:1px solid var(--border-soft);border-radius:18px;padding:1.5rem;background:var(--bg-surface)}
     .congress-detail-backdrop{position:fixed;z-index:10010;inset:0;display:none;place-items:center;padding:1rem;background:rgba(10,22,19,.55);backdrop-filter:blur(5px)}
     .congress-detail-backdrop.active{display:grid}
@@ -411,22 +428,7 @@
     body.dark-mode .taq-seat-experience,body.dark-mode .congress-map-card,body.dark-mode .congress-config-card{border-color:var(--border)}
     @media(max-width:1100px){.qr-layout{grid-template-columns:1fr}}
     @media(max-width:900px){.taq-essential-grid{grid-template-columns:1fr 1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto;max-width:none}.taq-sale-summary{grid-template-columns:1fr 1fr}.qr-kpis{grid-template-columns:1fr 1fr}}
-    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body,.qr-profile-grid,.qr-link-selects{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field,.qr-profile-grid .wide{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}.qr-privacy{grid-template-columns:1fr}.qr-quick-actions{align-items:stretch;flex-direction:column}.qr-filters{overflow-x:auto}.qr-filter{min-width:105px}body.taq-customer-mode .taq-seat-canvas{transform:none}}
-
-    /* MODIFICADO: Mapa operativo de la sala — asientos con forma de silla (misma paleta ya usada), icono de persona en vendidos */
-    .cong-chair{position:relative;width:2rem;height:2rem;flex:0 0 2rem;border:0;padding:0;background:transparent;cursor:pointer;color:#fff;transition:transform .15s ease}
-    .cong-chair::before{content:'';position:absolute;top:1px;left:4px;width:24px;height:19px;border:1.5px solid var(--cc-edge);border-radius:7px 7px 4px 4px;background:var(--cc-fill)}
-    .cong-chair::after{content:'';position:absolute;right:2px;bottom:1px;left:2px;height:9px;border:1.5px solid var(--cc-edge);border-radius:3px 3px 6px 6px;background:var(--cc-fill);box-shadow:0 2px 0 var(--cc-shadow)}
-    .cong-chair span{position:relative;z-index:2;display:grid;height:19px;place-items:center;font-size:.55rem;font-weight:700;color:var(--cc-ink)}
-    .cong-chair:hover:not(:disabled){transform:translateY(-2px)}
-    .cong-chair-libre{--cc-fill:#14b8a6;--cc-edge:#0b6b59;--cc-shadow:#095c4c;--cc-ink:#fff}
-    .cong-chair-hold{--cc-fill:#fff3d6;--cc-edge:#f59e0b;--cc-shadow:#f3cf86;--cc-ink:#b45309;cursor:not-allowed}
-    .cong-chair-reservado{--cc-fill:#f5e6c3;--cc-edge:#d9a441;--cc-shadow:#e3c887;--cc-ink:#a16207;cursor:not-allowed}
-    .cong-chair-bloqueado{--cc-fill:#f2ead5;--cc-edge:#c9c4bc;--cc-shadow:#ded7c6;--cc-ink:#907761;opacity:.6;cursor:not-allowed}
-    .cong-chair-vendido{--cc-fill:#d9d2ca;--cc-edge:#b0a59a;--cc-shadow:#c2b7ac;--cc-ink:#9e958c;cursor:not-allowed}
-    .cong-chair-vendido::before,.cong-chair-vendido::after{display:none}
-    .cong-chair-vendido span{display:none}
-    .cong-chair-vendido{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235a534b'%3E%3Ccircle cx='12' cy='7.5' r='4'/%3E%3Cpath d='M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5z'/%3E%3C/svg%3E") center/28px 28px no-repeat}
+    @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body,.qr-profile-grid,.qr-link-selects{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field,.qr-profile-grid .wide{grid-column:auto;max-width:none}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-seat-legend{justify-content:flex-start}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair,.cong-chair{width:34px;height:34px;flex-basis:34px}.taq-chair span::before,.cong-chair span::before{left:5px;width:23px;height:22px}.taq-chair span::after,.cong-chair span::after{height:10px}.taq-chair::before,.taq-chair::after,.cong-chair::before,.cong-chair::after{top:16px;height:14px}.taq-seat-list{gap:.18rem}.qr-privacy{grid-template-columns:1fr}.qr-quick-actions{align-items:stretch;flex-direction:column}.qr-filters{overflow-x:auto}.qr-filter{min-width:105px}.taq-seat-stage{width:min(92%,560px)}}
   </style>
 
   <!-- FIREBASE SDK -->
@@ -691,7 +693,7 @@
             </div>
             <div class="taq-steps" aria-label="Proceso de registro">
               <button class="taq-step-tab active" data-taq-step-tab="1" onclick="irPasoTaquilla(1)"><b>1</b><span>Datos básicos<small>Persona y ficha</small></span></button>
-              <button class="taq-step-tab" data-taq-step-tab="2" onclick="irPasoTaquilla(2)"><b>2</b><span>Elegir asiento<small>Vista para el asistente</small></span></button>
+              <button class="taq-step-tab" data-taq-step-tab="2" onclick="irPasoTaquilla(2)"><b>2</b><span>Elegir lugares<small>Individual o en grupo</small></span></button>
               <button class="taq-step-tab" data-taq-step-tab="3" onclick="irPasoTaquilla(3)"><b>3</b><span>Pago y confirmar<small>Revisión final</small></span></button>
             </div>
 
@@ -713,22 +715,22 @@
                   <div><h4>Elige tu lugar</h4><p id="taq-zona-copy">Mostrando los lugares disponibles para la ficha seleccionada.</p></div>
                   <button class="taq-customer-btn" type="button" onclick="alternarVistaAsistente()"><span id="taq-customer-icon">▣</span><span id="taq-customer-label">Vista para asistente</span></button>
                 </div>
-                <div class="taq-seat-stage">ESCENARIO / RUNWAY</div>
+                <div class="taq-seat-stage-wrap"><div class="taq-seat-stage"><span>RUNWAY / ESCENARIO</span></div><small>La mejor perspectiva comienza aquí</small></div>
                 <div class="taq-seat-canvas" id="asientosMapaTaquilla"><p style="color:#6f817b;text-align:center;">Cargando disponibilidad…</p></div>
                 <div class="taq-seat-selection">
-                  <div><small>Asiento seleccionado</small><strong id="taq-asiento-resumen">Ninguno</strong></div>
-                  <div class="taq-seat-legend"><span><i></i>Disponible</span><span><i class="selected"></i>Seleccionado</span><span><i class="sold"></i>No disponible</span></div>
+                  <div><small>Lugares seleccionados</small><strong id="taq-asiento-resumen">Ninguno</strong></div>
+                  <div class="taq-seat-legend"><span><i></i>Disponible</span><span><i class="selected"></i>Tu selección</span><span><i class="hold"></i>En proceso de pago</span><span><i class="sold"></i>Vendido</span><span><i class="speaker"></i>Ponentes</span><span><i class="other"></i>Otra zona</span></div>
                 </div>
               </div>
-              <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(1)">← Volver a datos</button><div class="taq-actions-right"><button class="btn-secondary" onclick="bloquearAsientoTaquilla()">Bloquear lugar</button><button class="btn-add" onclick="irPasoTaquilla(3)">Continuar al pago →</button></div></div>
+              <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(1)">← Volver a datos</button><div class="taq-actions-right"><button class="btn-secondary" onclick="bloquearAsientoTaquilla()">Bloquear selección</button><button class="btn-add" onclick="irPasoTaquilla(3)">Continuar al pago →</button></div></div>
             </div>
 
             <div class="taq-step-panel" data-taq-step-panel="3">
-              <div class="congress-section-head"><div><h2>Pago y confirmación</h2><p>Revisa la venta antes de ocupar definitivamente el asiento.</p></div></div>
-              <div class="taq-sale-summary"><div><small>Asistente</small><strong id="taq-resumen-nombre">—</strong></div><div><small>Ficha</small><strong id="taq-resumen-ficha">—</strong></div><div><small>Asiento</small><strong id="taq-resumen-asiento">—</strong></div><div><small>Total</small><strong id="taq-resumen-total">—</strong></div></div>
+              <div class="congress-section-head"><div><h2>Pago y confirmación</h2><p>Revisa la venta antes de ocupar definitivamente los lugares.</p></div></div>
+              <div class="taq-sale-summary"><div><small>Asistente</small><strong id="taq-resumen-nombre">—</strong></div><div><small>Ficha</small><strong id="taq-resumen-ficha">—</strong></div><div><small>Lugares</small><strong id="taq-resumen-asiento">—</strong></div><div><small>Total</small><strong id="taq-resumen-total">—</strong></div></div>
               <div class="taq-payment-grid">
                 <div class="form-field"><label>Método de pago</label><select id="taq-metodo"><option value="efectivo">Efectivo</option><option value="tarjeta_terminal">Tarjeta en terminal</option><option value="transferencia">Transferencia</option><option value="cortesia">Cortesía</option><option value="stripe">Stripe</option></select></div>
-                <div class="form-field"><label>Monto registrado (MXN)</label><input type="number" id="taq-monto" min="0" step="1" oninput="actualizarResumenVenta()"></div>
+                <div class="form-field"><label>Total registrado (MXN)</label><input type="number" id="taq-monto" min="0" step="1" oninput="actualizarResumenVenta()"></div>
               </div>
               <details class="taq-advanced">
                 <summary>Agregar información complementaria <span style="font-weight:500;color:var(--text-muted);">Opcional</span></summary>
@@ -740,7 +742,7 @@
                 </div>
               </details>
               <label class="taq-confirm-check"><input type="checkbox" id="taq-enviar" checked><span><strong>Enviar confirmación de compra por correo</strong><br>Se enviará cuando el registro quede guardado.</span></label>
-              <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(2)">← Volver a asiento</button><div class="taq-actions-right"><button class="btn-add" id="taq-guardar" onclick="guardarRegistroTaquilla()">Registrar venta y ocupar asiento</button></div></div>
+              <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(2)">← Volver a lugares</button><div class="taq-actions-right"><button class="btn-add" id="taq-guardar" onclick="guardarRegistroTaquilla()">Registrar venta y ocupar lugares</button></div></div>
             </div>
           </div>
         </div>
@@ -750,7 +752,8 @@
           <div class="congress-section-head"><div><h2>Mapa operativo de la sala</h2><p>Consulta ventas, pagos en proceso y bloqueos sin mezclarlo con el registro de taquilla.</p></div><button class="btn-add" onclick="cargarCongresoAsientos()">↻ Actualizar</button></div>
           <div class="congress-map-card">
             <div id="asientosResumen" class="congress-map-summary"></div>
-            <div id="asientosMapa" style="display:grid;gap:.4rem;justify-content:center;overflow-x:auto;padding:.5rem 0;"><p style="color:var(--text-muted);text-align:center;">Cargando asientos…</p></div>
+            <div id="asientosMapa" class="congress-seat-map"><p style="color:var(--text-muted);padding:2rem;text-align:center;">Cargando asientos…</p></div>
+            <div class="taq-seat-legend congress-map-legend"><span><i></i>Disponible</span><span><i class="hold"></i>En proceso de pago</span><span><i class="sold"></i>Vendido</span><span><i class="speaker"></i>Ponentes</span><span><i class="other"></i>Bloqueado</span></div>
             <p style="font-size:.76rem;color:var(--text-muted);margin-top:1rem;text-align:center;">Haz clic en un asiento para consultar su estado, editar al asistente o bloquearlo.</p>
           </div>
         </div>
@@ -2167,14 +2170,14 @@
 
   window.irPasoTaquilla = function(paso, omitirValidacion){
     const nombre = document.getElementById('taq-nombre')?.value.trim();
-    const asiento = document.getElementById('taq-asiento')?.value;
+    const asientos = asientosSeleccionadosTaquilla();
     if (!omitirValidacion && paso >= 2 && !nombre) {
       showToast('Primero captura el nombre del asistente');
       document.getElementById('taq-nombre')?.focus();
       return;
     }
-    if (!omitirValidacion && paso >= 3 && !asiento) {
-      showToast('Selecciona un asiento disponible');
+    if (!omitirValidacion && paso >= 3 && !asientos.length) {
+      showToast('Selecciona uno o varios lugares disponibles');
       return;
     }
     document.querySelectorAll('[data-taq-step-tab]').forEach(tab => tab.classList.toggle('active', Number(tab.dataset.taqStepTab) === paso));
@@ -2186,6 +2189,7 @@
   window.cambiarFichaTaquilla = function(){
     const asiento = document.getElementById('taq-asiento');
     if (asiento) asiento.value = '';
+    TAQ_ASIENTOS_SELECCIONADOS = [];
     actualizarOpcionesAsiento();
     actualizarResumenVenta();
   };
@@ -2194,14 +2198,17 @@
     const fichaId = document.getElementById('taq-ficha')?.value || 'ficha1';
     const ficha = CONGRESO_FICHAS[fichaId];
     const monto = document.getElementById('taq-monto')?.value;
-    const asiento = document.getElementById('taq-asiento')?.value || 'Por elegir';
+    const asientos = asientosSeleccionadosTaquilla();
+    const lugares = asientos.length ? asientos.join(', ') : 'Por elegir';
     const nombre = document.getElementById('taq-nombre')?.value.trim() || 'Sin capturar';
     const asignar = (id, valor) => { const el = document.getElementById(id); if (el) el.textContent = valor; };
     asignar('taq-resumen-nombre', nombre);
     asignar('taq-resumen-ficha', ficha?.nombre || '—');
-    asignar('taq-resumen-asiento', asiento);
-    asignar('taq-resumen-total', '$' + Number(monto === '' || monto == null ? ficha?.precio || 0 : monto).toLocaleString('es-MX') + ' MXN');
-    asignar('taq-asiento-resumen', asiento === 'Por elegir' ? 'Ninguno' : asiento);
+    asignar('taq-resumen-asiento', lugares);
+    asignar('taq-resumen-total', '$' + Number(monto === '' || monto == null ? (ficha?.precio || 0) * Math.max(1, asientos.length) : monto).toLocaleString('es-MX') + ' MXN');
+    asignar('taq-asiento-resumen', asientos.length ? (asientos.length === 1 ? asientos[0] : asientos.length + ' lugares · ' + lugares) : 'Ninguno');
+    const guardar = document.getElementById('taq-guardar');
+    if (guardar && !document.getElementById('taq-registro-id')?.value) guardar.textContent = asientos.length > 1 ? 'Registrar venta y ocupar ' + asientos.length + ' lugares' : 'Registrar venta y ocupar lugar';
     const zonaCopy = document.getElementById('taq-zona-copy');
     if (zonaCopy) zonaCopy.textContent = fichaId === 'ficha1' ? 'Filas A–D · acceso Especial' : 'Filas E–J · acceso General';
   };
@@ -2529,7 +2536,15 @@
     const select = document.getElementById('taq-asiento');
     const registroId = document.getElementById('taq-registro-id')?.value || '';
     const registro = CONGRESO_REGISTROS.find(r => r.id === registroId);
-    const actual = asientoPreferido || select?.value || registro?.asiento || '';
+    const preferidos = Array.isArray(asientoPreferido)
+      ? asientoPreferido
+      : asientoPreferido
+        ? [asientoPreferido]
+        : TAQ_ASIENTOS_SELECCIONADOS.length
+          ? TAQ_ASIENTOS_SELECCIONADOS
+          : registro?.asiento
+            ? [registro.asiento]
+            : [];
     if (!select) return;
     const zona = CONGRESO_FICHAS[fichaId].zona;
     const disponibles = Object.entries(CONGRESO_ASIENTOS)
@@ -2539,11 +2554,13 @@
       ))
       .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
     select.innerHTML = '<option value="">Selecciona un lugar</option>' + disponibles.map(([id]) => '<option value="' + id + '">' + id + '</option>').join('');
-    if (actual && disponibles.some(([id]) => id === actual)) select.value = actual;
-    else select.value = '';
+    const idsDisponibles = new Set(disponibles.map(([id]) => id));
+    TAQ_ASIENTOS_SELECCIONADOS = [...new Set(preferidos.map(id => String(id).toUpperCase()))]
+      .filter(id => idsDisponibles.has(id))
+      .slice(0, registroId ? 1 : 10);
+    sincronizarAsientoOcultoTaquilla();
 
-    const monto = document.getElementById('taq-monto');
-    if (monto && !registroId) monto.value = CONGRESO_FICHAS[fichaId].precio;
+    actualizarMontoTaquilla();
     renderTaquillaAsientos();
     actualizarResumenVenta();
   };
@@ -2554,9 +2571,10 @@
     document.getElementById('taq-ficha').value = 'ficha1';
     document.getElementById('taq-metodo').value = 'efectivo';
     document.getElementById('taq-enviar').checked = true;
+    TAQ_ASIENTOS_SELECCIONADOS = [];
     document.getElementById('taq-titulo').textContent = 'Nuevo asistente';
     document.getElementById('taq-modo').textContent = 'VENTA EN PUERTA';
-    document.getElementById('taq-guardar').textContent = 'Registrar venta y ocupar asiento';
+    document.getElementById('taq-guardar').textContent = 'Registrar venta y ocupar lugar';
     document.querySelector('.taq-advanced')?.removeAttribute('open');
     actualizarOpcionesAsiento();
     irPasoTaquilla(1, true);
@@ -2597,12 +2615,14 @@
 
   window.guardarRegistroTaquilla = async function(){
     const id = document.getElementById('taq-registro-id').value;
+    const asientos = asientosSeleccionadosTaquilla();
     const payload = {
       nombre: document.getElementById('taq-nombre').value,
       correo: document.getElementById('taq-correo').value,
       telefono: document.getElementById('taq-telefono').value,
       fichaId: document.getElementById('taq-ficha').value,
-      asiento: document.getElementById('taq-asiento').value,
+      asiento: asientos[0] || '',
+      asientos,
       metodoPago: document.getElementById('taq-metodo').value,
       monto: document.getElementById('taq-monto').value,
       empresa: document.getElementById('taq-empresa').value,
@@ -2611,7 +2631,8 @@
       notas: document.getElementById('taq-notas').value,
       enviarConfirmacion: document.getElementById('taq-enviar').checked
     };
-    if (!payload.nombre.trim() || !payload.asiento) return showToast('Nombre y asiento son obligatorios');
+    if (!payload.nombre.trim() || !payload.asientos.length) return showToast('Nombre y al menos un lugar son obligatorios');
+    if (id && payload.asientos.length > 1) return showToast('Al editar un asistente sólo puede cambiarse un lugar');
     if (payload.enviarConfirmacion && !payload.correo.trim()) return showToast('Agrega el correo o desactiva la confirmación');
 
     const boton = document.getElementById('taq-guardar');
@@ -2625,23 +2646,23 @@
       await Promise.all([cargarCongresoRegistros(), cargarCongresoAsientos()]);
       limpiarFormularioTaquilla();
       mostrarCongresoPanel('registros');
-      showToast(id ? 'Asistente actualizado' : 'Venta registrada · asiento ocupado');
+      showToast(id ? 'Asistente actualizado' : payload.asientos.length === 1 ? 'Venta registrada · lugar ocupado' : 'Venta grupal registrada · ' + payload.asientos.length + ' lugares ocupados');
     } catch (e) {
       showToast('No se pudo guardar: ' + e.message);
     } finally {
       boton.disabled = false;
-      boton.textContent = document.getElementById('taq-registro-id').value ? 'Guardar cambios' : 'Registrar venta y ocupar asiento';
+      boton.textContent = document.getElementById('taq-registro-id').value ? 'Guardar cambios' : 'Registrar venta y ocupar lugar';
     }
   };
 
   window.bloquearAsientoTaquilla = async function(){
-    const asiento = document.getElementById('taq-asiento').value;
-    if (!asiento) return showToast('Selecciona primero un asiento disponible');
-    if (!confirm('¿Bloquear temporalmente el asiento ' + asiento + '?')) return;
+    const asientos = asientosSeleccionadosTaquilla();
+    if (!asientos.length) return showToast('Selecciona primero uno o varios lugares disponibles');
+    if (!confirm('¿Bloquear temporalmente ' + (asientos.length === 1 ? 'el lugar ' : 'los lugares ') + asientos.join(', ') + '?')) return;
     try {
-      await apiCongresoAdmin('/congreso/admin/asientos/' + encodeURIComponent(asiento), { method: 'PATCH', body: { accion: 'bloquear' } });
+      await Promise.all(asientos.map(asiento => apiCongresoAdmin('/congreso/admin/asientos/' + encodeURIComponent(asiento), { method: 'PATCH', body: { accion: 'bloquear' } })));
       await cargarCongresoAsientos();
-      showToast('Asiento ' + asiento + ' bloqueado');
+      showToast(asientos.length === 1 ? 'Lugar ' + asientos[0] + ' bloqueado' : asientos.length + ' lugares bloqueados');
     } catch (e) {
       showToast('No se pudo bloquear: ' + e.message);
     }
@@ -2665,6 +2686,25 @@
     { fila: 'J', asientos: 10, zona: 'general' }
   ];
   let CONGRESO_ASIENTOS = {};
+  let TAQ_ASIENTOS_SELECCIONADOS = [];
+
+  function asientosSeleccionadosTaquilla(){
+    return TAQ_ASIENTOS_SELECCIONADOS.slice();
+  }
+
+  function sincronizarAsientoOcultoTaquilla(){
+    const select = document.getElementById('taq-asiento');
+    if (select) select.value = TAQ_ASIENTOS_SELECCIONADOS[0] || '';
+  }
+
+  function actualizarMontoTaquilla(){
+    const registroId = document.getElementById('taq-registro-id')?.value || '';
+    const monto = document.getElementById('taq-monto');
+    if (!monto || registroId) return;
+    const fichaId = document.getElementById('taq-ficha')?.value || 'ficha1';
+    const cantidad = Math.max(1, TAQ_ASIENTOS_SELECCIONADOS.length);
+    monto.value = Number(CONGRESO_FICHAS[fichaId]?.precio || 0) * cantidad;
+  }
 
   function estadoAsientoEfectivo(a){
     if (a.estado === 'hold' && a.holdUntil && new Date(a.holdUntil) < new Date()) return 'libre';
@@ -2676,7 +2716,7 @@
     if (!cont) return;
     const fichaId = document.getElementById('taq-ficha')?.value || 'ficha1';
     const zona = CONGRESO_FICHAS[fichaId]?.zona || 'preferente';
-    const seleccionado = document.getElementById('taq-asiento')?.value || '';
+    const seleccionados = asientosSeleccionadosTaquilla();
     const registroId = document.getElementById('taq-registro-id')?.value || '';
     const registro = CONGRESO_REGISTROS.find(r => r.id === registroId);
     const filas = ASIENTOS_LAYOUT.map(f => {
@@ -2685,15 +2725,15 @@
         const id = f.fila + n;
         const a = CONGRESO_ASIENTOS[id] || { estado: f.zona === 'ponente' ? 'reservado' : 'libre', zona:f.zona };
         const estado = estadoAsientoEfectivo(a);
-        const esActual = id === seleccionado || id === registro?.asiento;
+        const esActual = seleccionados.includes(id) || id === registro?.asiento;
         const esZona = f.zona === zona;
         const disponible = esZona && (estado === 'libre' || esActual);
         let clase = disponible ? '' : !esZona && f.zona !== 'ponente' ? 'other-zone' : estado === 'vendido' ? 'sold' : estado === 'hold' ? 'hold' : estado === 'bloqueado' ? 'blocked' : 'speaker';
-        if (id === seleccionado) clase += ' selected';
+        if (seleccionados.includes(id)) clase += ' selected';
         const titulo = id + ' · ' + (disponible ? 'Disponible' : estado === 'vendido' ? 'Vendido' : estado === 'hold' ? 'Pago en proceso' : f.zona === 'ponente' ? 'Ponentes' : 'No disponible para esta ficha');
-        sillas.push('<button type="button" class="taq-chair ' + clase.trim() + '" ' + (disponible ? 'onclick="seleccionarAsientoTaquilla(\'' + id + '\')"' : 'disabled') + ' title="' + textoSeguro(titulo) + '" aria-label="' + textoSeguro(titulo) + '"><span>' + n + '</span></button>');
+        sillas.push('<button type="button" class="taq-chair ' + clase.trim() + '" ' + (disponible ? 'onclick="seleccionarAsientoTaquilla(\'' + id + '\')"' : 'disabled') + ' aria-pressed="' + seleccionados.includes(id) + '" title="' + textoSeguro(titulo) + '" aria-label="' + textoSeguro(titulo) + '"><span></span><b>' + n + '</b></button>');
       }
-      return '<div class="taq-seat-row ' + (f.fila === 'E' ? 'is-aisle' : '') + '"><span class="taq-seat-row-label">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div class="taq-seat-list">' + sillas.join('') + '</div></div>';
+      return '<div class="taq-seat-row ' + (f.fila === 'E' ? 'is-aisle' : '') + '" data-zone="' + f.zona + '"><span class="taq-seat-row-label">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div class="taq-seat-list">' + sillas.join('') + '</div></div>';
     });
     cont.innerHTML = filas.join('');
     actualizarResumenVenta();
@@ -2702,9 +2742,19 @@
   window.seleccionarAsientoTaquilla = function(id){
     const select = document.getElementById('taq-asiento');
     if (!select || !Array.from(select.options).some(option => option.value === id)) return showToast('Ese lugar ya no está disponible');
-    select.value = id;
+    const registroId = document.getElementById('taq-registro-id')?.value || '';
+    if (registroId) {
+      TAQ_ASIENTOS_SELECCIONADOS = [id];
+    } else if (TAQ_ASIENTOS_SELECCIONADOS.includes(id)) {
+      TAQ_ASIENTOS_SELECCIONADOS = TAQ_ASIENTOS_SELECCIONADOS.filter(asiento => asiento !== id);
+    } else {
+      if (TAQ_ASIENTOS_SELECCIONADOS.length >= 10) return showToast('Puedes seleccionar hasta 10 lugares por compra');
+      TAQ_ASIENTOS_SELECCIONADOS = [...TAQ_ASIENTOS_SELECCIONADOS, id];
+    }
+    sincronizarAsientoOcultoTaquilla();
+    actualizarMontoTaquilla();
     renderTaquillaAsientos();
-    showToast('Asiento ' + id + ' seleccionado');
+    showToast(TAQ_ASIENTOS_SELECCIONADOS.includes(id) ? 'Lugar ' + id + ' seleccionado' : 'Lugar ' + id + ' retirado de la selección');
   };
 
   window.cargarCongresoAsientos = async function(){
@@ -2753,13 +2803,6 @@
     const cont = document.getElementById('asientosMapa');
     const resumen = document.getElementById('asientosResumen');
     if (!cont) { renderTaquillaAsientos(); return; }
-    const colores = {
-      libre:     'border:1px solid #14b8a6;background:rgba(20,184,166,.12);color:var(--text-secondary);',
-      vendido:   'border:1px solid #14b8a6;background:#14b8a6;color:#04211c;',
-      hold:      'border:1px solid #f59e0b;background:rgba(245,158,11,.18);color:#b45309;',
-      reservado: 'border:1px solid #d9a441;background:rgba(217,164,65,.2);color:#a16207;',
-      bloqueado: 'border:1px solid var(--border-soft);background:var(--bg-elevated);color:var(--text-muted);opacity:.6;'
-    };
     let vendPref = 0, vendGen = 0, librePref = 0, libreGen = 0, holds = 0, bloqueados = 0;
     const filas = ASIENTOS_LAYOUT.map(f => {
       const celdas = [];
@@ -2772,12 +2815,11 @@
         if (est === 'hold') holds++;
         if (est === 'bloqueado') bloqueados++;
         const titulo = est === 'vendido' ? (a.nombre || 'Vendido') : est === 'reservado' ? 'Ponentes' : est;
-        celdas.push('<button type="button" class="cong-chair cong-chair-' + est + '" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + textoSeguro(titulo) + '" aria-label="' + textoSeguro(titulo) + '"><span>' + n + '</span></button>');
+        celdas.push('<button type="button" class="cong-chair cong-chair-' + est + '" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + textoSeguro(titulo) + '" aria-label="' + textoSeguro(titulo) + '"><span></span><b>' + n + '</b></button>');
       }
-      const sep = f.fila === 'E' ? 'margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--border-soft);' : '';
-      return '<div style="display:grid;grid-template-columns:1.4rem 1fr;align-items:center;gap:.6rem;' + sep + '"><span style="font-size:.72rem;font-weight:700;text-align:center;color:' + (f.zona === 'ponente' ? '#d9a441' : 'var(--text-muted)') + ';">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div style="display:flex;justify-content:center;gap:.3rem;">' + celdas.join('') + '</div></div>';
+      return '<div class="taq-seat-row ' + (f.fila === 'E' ? 'is-aisle' : '') + '" data-zone="' + f.zona + '"><span class="taq-seat-row-label">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div class="taq-seat-list">' + celdas.join('') + '</div></div>';
     });
-    cont.innerHTML = '<div style="margin:0 auto .9rem;width:70%;text-align:center;padding:.35rem 0;border-radius:999px 999px 6px 6px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.35);font-size:.65rem;font-weight:700;letter-spacing:.3em;color:#0d9488;">ESCENARIO</div>' + filas.join('');
+    cont.innerHTML = '<div class="taq-seat-stage-wrap"><div class="taq-seat-stage"><span>RUNWAY / ESCENARIO</span></div><small>La mejor perspectiva comienza aquí</small></div><div class="congress-seat-rows">' + filas.join('') + '</div>';
     if (resumen) {
       resumen.innerHTML =
         '<span><strong style="color:var(--text-primary);">Preferente:</strong> ' + librePref + ' disponibles · ' + vendPref + ' vendidos</span>' +
