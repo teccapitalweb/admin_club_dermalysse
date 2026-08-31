@@ -407,6 +407,13 @@
     .qr-select-search input{width:100%;padding:.72rem .9rem .72rem 2.55rem;background:linear-gradient(135deg,var(--bg-elevated),var(--bg-surface));border:1px solid var(--border-soft);border-radius:12px;font-size:.84rem;font-weight:600;transition:border-color .2s,box-shadow .2s}
     .qr-select-search input:focus{outline:none;border-color:var(--azul-main);box-shadow:0 0 0 3px rgba(45,104,136,.1)}
     .qr-searchable-select small{color:var(--text-muted);font-size:.69rem}
+    .qr-selected-card{display:flex;min-height:74px;align-items:center;gap:.75rem;border:1px solid var(--azul-main);border-radius:13px;padding:.8rem .9rem;background:linear-gradient(135deg,rgba(45,104,136,.08),var(--bg-surface));color:var(--text-primary)}
+    .qr-selected-card>span{display:grid;width:36px;height:36px;flex:0 0 36px;place-items:center;border-radius:10px;background:var(--azul-dark);color:#fff;font-size:.9rem;font-weight:900;box-shadow:4px 4px 0 var(--azul-pale)}
+    .qr-selected-card small{display:block;margin-bottom:.15rem;color:var(--text-muted);font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .qr-selected-card strong{display:block;color:var(--azul-dark);font-size:1rem;letter-spacing:.02em}
+    .qr-selected-card[data-empty]{border-color:var(--border-soft);background:var(--bg-elevated)}
+    .qr-selected-card[data-empty]>span{background:var(--text-muted);box-shadow:none}
+    .qr-selected-card[data-empty] strong{color:var(--text-muted);font-size:.78rem;font-weight:600}
     .qr-profile-form{display:none;margin-top:1rem;border-top:1px solid var(--border-soft);padding-top:1rem}
     .qr-profile-form.active{display:block;animation:fadeSlide .15s ease}
     .qr-quick-actions{display:flex;align-items:center;justify-content:space-between;gap:.65rem;margin-top:.75rem;padding:.7rem .8rem;border:1px solid var(--border-soft);border-radius:11px;background:var(--bg-elevated)}
@@ -777,7 +784,7 @@
               <div id="qr-import-empty" class="qr-import-empty"><b>⌁</b><h4>Importa primero el lote privado</h4><p>Selecciona el archivo JSON incluido con los 100 códigos. Los tokens no se mostrarán ni quedarán guardados en el repositorio.</p><button class="btn-add" onclick="document.getElementById('qr-import-file').click()">Elegir archivo del lote</button></div>
               <div id="qr-link-workspace" hidden>
                 <div class="qr-link-selects">
-                  <div class="form-field qr-searchable-select"><label>Número de tarjeta física disponible *</label><div class="qr-select-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="qr-codigo-busqueda" type="search" inputmode="numeric" autocomplete="off" placeholder="Buscar número, por ejemplo 099" oninput="filtrarOpcionesVinculoQr('codigo',this.value)"></div><select id="qr-codigo" size="5" onchange="prepararVinculoQr()"><option value="">Selecciona QR disponible</option></select><small>Escribe el número o elige la siguiente disponible.</small></div>
+                  <div class="form-field qr-searchable-select"><label>Número de tarjeta física disponible *</label><div class="qr-selected-card" id="qr-codigo-seleccionado" data-empty><span>QR</span><div><small>Tarjeta elegida desde el inventario</small><strong id="qr-codigo-resumen">Selecciona una tarjeta con el botón +</strong></div></div><select id="qr-codigo" hidden aria-hidden="true"><option value="">Sin tarjeta seleccionada</option></select><small>La tarjeta elegida en “Inventario de tarjetas” aparecerá aquí automáticamente.</small></div>
                   <div class="form-field qr-searchable-select"><label>Asistente registrado *</label><div class="qr-select-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="qr-registro-busqueda" type="search" autocomplete="off" placeholder="Buscar nombre, correo o asiento" oninput="filtrarOpcionesVinculoQr('registro',this.value)"></div><select id="qr-registro" size="5" onchange="prepararVinculoQr()"><option value="">Selecciona persona</option></select><small>Solo aparecen registros activos.</small></div>
                 </div>
                 <div class="qr-quick-actions"><span>¿No importa el número? Selecciona automáticamente la primera tarjeta libre.</span><button class="btn-secondary" type="button" onclick="elegirSiguienteQrDisponible()">Elegir siguiente disponible</button></div>
@@ -2289,6 +2296,15 @@
     renderCongresoQr(document.getElementById('qr-busqueda')?.value || '');
   };
 
+  function mostrarCodigoQrSeleccionado(codigo){
+    const contenedor = document.getElementById('qr-codigo-seleccionado');
+    const resumen = document.getElementById('qr-codigo-resumen');
+    if (!contenedor || !resumen) return;
+    const seleccionado = String(codigo || '').trim().toUpperCase();
+    contenedor.toggleAttribute('data-empty', !seleccionado);
+    resumen.textContent = seleccionado || 'Selecciona una tarjeta con el botón +';
+  }
+
   function seleccionarCodigoQr(codigo){
     const select = document.getElementById('qr-codigo');
     if (!select || !codigo) return;
@@ -2297,6 +2313,7 @@
       if (card) select.add(new Option(card.codigo + ' · ' + (card.perfil?.nombre || 'Asignada'), card.codigo));
     }
     select.value = codigo;
+    mostrarCodigoQrSeleccionado(codigo);
   }
 
   window.elegirSiguienteQrDisponible = function(){
@@ -2313,7 +2330,7 @@
     const regSelect = document.getElementById('qr-registro');
     if (!cardSelect || !regSelect) return;
     renderOpcionesVinculoQr(
-      document.getElementById('qr-codigo-busqueda')?.value || '',
+      '',
       document.getElementById('qr-registro-busqueda')?.value || ''
     );
   };
@@ -2333,6 +2350,7 @@
     const registrosFiltrados = registroQ ? activos.filter(r => [r.nombre,r.correo,r.telefono,r.asiento,r.qrCodigo].some(value => String(value || '').toLowerCase().includes(registroQ))) : activos;
     regSelect.innerHTML = '<option value="">' + (registrosFiltrados.length ? 'Selecciona persona' : 'Sin coincidencias') + '</option>' + registrosFiltrados.map(r => '<option value="' + textoSeguro(r.id) + '">' + textoSeguro(r.nombre || 'Sin nombre') + ' · ' + textoSeguro(r.asiento || 'Sin asiento') + (r.qrCodigo ? ' · ' + textoSeguro(r.qrCodigo) : '') + '</option>').join('');
     if (CONGRESO_QR.some(card => card.codigo === cardActual)) cardSelect.value = cardActual;
+    mostrarCodigoQrSeleccionado(cardSelect.value);
     if (activos.some(r => r.id === regActual)) regSelect.value = regActual;
   }
 
@@ -2342,7 +2360,7 @@
     const cardActual = cardSelect?.value || '';
     const regActual = regSelect?.value || '';
     renderOpcionesVinculoQr(
-      tipo === 'codigo' ? valor : document.getElementById('qr-codigo-busqueda')?.value || '',
+      '',
       tipo === 'registro' ? valor : document.getElementById('qr-registro-busqueda')?.value || ''
     );
     if (cardActual && [...cardSelect.options].some(option => option.value === cardActual)) cardSelect.value = cardActual;
@@ -2430,9 +2448,7 @@
   window.editarTarjetaQr = function(codigo){
     mostrarCongresoPanel('qr');
     const card = CONGRESO_QR.find(item => item.codigo === codigo);
-    const buscarCodigo = document.getElementById('qr-codigo-busqueda');
     const buscarRegistro = document.getElementById('qr-registro-busqueda');
-    if (buscarCodigo) buscarCodigo.value = '';
     if (buscarRegistro) buscarRegistro.value = '';
     actualizarOpcionesQr();
     seleccionarCodigoQr(codigo);
@@ -2492,10 +2508,9 @@
     document.getElementById('qr-profile-form')?.classList.remove('active');
     const card = document.getElementById('qr-codigo'); const reg = document.getElementById('qr-registro');
     if (card) card.value = ''; if (reg) reg.value = '';
-    const buscarCodigo = document.getElementById('qr-codigo-busqueda');
     const buscarRegistro = document.getElementById('qr-registro-busqueda');
-    if (buscarCodigo) buscarCodigo.value = '';
     if (buscarRegistro) buscarRegistro.value = '';
+    mostrarCodigoQrSeleccionado('');
     actualizarOpcionesQr();
   };
 
