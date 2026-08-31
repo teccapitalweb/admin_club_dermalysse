@@ -412,6 +412,21 @@
     @media(max-width:1100px){.qr-layout{grid-template-columns:1fr}}
     @media(max-width:900px){.taq-essential-grid{grid-template-columns:1fr 1fr}.taq-essential-grid .taq-ticket-field{grid-column:auto;max-width:none}.taq-sale-summary{grid-template-columns:1fr 1fr}.qr-kpis{grid-template-columns:1fr 1fr}}
     @media(max-width:700px){.congress-head-actions{width:100%;justify-content:space-between}.congress-nav{top:61px}.congress-nav-btn{padding:0 .8rem}.taq-step-tab small{display:none}.taq-step-panel{padding:1rem}.taq-essential-grid,.taq-payment-grid,.taq-advanced-body,.qr-profile-grid,.qr-link-selects{grid-template-columns:1fr}.taq-essential-grid .taq-ticket-field,.qr-profile-grid .wide{grid-column:auto}.taq-seat-toolbar{align-items:flex-start;flex-direction:column}.taq-seat-selection{align-items:flex-start;flex-direction:column}.taq-sale-summary{grid-template-columns:1fr 1fr}.congress-detail-grid{grid-template-columns:1fr}.taq-actions{align-items:stretch;flex-direction:column}.taq-actions-right{width:100%;margin-left:0}.taq-actions-right button{flex:1}.taq-step-tab{gap:.35rem}.taq-step-tab span{font-size:.7rem}.taq-chair{width:29px;height:31px}.taq-chair::before{left:4px;width:21px;height:21px}.taq-seat-list{gap:.12rem}.qr-privacy{grid-template-columns:1fr}.qr-quick-actions{align-items:stretch;flex-direction:column}.qr-filters{overflow-x:auto}.qr-filter{min-width:105px}body.taq-customer-mode .taq-seat-canvas{transform:none}}
+
+    /* MODIFICADO: Mapa operativo de la sala — asientos con forma de silla (misma paleta ya usada), icono de persona en vendidos */
+    .cong-chair{position:relative;width:2rem;height:2rem;flex:0 0 2rem;border:0;padding:0;background:transparent;cursor:pointer;color:#fff;transition:transform .15s ease}
+    .cong-chair::before{content:'';position:absolute;top:1px;left:4px;width:24px;height:19px;border:1.5px solid var(--cc-edge);border-radius:7px 7px 4px 4px;background:var(--cc-fill)}
+    .cong-chair::after{content:'';position:absolute;right:2px;bottom:1px;left:2px;height:9px;border:1.5px solid var(--cc-edge);border-radius:3px 3px 6px 6px;background:var(--cc-fill);box-shadow:0 2px 0 var(--cc-shadow)}
+    .cong-chair span{position:relative;z-index:2;display:grid;height:19px;place-items:center;font-size:.55rem;font-weight:700;color:var(--cc-ink)}
+    .cong-chair:hover:not(:disabled){transform:translateY(-2px)}
+    .cong-chair-libre{--cc-fill:#14b8a6;--cc-edge:#0b6b59;--cc-shadow:#095c4c;--cc-ink:#fff}
+    .cong-chair-hold{--cc-fill:#fff3d6;--cc-edge:#f59e0b;--cc-shadow:#f3cf86;--cc-ink:#b45309;cursor:not-allowed}
+    .cong-chair-reservado{--cc-fill:#f5e6c3;--cc-edge:#d9a441;--cc-shadow:#e3c887;--cc-ink:#a16207;cursor:not-allowed}
+    .cong-chair-bloqueado{--cc-fill:#f2ead5;--cc-edge:#c9c4bc;--cc-shadow:#ded7c6;--cc-ink:#907761;opacity:.6;cursor:not-allowed}
+    .cong-chair-vendido{--cc-fill:#d9d2ca;--cc-edge:#b0a59a;--cc-shadow:#c2b7ac;--cc-ink:#9e958c;cursor:not-allowed}
+    .cong-chair-vendido::before,.cong-chair-vendido::after{display:none}
+    .cong-chair-vendido span{display:none}
+    .cong-chair-vendido{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235a534b'%3E%3Ccircle cx='12' cy='7.5' r='4'/%3E%3Cpath d='M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5z'/%3E%3C/svg%3E") center/28px 28px no-repeat}
   </style>
 
   <!-- FIREBASE SDK -->
@@ -2751,7 +2766,7 @@
         if (est === 'hold') holds++;
         if (est === 'bloqueado') bloqueados++;
         const titulo = est === 'vendido' ? (a.nombre || 'Vendido') : est === 'reservado' ? 'Ponentes' : est;
-        celdas.push('<button type="button" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + textoSeguro(titulo) + '" style="width:2rem;height:2rem;border-radius:7px 7px 3px 3px;font-size:.6rem;font-weight:600;cursor:pointer;' + (colores[est] || colores.libre) + '">' + n + '</button>');
+        celdas.push('<button type="button" class="cong-chair cong-chair-' + est + '" onclick="detalleAsiento(\'' + id + '\')" title="' + id + ' · ' + textoSeguro(titulo) + '" aria-label="' + textoSeguro(titulo) + '"><span>' + n + '</span></button>');
       }
       const sep = f.fila === 'E' ? 'margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--border-soft);' : '';
       return '<div style="display:grid;grid-template-columns:1.4rem 1fr;align-items:center;gap:.6rem;' + sep + '"><span style="font-size:.72rem;font-weight:700;text-align:center;color:' + (f.zona === 'ponente' ? '#d9a441' : 'var(--text-muted)') + ';">' + (f.fila === 'P' ? '★' : f.fila) + '</span><div style="display:flex;justify-content:center;gap:.3rem;">' + celdas.join('') + '</div></div>';
