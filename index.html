@@ -764,8 +764,6 @@
                   <div class="form-field"><label>LinkedIn</label><input type="text" id="taq-linkedin" placeholder="Perfil profesional"></div>
                   <div class="form-field"><label>Notas internas</label><input type="text" id="taq-notas" placeholder="Observaciones para acreditación"></div>
                 </div>
-                <div class="qr-privacy"><label><input type="checkbox" id="taq-mostrar-correo">Mostrar correo</label><label><input type="checkbox" id="taq-mostrar-telefono">Mostrar teléfono</label><label><input type="checkbox" id="taq-mostrar-web">Mostrar sitio web</label><label><input type="checkbox" id="taq-mostrar-linkedin">Mostrar LinkedIn</label><label><input type="checkbox" id="taq-mostrar-instagram">Mostrar Instagram</label><label><input type="checkbox" id="taq-tarjeta-visible">Tarjeta visible</label></div>
-                <label class="qr-consent"><input type="checkbox" id="taq-consentimiento"><span>La persona autorizó utilizar los datos marcados para su tarjeta virtual. Puede asistir aunque no active esta opción.</span></label>
               </details>
               <label class="taq-confirm-check"><input type="checkbox" id="taq-enviar" checked><span><strong>Enviar confirmación y enlace para completar después</strong><br>El comprador podrá rellenar o compartir los datos de cada lugar.</span></label>
               <div class="taq-actions"><button class="btn-secondary" onclick="irPasoTaquilla(2)">← Volver a lugares</button><div class="taq-actions-right"><button class="btn-add" id="taq-guardar" onclick="guardarRegistroTaquilla()">Registrar venta y ocupar lugares</button></div></div>
@@ -820,8 +818,6 @@
                     <div class="form-field"><label>LinkedIn</label><input type="text" id="qr-linkedin" placeholder="Perfil profesional"></div>
                     <div class="form-field wide"><label>Instagram profesional</label><input type="text" id="qr-instagram" placeholder="@usuario"></div>
                   </div>
-                  <div class="qr-privacy"><label><input type="checkbox" id="qr-mostrar-correo" checked>Mostrar correo</label><label><input type="checkbox" id="qr-mostrar-telefono" checked>Mostrar teléfono</label><label><input type="checkbox" id="qr-mostrar-web" checked>Mostrar sitio web</label><label><input type="checkbox" id="qr-mostrar-linkedin" checked>Mostrar LinkedIn</label><label><input type="checkbox" id="qr-mostrar-instagram" checked>Mostrar Instagram</label><label><input type="checkbox" id="qr-activa" checked>Tarjeta visible</label></div>
-                  <label class="qr-consent"><input type="checkbox" id="qr-consentimiento"><span>La persona autorizó que los datos marcados se muestren públicamente al escanear su QR.</span></label>
                   <div class="taq-actions"><button class="btn-secondary" onclick="cancelarEdicionQr()">Cancelar</button><div class="taq-actions-right"><button class="btn-add" id="qr-guardar" onclick="guardarVinculoQr()">Vincular tarjeta y publicar</button></div></div>
                 </div>
               </div>
@@ -862,8 +858,6 @@
               <label class="wide"><span>Instagram profesional</span><input id="congreso-editor-instagram" type="text" placeholder="@usuario"></label>
               <label class="wide"><span>Notas internas</span><textarea id="congreso-editor-notas" rows="2"></textarea></label>
             </div>
-            <div class="qr-privacy"><label><input type="checkbox" id="congreso-editor-mostrar-correo">Mostrar correo</label><label><input type="checkbox" id="congreso-editor-mostrar-telefono">Mostrar teléfono</label><label><input type="checkbox" id="congreso-editor-mostrar-web">Mostrar sitio web</label><label><input type="checkbox" id="congreso-editor-mostrar-linkedin">Mostrar LinkedIn</label><label><input type="checkbox" id="congreso-editor-mostrar-instagram">Mostrar Instagram</label><label><input type="checkbox" id="congreso-editor-tarjeta-visible">Tarjeta visible</label></div>
-            <label class="qr-consent"><input type="checkbox" id="congreso-editor-consentimiento"><span>La persona autorizó el uso de estos datos para su tarjeta virtual.</span></label>
             <div class="taq-actions"><button class="btn-secondary" onclick="cerrarEditorAsistente()">Cancelar</button><div class="taq-actions-right"><button class="btn-add" id="congreso-editor-guardar" onclick="guardarEditorAsistente()">Guardar cambios</button></div></div>
           </div>
         </div>
@@ -2431,9 +2425,7 @@
   function llenarPerfilQr(registro, card){
     const perfil = card?.perfil || {};
     const extra = registro?.extra && typeof registro.extra === 'object' ? registro.extra : {};
-    const preferencias = registro?.preferenciasTarjeta && typeof registro.preferenciasTarjeta === 'object' ? registro.preferenciasTarjeta : {};
     const valor = (id, value) => { const el = document.getElementById(id); if (el) el.value = value || ''; };
-    const marca = (id, value, fallback) => { const el = document.getElementById(id); if (el) el.checked = typeof value === 'boolean' ? value : fallback; };
     valor('qr-nombre', perfil.nombre || registro?.nombre);
     valor('qr-cargo', perfil.cargo || extra.Cargo);
     valor('qr-empresa', perfil.empresa || extra.Empresa);
@@ -2443,13 +2435,6 @@
     valor('qr-web', perfil.sitioWeb || extra['Sitio web']);
     valor('qr-linkedin', perfil.linkedin || extra['LinkedIn/Web']);
     valor('qr-instagram', perfil.instagram || extra.Instagram);
-    marca('qr-mostrar-correo', perfil.mostrarCorreo, preferencias.mostrarCorreo === true);
-    marca('qr-mostrar-telefono', perfil.mostrarTelefono, preferencias.mostrarTelefono === true);
-    marca('qr-mostrar-web', perfil.mostrarSitioWeb, preferencias.mostrarSitioWeb === true);
-    marca('qr-mostrar-linkedin', perfil.mostrarLinkedin, preferencias.mostrarLinkedin === true);
-    marca('qr-mostrar-instagram', perfil.mostrarInstagram, preferencias.mostrarInstagram === true);
-    marca('qr-activa', card?.activo, preferencias.tarjetaVisible === true);
-    marca('qr-consentimiento', card?.consentimientoPublicacion, Boolean(registro?.consentimientoPublicacion));
   }
 
   window.prepararVinculoQr = function(){
@@ -2510,21 +2495,19 @@
       sitioWeb: document.getElementById('qr-web').value,
       linkedin: document.getElementById('qr-linkedin').value,
       instagram: document.getElementById('qr-instagram').value,
-      mostrarCorreo: document.getElementById('qr-mostrar-correo').checked,
-      mostrarTelefono: document.getElementById('qr-mostrar-telefono').checked,
-      mostrarSitioWeb: document.getElementById('qr-mostrar-web').checked,
-      mostrarLinkedin: document.getElementById('qr-mostrar-linkedin').checked,
-      mostrarInstagram: document.getElementById('qr-mostrar-instagram').checked
+      mostrarCorreo: true,
+      mostrarTelefono: true,
+      mostrarSitioWeb: true,
+      mostrarLinkedin: true,
+      mostrarInstagram: true
     };
   }
 
   window.guardarVinculoQr = async function(){
     const codigo = document.getElementById('qr-codigo').value;
     const registroId = document.getElementById('qr-registro').value;
-    const consentimiento = document.getElementById('qr-consentimiento').checked;
     if (!codigo || !registroId) return showToast('Selecciona la tarjeta y el asistente');
     if (!document.getElementById('qr-nombre').value.trim()) return showToast('Escribe el nombre profesional');
-    if (!consentimiento) return showToast('Confirma la autorización de publicación');
     const card = CONGRESO_QR.find(item => item.codigo === codigo);
     const boton = document.getElementById('qr-guardar');
     boton.disabled = true; boton.textContent = 'Guardando…';
@@ -2532,7 +2515,7 @@
       const perfil = payloadPerfilQr();
       if (card?.asignadoRegistroId) {
         if (card.asignadoRegistroId !== registroId) throw new Error('Esa tarjeta pertenece a otra persona');
-        await apiCongresoAdmin('/congreso/admin/qr/' + encodeURIComponent(codigo), { method:'PUT', body:{ perfil, activo:document.getElementById('qr-activa').checked, consentimientoPublicacion:true } });
+        await apiCongresoAdmin('/congreso/admin/qr/' + encodeURIComponent(codigo), { method:'PUT', body:{ perfil, activo:true, consentimientoPublicacion:true } });
       } else {
         await apiCongresoAdmin('/congreso/admin/qr/asignar', { method:'POST', body:{ codigo, registroId, perfil, consentimientoPublicacion:true } });
       }
@@ -2628,7 +2611,6 @@
     document.getElementById('taq-ficha').value = 'ficha1';
     document.getElementById('taq-metodo').value = 'efectivo';
     document.getElementById('taq-enviar').checked = true;
-    ['taq-mostrar-correo','taq-mostrar-telefono','taq-mostrar-web','taq-mostrar-linkedin','taq-mostrar-instagram','taq-tarjeta-visible','taq-consentimiento'].forEach(id => { const el=document.getElementById(id); if(el) el.checked=false; });
     TAQ_ASIENTOS_SELECCIONADOS = [];
     TAQ_ACOMPANANTES = {};
     TAQ_ACOMPANANTES_FIRMA = '';
@@ -2654,7 +2636,6 @@
     const r = CONGRESO_REGISTROS.find(item => item.id === id);
     if (!r) return showToast('No se encontró el registro');
     const extra = r.extra && typeof r.extra === 'object' ? r.extra : {};
-    const preferencias = r.preferenciasTarjeta || {};
     document.getElementById('congreso-editor-id').value = r.id;
     document.getElementById('congreso-editor-titulo').textContent = r.nombre || ('Asistente · ' + (r.asiento || ''));
     document.getElementById('congreso-editor-resumen').textContent = (r.ficha || 'Ficha') + ' · Asiento ' + (r.asiento || '—') + ' · Aquí sólo se modifican sus datos.';
@@ -2668,13 +2649,6 @@
     document.getElementById('congreso-editor-linkedin').value = extra['LinkedIn/Web'] || '';
     document.getElementById('congreso-editor-instagram').value = extra.Instagram || '';
     document.getElementById('congreso-editor-notas').value = extra.Notas || '';
-    document.getElementById('congreso-editor-mostrar-correo').checked = preferencias.mostrarCorreo === true;
-    document.getElementById('congreso-editor-mostrar-telefono').checked = preferencias.mostrarTelefono === true;
-    document.getElementById('congreso-editor-mostrar-web').checked = preferencias.mostrarSitioWeb === true;
-    document.getElementById('congreso-editor-mostrar-linkedin').checked = preferencias.mostrarLinkedin === true;
-    document.getElementById('congreso-editor-mostrar-instagram').checked = preferencias.mostrarInstagram === true;
-    document.getElementById('congreso-editor-tarjeta-visible').checked = preferencias.tarjetaVisible === true;
-    document.getElementById('congreso-editor-consentimiento').checked = r.consentimientoPublicacion === true;
     document.getElementById('congresoEditor').classList.add('active');
   };
 
@@ -2699,13 +2673,13 @@
       linkedinWeb: document.getElementById('congreso-editor-linkedin').value,
       instagram: document.getElementById('congreso-editor-instagram').value,
       notas: document.getElementById('congreso-editor-notas').value,
-      mostrarCorreo: document.getElementById('congreso-editor-mostrar-correo').checked,
-      mostrarTelefono: document.getElementById('congreso-editor-mostrar-telefono').checked,
-      mostrarSitioWeb: document.getElementById('congreso-editor-mostrar-web').checked,
-      mostrarLinkedin: document.getElementById('congreso-editor-mostrar-linkedin').checked,
-      mostrarInstagram: document.getElementById('congreso-editor-mostrar-instagram').checked,
-      tarjetaVisible: document.getElementById('congreso-editor-tarjeta-visible').checked,
-      consentimientoPublicacion: document.getElementById('congreso-editor-consentimiento').checked,
+      mostrarCorreo: true,
+      mostrarTelefono: true,
+      mostrarSitioWeb: true,
+      mostrarLinkedin: true,
+      mostrarInstagram: true,
+      tarjetaVisible: true,
+      consentimientoPublicacion: true,
       enviarConfirmacion: false
     };
     try {
@@ -2736,13 +2710,6 @@
     document.getElementById('taq-instagram').value = r.extra?.Instagram || '';
     document.getElementById('taq-notas').value = r.extra?.Notas || '';
     document.getElementById('taq-enviar').checked = false;
-    document.getElementById('taq-mostrar-correo').checked = r.preferenciasTarjeta?.mostrarCorreo === true;
-    document.getElementById('taq-mostrar-telefono').checked = r.preferenciasTarjeta?.mostrarTelefono === true;
-    document.getElementById('taq-mostrar-web').checked = r.preferenciasTarjeta?.mostrarSitioWeb === true;
-    document.getElementById('taq-mostrar-linkedin').checked = r.preferenciasTarjeta?.mostrarLinkedin === true;
-    document.getElementById('taq-mostrar-instagram').checked = r.preferenciasTarjeta?.mostrarInstagram === true;
-    document.getElementById('taq-tarjeta-visible').checked = r.preferenciasTarjeta?.tarjetaVisible === true;
-    document.getElementById('taq-consentimiento').checked = r.consentimientoPublicacion === true;
     TAQ_ACOMPANANTES = {};
     TAQ_ACOMPANANTES_FIRMA = '';
     document.getElementById('taq-titulo').textContent = 'Editar asistente';
@@ -2775,13 +2742,13 @@
       linkedinWeb: document.getElementById('taq-linkedin').value,
       instagram: document.getElementById('taq-instagram').value,
       notas: document.getElementById('taq-notas').value,
-      mostrarCorreo: document.getElementById('taq-mostrar-correo').checked,
-      mostrarTelefono: document.getElementById('taq-mostrar-telefono').checked,
-      mostrarSitioWeb: document.getElementById('taq-mostrar-web').checked,
-      mostrarLinkedin: document.getElementById('taq-mostrar-linkedin').checked,
-      mostrarInstagram: document.getElementById('taq-mostrar-instagram').checked,
-      tarjetaVisible: document.getElementById('taq-tarjeta-visible').checked,
-      consentimientoPublicacion: document.getElementById('taq-consentimiento').checked,
+      mostrarCorreo: true,
+      mostrarTelefono: true,
+      mostrarSitioWeb: true,
+      mostrarLinkedin: true,
+      mostrarInstagram: true,
+      tarjetaVisible: true,
+      consentimientoPublicacion: true,
       enviarConfirmacion: document.getElementById('taq-enviar').checked,
       completarDespues: asientos.length > 1 && modoAcompanantes === 'despues',
       asistentes: asistentesPayloadTaquilla(asientos)
@@ -2901,8 +2868,7 @@
         '<div class="form-field"><label>Presentación breve</label><input value="' + textoSeguro(datos.bio || '') + '" placeholder="Opcional" oninput="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'bio\',this.value)"></div>' +
         '<div class="form-field"><label>Sitio web</label><input value="' + textoSeguro(datos.sitioWeb || '') + '" placeholder="https://" oninput="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'sitioWeb\',this.value)"></div>' +
         '<div class="form-field"><label>LinkedIn</label><input value="' + textoSeguro(datos.linkedinWeb || '') + '" placeholder="Opcional" oninput="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'linkedinWeb\',this.value)"></div>' +
-        '<div class="form-field"><label>Instagram</label><input value="' + textoSeguro(datos.instagram || '') + '" placeholder="@usuario" oninput="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'instagram\',this.value)"></div>' +
-        '<div class="taq-companion-options"><label><input type="checkbox" ' + (datos.mostrarCorreo?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'mostrarCorreo\',this.checked)"> Mostrar correo</label><label><input type="checkbox" ' + (datos.mostrarTelefono?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'mostrarTelefono\',this.checked)"> Mostrar teléfono</label><label><input type="checkbox" ' + (datos.mostrarSitioWeb?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'mostrarSitioWeb\',this.checked)"> Mostrar web</label><label><input type="checkbox" ' + (datos.mostrarLinkedin?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'mostrarLinkedin\',this.checked)"> Mostrar LinkedIn</label><label><input type="checkbox" ' + (datos.mostrarInstagram?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'mostrarInstagram\',this.checked)"> Mostrar Instagram</label><label><input type="checkbox" ' + (datos.tarjetaVisible?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'tarjetaVisible\',this.checked)"> Tarjeta visible</label><label><input type="checkbox" ' + (datos.consentimientoPublicacion?'checked':'') + ' onchange="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'consentimientoPublicacion\',this.checked)"> Autorización</label></div></div>';
+        '<div class="form-field"><label>Instagram</label><input value="' + textoSeguro(datos.instagram || '') + '" placeholder="@usuario" oninput="guardarDatoAcompananteTaquilla(\'' + asiento + '\',\'instagram\',this.value)"></div></div>';
     }).join('');
   }
 
@@ -2918,17 +2884,20 @@
       sitioWeb: document.getElementById('taq-web')?.value || '',
       linkedinWeb: document.getElementById('taq-linkedin')?.value || '',
       instagram: document.getElementById('taq-instagram')?.value || '',
-      mostrarCorreo: document.getElementById('taq-mostrar-correo')?.checked || false,
-      mostrarTelefono: document.getElementById('taq-mostrar-telefono')?.checked || false,
-      mostrarSitioWeb: document.getElementById('taq-mostrar-web')?.checked || false,
-      mostrarLinkedin: document.getElementById('taq-mostrar-linkedin')?.checked || false,
-      mostrarInstagram: document.getElementById('taq-mostrar-instagram')?.checked || false,
-      tarjetaVisible: document.getElementById('taq-tarjeta-visible')?.checked || false,
-      consentimientoPublicacion: document.getElementById('taq-consentimiento')?.checked || false
+      mostrarCorreo: true,
+      mostrarTelefono: true,
+      mostrarSitioWeb: true,
+      mostrarLinkedin: true,
+      mostrarInstagram: true,
+      tarjetaVisible: true,
+      consentimientoPublicacion: true
     };
     return asientos.map((asiento, index) => index === 0
       ? comprador
-      : Object.assign({ asiento, nombre:'', correo:'', telefono:'' }, TAQ_ACOMPANANTES[asiento] || {}));
+      : Object.assign({ asiento, nombre:'', correo:'', telefono:'' }, TAQ_ACOMPANANTES[asiento] || {}, {
+          mostrarCorreo:true, mostrarTelefono:true, mostrarSitioWeb:true, mostrarLinkedin:true,
+          mostrarInstagram:true, tarjetaVisible:true, consentimientoPublicacion:true
+        }));
   }
 
   function sincronizarAsientoOcultoTaquilla(){
