@@ -387,6 +387,7 @@
     .congress-detail-backdrop{position:fixed;z-index:10010;inset:0;display:none;place-items:center;padding:1rem;background:rgba(10,22,19,.55);backdrop-filter:blur(5px)}
     .congress-detail-backdrop.active{display:grid}
     .congress-detail-card{width:min(540px,100%);max-height:90vh;overflow:auto;border-radius:20px;padding:1.5rem;background:var(--bg-surface);box-shadow:var(--shadow-lg)}
+    .congress-editor-card{width:min(760px,100%)}
     .congress-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--border-soft);padding-bottom:1rem}
     .congress-detail-close{width:34px;height:34px;border-radius:50%;background:var(--bg-elevated);color:var(--text-muted);font-size:1.1rem}
     .congress-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1rem}
@@ -847,6 +848,24 @@
 
         <div class="congress-detail-backdrop" id="congresoDetalle" onclick="if(event.target===this)cerrarDetalleRegistro()">
           <div class="congress-detail-card"><div class="congress-detail-head"><div><span class="badge info">DETALLE DE ASISTENTE</span><h3 id="congreso-detalle-titulo" style="margin-top:.55rem;">Registro</h3></div><button class="congress-detail-close" onclick="cerrarDetalleRegistro()" aria-label="Cerrar">×</button></div><div id="congreso-detalle-contenido"></div><div class="taq-actions"><button class="btn-secondary" onclick="cerrarDetalleRegistro()">Cerrar</button><div class="taq-actions-right"><button class="btn-secondary" id="congreso-detalle-qr">Vincular QR</button><button class="btn-add" id="congreso-detalle-editar">Editar registro</button></div></div></div>
+        </div>
+        <div class="congress-detail-backdrop" id="congresoEditor" onclick="if(event.target===this)cerrarEditorAsistente()">
+          <div class="congress-detail-card congress-editor-card">
+            <div class="congress-detail-head"><div><span class="badge info">EDITAR ASISTENTE</span><h3 id="congreso-editor-titulo" style="margin-top:.55rem;">Datos del asistente</h3><p id="congreso-editor-resumen" class="modal-subtitle" style="margin:.3rem 0 0;">La ficha y el asiento permanecen sin cambios.</p></div><button class="congress-detail-close" onclick="cerrarEditorAsistente()" aria-label="Cerrar">×</button></div>
+            <input type="hidden" id="congreso-editor-id">
+            <div class="qr-profile-grid" style="margin-top:1rem;">
+              <label class="wide"><span>Nombre profesional</span><input id="congreso-editor-nombre" type="text" placeholder="Nombre completo"></label>
+              <label><span>Correo</span><input id="congreso-editor-correo" type="email" placeholder="correo@ejemplo.com"></label><label><span>Teléfono</span><input id="congreso-editor-telefono" type="tel" placeholder="+52…"></label>
+              <label><span>Cargo o especialidad</span><input id="congreso-editor-cargo" type="text"></label><label><span>Empresa o consultorio</span><input id="congreso-editor-empresa" type="text"></label>
+              <label class="wide"><span>Presentación breve</span><textarea id="congreso-editor-bio" rows="3"></textarea></label>
+              <label><span>Sitio web</span><input id="congreso-editor-web" type="url" placeholder="https://"></label><label><span>LinkedIn</span><input id="congreso-editor-linkedin" type="url" placeholder="https://"></label>
+              <label class="wide"><span>Instagram profesional</span><input id="congreso-editor-instagram" type="text" placeholder="@usuario"></label>
+              <label class="wide"><span>Notas internas</span><textarea id="congreso-editor-notas" rows="2"></textarea></label>
+            </div>
+            <div class="qr-privacy"><label><input type="checkbox" id="congreso-editor-mostrar-correo">Mostrar correo</label><label><input type="checkbox" id="congreso-editor-mostrar-telefono">Mostrar teléfono</label><label><input type="checkbox" id="congreso-editor-mostrar-web">Mostrar sitio web</label><label><input type="checkbox" id="congreso-editor-mostrar-linkedin">Mostrar LinkedIn</label><label><input type="checkbox" id="congreso-editor-mostrar-instagram">Mostrar Instagram</label><label><input type="checkbox" id="congreso-editor-tarjeta-visible">Tarjeta visible</label></div>
+            <label class="qr-consent"><input type="checkbox" id="congreso-editor-consentimiento"><span>La persona autorizó el uso de estos datos para su tarjeta virtual.</span></label>
+            <div class="taq-actions"><button class="btn-secondary" onclick="cerrarEditorAsistente()">Cancelar</button><div class="taq-actions-right"><button class="btn-add" id="congreso-editor-guardar" onclick="guardarEditorAsistente()">Guardar cambios</button></div></div>
+          </div>
         </div>
       </section>
     <!-- ═══ CONFIG ═══ -->
@@ -2137,7 +2156,7 @@
       const verSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>';
       const reactivarSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 0-2 5"/></svg>';
       const accionesCancelado = `<button class="action-btn" title="Reactivar y elegir asiento" onclick="reactivarCongresoRegistro('${r.id}')">${reactivarSvg}</button><button class="action-btn danger" title="Eliminar definitivamente" onclick="eliminarCongresoRegistroDefinitivo('${r.id}')">${deleteSvg}</button>`;
-      const accionesActivo = `<button class="action-btn" title="Editar" onclick="abrirRegistroTaquilla('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button>`;
+      const accionesActivo = `<button class="action-btn" title="Editar datos" onclick="abrirEditorAsistente('${r.id}')">${editSvg}</button><button class="action-btn danger" title="Cancelar y liberar asiento" onclick="eliminarCongresoRegistro('${r.id}')">${deleteSvg}</button>`;
       const acciones = `<div class="action-btns"><button class="action-btn" title="Ver detalles" onclick="verDetalleRegistro('${r.id}')">${verSvg}</button>${cancelado ? accionesCancelado : accionesActivo}</div>`;
       const grupo = Number(r.cantidadBoletos) > 1 ? '<span class="badge neutral">Grupo · ' + Number(r.cantidadBoletos) + '</span>' : '';
       return `<tr style="${cancelado ? 'opacity:.55;' : ''}"><td><div class="congress-record-primary"><strong>${textoSeguro(r.nombre || ('Acompañante pendiente · ' + (r.asiento || '')))}</strong><small>${textoSeguro(origen)} ${grupo}</small></div></td><td><span class="badge info">${textoSeguro(r.ficha || '—')}</span> ${r.asiento ? '<span class="badge success">' + textoSeguro(r.asiento) + '</span>' : '—'}</td><td>${contacto}</td><td><div class="congress-record-primary"><span>${fecha}</span><small>${textoSeguro(r.metodoPago || 'Método no indicado')}</small></div></td><td><span class="badge ${notifClass}">${estadoLabel}</span></td><td>${acciones}</td></tr>`;
@@ -2169,7 +2188,7 @@
     const qr = document.getElementById('congreso-detalle-qr');
     editar.style.display = '';
     editar.textContent = r.estadoRegistro === 'cancelado' ? 'Reactivar y elegir asiento' : 'Editar registro';
-    editar.onclick = () => { cerrarDetalleRegistro(); r.estadoRegistro === 'cancelado' ? reactivarCongresoRegistro(id) : abrirRegistroTaquilla(id); };
+    editar.onclick = () => { cerrarDetalleRegistro(); r.estadoRegistro === 'cancelado' ? reactivarCongresoRegistro(id) : abrirEditorAsistente(id); };
     const datosPendientes = r.datosAsistenteEstado === 'pendiente' || !r.nombre || !r.correo || !r.telefono;
     qr.style.display = r.estadoRegistro === 'cancelado' || datosPendientes ? 'none' : '';
     qr.textContent = r.qrCodigo ? 'Editar ' + r.qrCodigo : 'Vincular QR';
@@ -2630,6 +2649,74 @@
     if (asiento?.zona === 'general') return 'ficha2';
     return registro.ficha === CONGRESO_FICHAS.ficha1.nombre ? 'ficha1' : 'ficha2';
   }
+
+  window.abrirEditorAsistente = function(id){
+    const r = CONGRESO_REGISTROS.find(item => item.id === id);
+    if (!r) return showToast('No se encontró el registro');
+    const extra = r.extra && typeof r.extra === 'object' ? r.extra : {};
+    const preferencias = r.preferenciasTarjeta || {};
+    document.getElementById('congreso-editor-id').value = r.id;
+    document.getElementById('congreso-editor-titulo').textContent = r.nombre || ('Asistente · ' + (r.asiento || ''));
+    document.getElementById('congreso-editor-resumen').textContent = (r.ficha || 'Ficha') + ' · Asiento ' + (r.asiento || '—') + ' · Aquí sólo se modifican sus datos.';
+    document.getElementById('congreso-editor-nombre').value = r.nombre || '';
+    document.getElementById('congreso-editor-correo').value = r.correo || '';
+    document.getElementById('congreso-editor-telefono').value = r.telefono || '';
+    document.getElementById('congreso-editor-cargo').value = extra.Cargo || '';
+    document.getElementById('congreso-editor-empresa').value = extra.Empresa || '';
+    document.getElementById('congreso-editor-bio').value = extra['Presentación'] || '';
+    document.getElementById('congreso-editor-web').value = extra['Sitio web'] || '';
+    document.getElementById('congreso-editor-linkedin').value = extra['LinkedIn/Web'] || '';
+    document.getElementById('congreso-editor-instagram').value = extra.Instagram || '';
+    document.getElementById('congreso-editor-notas').value = extra.Notas || '';
+    document.getElementById('congreso-editor-mostrar-correo').checked = preferencias.mostrarCorreo === true;
+    document.getElementById('congreso-editor-mostrar-telefono').checked = preferencias.mostrarTelefono === true;
+    document.getElementById('congreso-editor-mostrar-web').checked = preferencias.mostrarSitioWeb === true;
+    document.getElementById('congreso-editor-mostrar-linkedin').checked = preferencias.mostrarLinkedin === true;
+    document.getElementById('congreso-editor-mostrar-instagram').checked = preferencias.mostrarInstagram === true;
+    document.getElementById('congreso-editor-tarjeta-visible').checked = preferencias.tarjetaVisible === true;
+    document.getElementById('congreso-editor-consentimiento').checked = r.consentimientoPublicacion === true;
+    document.getElementById('congresoEditor').classList.add('active');
+  };
+
+  window.cerrarEditorAsistente = function(){ document.getElementById('congresoEditor')?.classList.remove('active'); };
+
+  window.guardarEditorAsistente = async function(){
+    const id = document.getElementById('congreso-editor-id').value;
+    const r = CONGRESO_REGISTROS.find(item => item.id === id);
+    if (!r) return showToast('No se encontró el registro');
+    const boton = document.getElementById('congreso-editor-guardar');
+    boton.disabled = true; boton.textContent = 'Guardando…';
+    const payload = {
+      nombre: document.getElementById('congreso-editor-nombre').value,
+      correo: document.getElementById('congreso-editor-correo').value,
+      telefono: document.getElementById('congreso-editor-telefono').value,
+      fichaId: fichaIdDeRegistro(r), asiento: r.asiento,
+      metodoPago: r.metodoPago || (r.stripeSessionId ? 'stripe' : 'efectivo'), monto: r.monto == null ? '' : r.monto,
+      cargo: document.getElementById('congreso-editor-cargo').value,
+      empresa: document.getElementById('congreso-editor-empresa').value,
+      bio: document.getElementById('congreso-editor-bio').value,
+      sitioWeb: document.getElementById('congreso-editor-web').value,
+      linkedinWeb: document.getElementById('congreso-editor-linkedin').value,
+      instagram: document.getElementById('congreso-editor-instagram').value,
+      notas: document.getElementById('congreso-editor-notas').value,
+      mostrarCorreo: document.getElementById('congreso-editor-mostrar-correo').checked,
+      mostrarTelefono: document.getElementById('congreso-editor-mostrar-telefono').checked,
+      mostrarSitioWeb: document.getElementById('congreso-editor-mostrar-web').checked,
+      mostrarLinkedin: document.getElementById('congreso-editor-mostrar-linkedin').checked,
+      mostrarInstagram: document.getElementById('congreso-editor-mostrar-instagram').checked,
+      tarjetaVisible: document.getElementById('congreso-editor-tarjeta-visible').checked,
+      consentimientoPublicacion: document.getElementById('congreso-editor-consentimiento').checked,
+      enviarConfirmacion: false
+    };
+    try {
+      await apiCongresoAdmin('/congreso/admin/registros/' + encodeURIComponent(id), { method:'PUT', body:payload });
+      cerrarEditorAsistente();
+      await Promise.all([cargarCongresoRegistros(), cargarCongresoAsientos()]);
+      mostrarCongresoPanel('registros');
+      showToast('Cambios del asistente guardados');
+    } catch (error) { showToast(error.message || 'No se pudieron guardar los cambios'); }
+    finally { boton.disabled = false; boton.textContent = 'Guardar cambios'; }
+  };
 
   window.abrirRegistroTaquilla = function(id){
     const r = CONGRESO_REGISTROS.find(item => item.id === id);
